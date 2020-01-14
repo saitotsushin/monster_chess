@@ -77,19 +77,39 @@ class GameScene extends Phaser.Scene {
       for(var k = 0; k < this.monsterObj.moveAreaMap[i].length; k++){
 
         if(this.monsterObj.moveAreaMap[i][k] === 1){
-          let moveTile = this.add.graphics(
-            {
-              fillStyle: { color: 0xFF0000 }
-            }      
+          // let moveTile = this.add.graphics(
+          //   {
+          //     fillStyle: { color: 0xFF0000 }
+          //   }      
+          // );
+          // // let moveTileFill = new Phaser.Geom.Rectangle();
+          // // moveTileFill.x = k * this.map.tileWidth;
+          // // moveTileFill.y = i * this.map.tileHeight;
+          // // moveTileFill.width = this.map.tileWidth;
+          // // moveTileFill.height = this.map.tileHeight;
+          // // moveTile.alpha = 0.4;
+          
+          // // moveTile.fillRectShape(moveTileFill);
+
+          let move_area = this.add.sprite(
+            k * this.map.tileWidth + this.map.tileWidth/2,
+            i * this.map.tileHeight + this.map.tileHeight/2,
+            'move_area'
           );
-          let moveTileFill = new Phaser.Geom.Rectangle();
-          moveTileFill.x = k * this.map.tileWidth;
-          moveTileFill.y = i * this.map.tileHeight;
-          moveTileFill.width = this.map.tileWidth;
-          moveTileFill.height = this.map.tileHeight;
-          moveTile.alpha = 0.4;
-          moveTile.fillRectShape(moveTileFill);
-          this.monsterObj.moveAreaCourser.add(moveTile);
+          move_area.alpha = 0.4;
+
+          move_area.setInteractive();
+
+          move_area.on('pointerdown', function (pointer) {
+            console.log("move_area");
+            let titlePosition = this.getTilePosition();
+            this.monsterObj.alpha = 1;
+            this.monsterObj.x = titlePosition.x + this.monsterObj.width/2;
+            this.monsterObj.y = titlePosition.y + this.monsterObj.height/2;
+            this.monsterObj.isPick = false;  
+            this.setMoveArea();
+          },this);
+          this.monsterObj.moveAreaCourser.add(move_area);
   
         }
     
@@ -111,15 +131,12 @@ class GameScene extends Phaser.Scene {
       this.monsterObj.isPick = true;
     },this);
 
+
+
     this.stageLayer.setInteractive();
     this.stageLayer.on('pointerdown', function (pointer) {
       if(this.monsterObj.isPick){
-        let titlePosition = this.getTilePosition();
-        this.monsterObj.alpha = 1;
-        this.monsterObj.x = titlePosition.x + this.monsterObj.width/2;
-        this.monsterObj.y = titlePosition.y + this.monsterObj.height/2;
-        this.monsterObj.isPick = false;  
-        this.setMoveArea();
+
       }
     },this);
 
@@ -178,7 +195,6 @@ class GameScene extends Phaser.Scene {
         // Note: JSON.stringify will convert the object tile properties to a string
         // this.debugText.setText('Properties: ' + JSON.stringify(tile.properties));
         // tile.properties.viewed = true;
-        console.log("tile.tileWidth",tile.tileWidth)
         postion.x = tile.x * this.map.tileWidth + this.stageLayer.x;
         postion.y = tile.y * this.map.tileHeight + this.stageLayer.y;
         this.debugText.setText(
