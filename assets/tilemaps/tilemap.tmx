@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="6" height="8" tilewidth="30" tileheight="30" infinite="0" nextlayerid="11" nextobjectid="21">
+ <tileset firstgid="1" name="tileset" tilewidth="30" tileheight="30" tilecount="4" columns="2">
+  <image source="tile.png" width="60" height="60"/>
+ </tileset>
+ <layer id="10" name="stage" width="6" height="8">
+  <data encoding="csv">
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1,
+1,1,1,1,1,1
+</data>
+ </layer>
+</map>
