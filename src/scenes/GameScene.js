@@ -1,4 +1,5 @@
 import Monster from '../sprites/character/Monster';
+import ComformMordal from '../ui/ComformMordal';
 
 class GameScene extends Phaser.Scene {
   constructor(test) {
@@ -7,7 +8,13 @@ class GameScene extends Phaser.Scene {
       });
   }
   create(){
-    
+
+    /*==============================
+    UI
+    ==============================*/        
+    this.conformMordal = new ComformMordal({
+      scene: this
+    }); 
 
     this.map = this.make.tilemap({ key: 'map' });
     this.tileset = this.map.addTilesetImage('tileset', 'tiles');
@@ -20,10 +27,7 @@ class GameScene extends Phaser.Scene {
     this.stageLayer.x = (this.game.config.width - this.stageLayer.width) /2;
     this.stageLayer.y = (this.game.config.height - this.stageLayer.height) /2;
 
-    this.monsterObj = new Monster({
-      scene: this,
-      key: 'monster'
-    }); 
+
 
     this.keys = {
       TOUCH_START:{
@@ -41,97 +45,14 @@ class GameScene extends Phaser.Scene {
     /*==============================
     モンスター
     ==============================*/        
-    this.monsterObj.x = this.stageLayer.x + this.monsterObj.width/2;
-    this.monsterObj.y = this.stageLayer.y + this.monsterObj.height/2;
-    this.monsterObj.setInteractive();
-
-    /*==============================
-    モンスターの移動エリアの表示
-    ==============================*/    
-    this.monsterObj.moveAreaMap = 
-    [
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0,1,0,0,0],
-      [0,0,0,0,1,1,1,0,0,0,0],
-      [0,0,0,0,1,2,1,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0]
-    ];
-
-    /*==============================
-    モンスターの移動エリアの表示（コンテナー設定）
-    ==============================*/       
-    this.monsterObj.moveAreaCourser = this.add.container();
-
-    for(var i = 0; i < this.monsterObj.moveAreaMap.length; i++){
-      for(var k = 0; k < this.monsterObj.moveAreaMap[i].length; k++){
-
-        if(this.monsterObj.moveAreaMap[i][k] === 1){
-          // let moveTile = this.add.graphics(
-          //   {
-          //     fillStyle: { color: 0xFF0000 }
-          //   }      
-          // );
-          // // let moveTileFill = new Phaser.Geom.Rectangle();
-          // // moveTileFill.x = k * this.map.tileWidth;
-          // // moveTileFill.y = i * this.map.tileHeight;
-          // // moveTileFill.width = this.map.tileWidth;
-          // // moveTileFill.height = this.map.tileHeight;
-          // // moveTile.alpha = 0.4;
-          
-          // // moveTile.fillRectShape(moveTileFill);
-
-          let move_area = this.add.sprite(
-            k * this.map.tileWidth + this.map.tileWidth/2,
-            i * this.map.tileHeight + this.map.tileHeight/2,
-            'move_area'
-          );
-          move_area.alpha = 0.4;
-
-          move_area.setInteractive();
-
-          move_area.on('pointerdown', function (pointer) {
-            console.log("move_area");
-            let titlePosition = this.getTilePosition();
-            this.monsterObj.alpha = 1;
-            this.monsterObj.x = titlePosition.x + this.monsterObj.width/2;
-            this.monsterObj.y = titlePosition.y + this.monsterObj.height/2;
-            this.monsterObj.isPick = false;  
-            this.setMoveArea();
-          },this);
-          this.monsterObj.moveAreaCourser.add(move_area);
-  
-        }
-    
-      }
-    }
-    this.monsterObj.moveAreaCourser.setVisible(false);
-    this.monsterObj.moveAreaCourser.setActive(false);
-
-    /*==============================
-    モンスターの移動の操作
-    ==============================*/      
-    this.monsterObj.isPick = false;
-
-    this.monsterObj.on('pointerdown', function (pointer) {
-      if(!this.monsterObj.isPick){
-        this.monsterObj.alpha = 0.5;
-        this.setMoveArea();
-      }
-      this.monsterObj.isPick = true;
-    },this);
-
-
+    this.monsterObj = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster'
+    }); 
+    // this.monsterObj.x = this.stageLayer.x + this.monsterObj.width/2;
+    // this.monsterObj.y = this.stageLayer.y + this.monsterObj.height/2;
 
     this.stageLayer.setInteractive();
     this.stageLayer.on('pointerdown', function (pointer) {
@@ -156,11 +77,12 @@ class GameScene extends Phaser.Scene {
     /*==============================
     デバッグ START
     ------------------------------*/    
-    // this.debugText.setText(
-    //   [
-    //     'monsterObj.isPick :'+this.monsterObj.isPick,
-    //   ]
-    // );
+    this.debugText.setText(
+      [
+        'monsterObj.before.x :'+this.monsterObj.beforePosition.x,
+        'monsterObj.before.y :'+this.monsterObj.beforePosition.y,
+      ]
+    );
 
 
     // if (this.input.manager.activePointer.isDown)
@@ -192,32 +114,13 @@ class GameScene extends Phaser.Scene {
 
     if (tile)
     {
-        // Note: JSON.stringify will convert the object tile properties to a string
-        // this.debugText.setText('Properties: ' + JSON.stringify(tile.properties));
-        // tile.properties.viewed = true;
         postion.x = tile.x * this.map.tileWidth + this.stageLayer.x;
         postion.y = tile.y * this.map.tileHeight + this.stageLayer.y;
-        this.debugText.setText(
-          [
-            'Properties.x: ' + postion.x,
-            'Properties.y: ' + postion.y
-          ],
-        );
         return postion;
     }
   }
-  setMoveArea(){
-    this.monsterObj.moveAreaCourser.setVisible(true);
-    this.monsterObj.moveAreaCourser.setActive(true);
-    this.monsterObj.moveAreaCourser.width = this.monsterObj.moveAreaMap[0].length * this.map.tileWidth;
-    this.monsterObj.moveAreaCourser.height = this.monsterObj.moveAreaMap.length * this.map.tileHeight;
-    this.monsterObj.moveAreaCourser.x = this.monsterObj.x - this.monsterObj.moveAreaCourser.width/2;
-    this.monsterObj.moveAreaCourser.y = this.monsterObj.y - this.monsterObj.moveAreaCourser.height/2 + this.monsterObj.height/2;
-  }
-  removeMoveArea(){
-    this.monsterObj.moveAreaCourser.setVisible(false);
-    this.monsterObj.moveAreaCourser.setActive(false);    
-  }
+
+
 }
 
 export default GameScene;
