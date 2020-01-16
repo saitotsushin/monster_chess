@@ -56,8 +56,7 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
     this.btn_no.setInteractive();
     this.btn_no.on('pointerdown', function (pointer) {   
 
-      this.target.x = this.target.beforePosition.x;
-      this.target.y = this.target.beforePosition.y;
+      this.target.setResetAll();
 
       this.modelClose();
     },this);

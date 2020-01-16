@@ -7,7 +7,7 @@ export default class Monster extends Character {
 
     super(config);
 
-    this.depth = 110;
+    this.depth = 10;
 
     this.setInteractive();
 
@@ -45,6 +45,7 @@ export default class Monster extends Character {
     モンスターの移動エリアの表示（コンテナー設定）
     ==============================*/       
     this.moveAreaCourser = this.scene.add.container();
+    this.moveAreaCourser.depth = 5;
 
     for(var i = 0; i < this.moveAreaMap.length; i++){
       for(var k = 0; k < this.moveAreaMap[i].length; k++){
@@ -55,6 +56,7 @@ export default class Monster extends Character {
             i * this.scene.map.tileHeight + this.scene.map.tileHeight/2,
             'move_area'
           );
+          move_area.depth = 5;
           move_area.alpha = 0.4;
 
           move_area.setInteractive();
@@ -74,6 +76,7 @@ export default class Monster extends Character {
             this.isPick = false;  
             // this.setMoveArea();
             this.scene.conformMordal.modelOpen(this);
+
           },this);
           this.moveAreaCourser.add(move_area);
   
@@ -90,8 +93,9 @@ export default class Monster extends Character {
     this.isPick = false;
 
     this.on('pointerdown', function (pointer) {
+      this.setResetAll();
       if(!this.isPick){
-        this.alpha = 0.5;
+        // this.alpha = 0.5;
         this.setMoveArea();
       }
       console.log("this",this)
@@ -107,7 +111,23 @@ export default class Monster extends Character {
     this.moveAreaCourser.y = this.y - this.moveAreaCourser.height/2 + this.height/2;
   }
   removeMoveArea(){
+    console.log("removeMoveArea")
     this.moveAreaCourser.setVisible(false);
     this.moveAreaCourser.setActive(false);    
+  }
+  setBeforePostion(){
+    this.x = this.beforePosition.x;
+    this.y = this.beforePosition.y;    
+  }
+  setResetAll(){
+    this.scene.monsterGroup.children.entries.forEach(
+      (monster) => {
+        monster.removeMoveArea();
+        monster.isPick = false;
+        monster.x = monster.beforePosition.x;
+        monster.y = monster.beforePosition.y;   
+        // sprite.update(time, delta);
+      }
+    );  
   }
 }

@@ -51,6 +51,18 @@ class GameScene extends Phaser.Scene {
       y: this.stageLayer.y,
       key: 'monster'
     }); 
+    this.monsterObj2 = new Monster({
+      scene: this,
+      x: this.stageLayer.x + 60,
+      y: this.stageLayer.y + 90,
+      key: 'monster'
+    });
+
+    this.monsterGroup = this.add.group();
+
+    this.monsterGroup.add(this.monsterObj);
+    this.monsterGroup.add(this.monsterObj2);
+
     // this.monsterObj.x = this.stageLayer.x + this.monsterObj.width/2;
     // this.monsterObj.y = this.stageLayer.y + this.monsterObj.height/2;
 
@@ -65,12 +77,14 @@ class GameScene extends Phaser.Scene {
     /*==============================
     デバッグ
     ==============================*/
-    this.debugText = this.add.text(10, 40, '', { font: '10px Courier', fill: '#FFFFFF' });
+    this.debugText = this.add.text(10, 10, '', { font: '10px Courier', fill: '#FFFFFF' });
     this.debugText.depth = 100;
     this.debugText.setScrollFactor(0,0);
+
     this.marker = this.add.graphics();
     this.marker.lineStyle(3, 0xffffff, 1);
     this.marker.strokeRect(0, 0,this. map.tileWidth, this.map.tileHeight);
+    this.marker.depth = 5;
   }
 
   update(time, delta) {
