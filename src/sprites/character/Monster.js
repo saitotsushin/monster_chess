@@ -7,6 +7,21 @@ export default class Monster extends Character {
 
     super(config);
 
+    this.type = config.type === "enemy" ? config.type : "";
+
+    this.typeTxt;
+    if(this.type === "enemy"){
+      this.typeTxt = this.scene.add.text(
+        this.x + this.width - 10,
+        this.y + this.height - 10,
+        'E',
+        { font: '10px Courier', fill: '#FFFFFF' }
+      ); 
+      this.typeTxt.depth = 11;     
+    }
+
+    
+
     this.depth = 10;
 
     this.setInteractive();
@@ -18,6 +33,7 @@ export default class Monster extends Character {
       x: this.x,
       y: this.y
     };
+    // this.setStage = false;
     /*==============================
     モンスターの移動エリアの表示
     ==============================*/    
@@ -69,13 +85,28 @@ export default class Monster extends Character {
             ・タップした位置に敵がいたら攻撃のモーダル表示。
             ==============================*/
 
-            let titlePosition = this.scene.getTilePosition();
-            this.alpha = 1;
-            this.x = titlePosition.x + this.width/2;
-            this.y = titlePosition.y + this.height/2;
-            this.isPick = false;  
-            // this.setMoveArea();
-            this.scene.conformMordal.modelOpen(this);
+            if(this.scene.mode === "SET_MONSTER"){
+
+            }else{
+              let titlePosition = this.scene.getTilePosition();
+              this.alpha = 1;
+              this.x = titlePosition.x + this.width/2;
+              this.y = titlePosition.y + this.height/2;
+              this.isPick = false;  
+              // this.setMoveArea();
+              this.scene.conformMordal.modelOpen(this);
+
+              if(this.y < this.scene.game.config.height/2){
+                //画面半分より上にあるとき　
+                console.log("画面半分より上にあるとき")
+                this.scene.conformMordal.container.y = this.scene.game.config.height - 80;
+              }else{
+                //画面半分より下にあるとき　
+                console.log("画面半分より下にあるとき")
+                this.scene.conformMordal.container.y = 20;
+              }
+
+            };
 
           },this);
           this.moveAreaCourser.add(move_area);
@@ -93,13 +124,14 @@ export default class Monster extends Character {
     this.isPick = false;
 
     this.on('pointerdown', function (pointer) {
-      this.setResetAll();
-      if(!this.isPick){
-        // this.alpha = 0.5;
+
+      if(this.scene.mode === "SET_MONSTER"){
+        this.pickMonster(this);
+      }else{
+        this.setResetAll();
         this.setMoveArea();
       }
-      console.log("this",this)
-      this.isPick = true;
+      this.isPick = true;  
     },this);
   }
   setMoveArea(){
@@ -111,9 +143,12 @@ export default class Monster extends Character {
     this.moveAreaCourser.y = this.y - this.moveAreaCourser.height/2 + this.height/2;
   }
   removeMoveArea(){
-    console.log("removeMoveArea")
     this.moveAreaCourser.setVisible(false);
     this.moveAreaCourser.setActive(false);    
+  }
+  seveBeforePostion(x,y){
+    this.beforePosition.x = x;
+    this.beforePosition.y = y;
   }
   setBeforePostion(){
     this.x = this.beforePosition.x;
@@ -129,5 +164,34 @@ export default class Monster extends Character {
         // sprite.update(time, delta);
       }
     );  
+  }
+  setIcon(){
+    if(this.type === "enemy"){
+      this.typeTxt.x = this.x + 10;    
+      this.typeTxt.y = this.y + 10;    
+    }
+  }
+  pickMonster(object){
+    this.scene.monsterGroup.children.entries.forEach(
+      (monster) => {
+        monster.alpha = 0.5;
+        monster.isPick = false;
+        // monster.removeMoveArea();
+        // monster.isPick = false;
+        // monster.x = monster.beforePosition.x;
+        // monster.y = monster.beforePosition.y;   
+        // sprite.update(time, delta);
+      }
+    ); 
+    object.alpha = 1; 
+    object.isPick = true;
+  }
+  resetPickMonster(){
+    this.scene.monsterGroup.children.entries.forEach(
+      (monster) => {
+        monster.alpha = 1;
+        monster.isPick = false;
+      }
+    );    
   }
 }

@@ -51,6 +51,11 @@ class BootScene extends Phaser.Scene {
 
     // this.load.spritesheet('explosion_m', 'assets/images/explosion_m.png', { frameWidth: 16, frameHeight: 16 });
     this.load.image('monster', 'assets/images/monster.png');
+    this.load.image('monster1', 'assets/images/monster1.png');
+    this.load.image('monster2', 'assets/images/monster2.png');
+    this.load.image('monster3', 'assets/images/monster3.png');
+    this.load.image('monster4', 'assets/images/monster4.png');
+    this.load.image('monster5', 'assets/images/monster5.png');
     this.load.image('move_area', 'assets/images/move_area.png');
   }
 
