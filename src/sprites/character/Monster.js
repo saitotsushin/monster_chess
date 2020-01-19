@@ -1,4 +1,5 @@
 import Character from './Character';
+import MoveArea from './MoveArea';
 
 
 export default class Monster extends Character {
@@ -10,17 +11,26 @@ export default class Monster extends Character {
     this.type = config.type === "enemy" ? config.type : "";
 
     this.typeTxt;
-    if(this.type === "enemy"){
-      this.typeTxt = this.scene.add.text(
-        this.x + this.width - 10,
-        this.y + this.height - 10,
-        'E',
-        { font: '10px Courier', fill: '#FFFFFF' }
-      ); 
-      this.typeTxt.depth = 11;     
-    }
 
-    
+
+    this.modelText = {
+      move: {
+        text: "移動しますか？",
+        yes: "はい",
+        no: "いいえ"
+      },
+      attack: {
+        text: "攻撃しますか？",
+        yes: "はい",
+        no: "いいえ"
+      },
+      search: {
+        text: "情報を見ますか？",
+        yes: "はい",
+        no: "いいえ"
+      }
+    };    
+
 
     this.depth = 10;
 
@@ -44,11 +54,10 @@ export default class Monster extends Character {
       [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0,1,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,1,1,1,0,0,0,0],
       [0,0,0,0,1,2,1,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0],
+      [0,0,0,0,1,1,1,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0],
@@ -56,96 +65,46 @@ export default class Monster extends Character {
       [0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0]
     ];
-
     /*==============================
-    モンスターの移動エリアの表示（コンテナー設定）
-    ==============================*/       
-    this.moveAreaCourser = this.scene.add.container();
-    this.moveAreaCourser.depth = 5;
-
-    for(var i = 0; i < this.moveAreaMap.length; i++){
-      for(var k = 0; k < this.moveAreaMap[i].length; k++){
-
-        if(this.moveAreaMap[i][k] === 1 || this.moveAreaMap[i][k] === 2){
-          let move_area = this.scene.add.sprite(
-            k * this.scene.map.tileWidth + this.scene.map.tileWidth/2,
-            i * this.scene.map.tileHeight + this.scene.map.tileHeight/2,
-            'move_area'
-          );
-          move_area.depth = 5;
-          move_area.alpha = 0.4;
-
-          move_area.setInteractive();
-
-          move_area.on('pointerdown', function (pointer) {            
-            /*==============================
-            #TODO
-            ・モンスター選択後に範囲を動かさない。
-            ・移動決定ボタンの表示。
-            ・タップした位置に敵がいたら攻撃のモーダル表示。
-            ==============================*/
-
-            if(this.scene.mode === "SET_MONSTER"){
-
-            }else{
-              let titlePosition = this.scene.getTilePosition();
-              this.alpha = 1;
-              this.x = titlePosition.x + this.width/2;
-              this.y = titlePosition.y + this.height/2;
-              this.isPick = false;  
-              // this.setMoveArea();
-              this.scene.conformMordal.modelOpen(this);
-
-              if(this.y < this.scene.game.config.height/2){
-                //画面半分より上にあるとき　
-                console.log("画面半分より上にあるとき")
-                this.scene.conformMordal.container.y = this.scene.game.config.height - 80;
-              }else{
-                //画面半分より下にあるとき　
-                console.log("画面半分より下にあるとき")
-                this.scene.conformMordal.container.y = 20;
-              }
-
-            };
-
-          },this);
-          this.moveAreaCourser.add(move_area);
-  
-        }
+    UI
+    ==============================*/        
+    this.MoveArea = new MoveArea({
+      scene: this.scene,
+      type: this.type,
+      target: this
+    });
     
-      }
-    }
-    this.moveAreaCourser.setVisible(false);
-    this.moveAreaCourser.setActive(false);
-
     /*==============================
     モンスターの移動の操作
     ==============================*/      
     this.isPick = false;
 
     this.on('pointerdown', function (pointer) {
+      console.log("mx="+this.x+"/my="+this.y)
+
+      if(this.type === "enemy"){
+        /*
+        TODO
+        敵をクリックしたら、敵の駒の情報を見る
+        */
+        // return;
+      }
+      if(this.scene.mode === "TURN_PLAYER"){
+        if(this.type === "enemy"){
+          return;
+        }
+      }
+
 
       if(this.scene.mode === "SET_MONSTER"){
         this.pickMonster(this);
       }else{
-        this.setResetAll();
         this.setMoveArea();
       }
       this.isPick = true;  
     },this);
   }
-  setMoveArea(){
-    this.moveAreaCourser.setVisible(true);
-    this.moveAreaCourser.setActive(true);
-    this.moveAreaCourser.width = this.moveAreaMap[0].length * this.scene.map.tileWidth;
-    this.moveAreaCourser.height = this.moveAreaMap.length * this.scene.map.tileHeight;
-    this.moveAreaCourser.x = this.x - this.moveAreaCourser.width/2;
-    this.moveAreaCourser.y = this.y - this.moveAreaCourser.height/2 + this.height/2;
-  }
-  removeMoveArea(){
-    this.moveAreaCourser.setVisible(false);
-    this.moveAreaCourser.setActive(false);    
-  }
+
   seveBeforePostion(x,y){
     this.beforePosition.x = x;
     this.beforePosition.y = y;
@@ -157,7 +116,7 @@ export default class Monster extends Character {
   setResetAll(){
     this.scene.monsterGroup.children.entries.forEach(
       (monster) => {
-        monster.removeMoveArea();
+        monster.hideMoveArea();
         monster.isPick = false;
         monster.x = monster.beforePosition.x;
         monster.y = monster.beforePosition.y;   
@@ -176,7 +135,7 @@ export default class Monster extends Character {
       (monster) => {
         monster.alpha = 0.5;
         monster.isPick = false;
-        // monster.removeMoveArea();
+        // monster.hideMoveArea();
         // monster.isPick = false;
         // monster.x = monster.beforePosition.x;
         // monster.y = monster.beforePosition.y;   
@@ -193,5 +152,15 @@ export default class Monster extends Character {
         monster.isPick = false;
       }
     );    
+  }
+  setModalTextMoving(){
+    this.scene.conformMordal.mordalText.setText(this.modelText.move.text);
+    this.scene.conformMordal.btn_yes.setText(this.modelText.move.yes);
+    this.scene.conformMordal.btn_no.setText(this.modelText.move.no);    
+  }
+  setModalTextAttacking(){
+    this.scene.conformMordal.mordalText.setText(this.modelText.attack.text);
+    this.scene.conformMordal.btn_yes.setText(this.modelText.attack.yes);
+    this.scene.conformMordal.btn_no.setText(this.modelText.attack.no);    
   }
 }

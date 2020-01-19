@@ -118,13 +118,18 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
       (monster) => {
         // monster.alpha = 0.5;
         monster.isPick = false;
-        monster.removeMoveArea();
+        monster.hideMoveArea();
         // monster.isPick = false;
         monster.beforePosition.x = monster.x;
         monster.beforePosition.y = monster.y;   
         // sprite.update(time, delta);
       }
-    ); 
+    );
+    // if(this.turn === "PLAYER1"){
+
+    // }
+    this.scene.turn = this.scene.turn === "PLAYER1" ? "PLAYER2" : "PLAYER1";
+    this.scene.NPC_turn();
   }
   setModalNo(){
     console.log("no comformModle");

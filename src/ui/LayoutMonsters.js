@@ -28,8 +28,6 @@ export default class LayoutMonsters extends Phaser.Physics.Arcade.Sprite{
   }
   start(layer){
 
-    console.log("star")
-
     this.scene.mode = "SET_MONSTER";
 
     let layerHeight = layer.height;
