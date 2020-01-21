@@ -49,6 +49,7 @@ class GameScene extends Phaser.Scene {
       y: this.stageLayer.y,
       key: 'monster1'
     }); 
+    
     this.monsterObj2 = new Monster({
       scene: this,
       x: this.stageLayer.x + 60,
@@ -82,17 +83,40 @@ class GameScene extends Phaser.Scene {
     this.monsterGroup.add(this.monsterObj4);
     this.monsterGroup.add(this.monsterObj5);
 
-    this.setEnemy();
 
-    
+
+    this.touchedTile;
+    this.tilePropertyData;
+    this.pickChess;
+
     /*==============================
     ステージ
     ==============================*/    
     this.stageLayer.setInteractive();
     this.stageLayer.on('pointerdown', function (pointer) {
-      // if(this.monsterObj.isPick){
-
-      // }
+      this.touchedTile = null;//念為に初期化
+      this.tilePropertyData = null;//念為に初期化
+      this.touchedTile = this.getTilePosition();
+      this.tilePropertyData = this.tilePropertyArr[this.touchedTile.localInt.y][this.touchedTile.localInt.x];
+      if(this.tilePropertyData === 0){
+        if(this.pickChess){
+          if(this.pickChess.moveAreaArr[this.touchedTile.localInt.y][this.touchedTile.localInt.x] === 1){
+            this.pickChess.x = this.touchedTile.world.x + this.pickChess.width/2;
+            this.pickChess.y = this.touchedTile.world.y + this.pickChess.width/2;
+          }
+        }
+        return;
+      }
+      if(this.tilePropertyData.object.type !== "enemy"){
+        if(this.pickChess){
+          this.resetMonsterPosition();
+        }
+        this.pickChess = this.tilePropertyData.object;
+        console.log(this.pickChess.moveAreaArr)
+        this.tilePropertyData.object.MoveArea.show(this.tilePropertyData.object);
+      }else{
+        console.log("敵です！！")
+      }
     },this);
 
     /*==============================
@@ -102,12 +126,56 @@ class GameScene extends Phaser.Scene {
       scene: this
     });
 
-    this.setMonsterAuto();
+    this.tilePropertyArr = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
 
-    // this.layoutMonsters = new LayoutMonsters({
-    //   scene: this
-    // }); 
-    // this.layoutMonsters.start(this.stageLayer);
+    this.player1_Arr = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [1,1,1,1,1,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
+
+    this.player2_Arr = [
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
+
+    this.stageCanSetArr = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1]
+    ];
+
+    this.setMonster();
+
+    this.setEnemy();
+
+    this.setTilePropaties();
+
 
 
     /*==============================
@@ -130,23 +198,18 @@ class GameScene extends Phaser.Scene {
     this.debugText.setText(
       [
         'this.turn :'+this.turn,
-        // 'monsterObj.before.y :'+this.monsterObj1.beforePosition.y,
       ]
     );
 
-
-    // if (this.input.manager.activePointer.isDown)
-    // {
-    //   this.getTileProperties();
-
-    // }
     /*------------------------------
     デバッグ END
     ==============================*/
   }
+  
   getRandomInt(min, max) {
     return Math.floor( Math.random() * (max - min + 1) ) + min;
   };
+
   getTilePosition(){
 
     var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
@@ -161,49 +224,71 @@ class GameScene extends Phaser.Scene {
     var tile = this.map.getTileAt(pointerTileX, pointerTileY);
 
     let postion = {
-      x: 0,
-      y: 0
+      localInt: {
+        x: 0,
+        y: 0  
+      },
+      world:{
+        x: 0,
+        y: 0  
+      }
     }
 
     if (tile)
     {
-        postion.x = tile.x * this.map.tileWidth + this.stageLayer.x;
-        postion.y = tile.y * this.map.tileHeight + this.stageLayer.y;
+        postion.world.x = tile.x * this.map.tileWidth + this.stageLayer.x;
+        postion.world.y = tile.y * this.map.tileHeight + this.stageLayer.y;
+        postion.localInt.x = (postion.world.x - this.stageLayer.x) /this.map.tileWidth;
+        postion.localInt.y = (postion.world.y - this.stageLayer.y) /this.map.tileHeight;
         return postion;
     }
   }
-  setMonsterAuto(){
-    this.mode = "TURN_PLAYER";
-    this.enemyGroup.children.entries.forEach(
-      (monster) => {
-        monster.setVisible(true);
-        monster.typeTxt.setVisible(true);
-      }
+  getMonsterPostion(pos){
+    let setPos = {
+      x: pos.x,
+      y: pos.y
+    }
+    setPos.x = (pos.x - this.stageLayer.x) / this.map.tileWidth;
+    setPos.y = (pos.y - this.stageLayer.y) / this.map.tileWidth;
+    return setPos;
+  }
+  setTilePropaties(){
+    this.monsterGroup.children.entries.forEach(
+      (enemy,index) => {
+      let postion = this.getMonsterPostion(enemy.getBounds());
+      this.tilePropertyArr[postion.y][postion.x] = {
+        object: enemy
+      };
+    }
+    ,this
     );
-    this.conformMordal.target = this.conformMordal;
-    let arr = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [1,1,1,1,1,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
-    ];
+    this.enemyGroup.children.entries.forEach(
+      (enemy,index) => {
+      let postion = this.getMonsterPostion(enemy.getBounds());
+      this.tilePropertyArr[postion.y][postion.x] = {
+        object: enemy
+      };
+    }
+    ,this
+    );
+  }
+  setMonster(){
     let count = 0;
-    for(var i = 0; i < arr.length; i++){
-      for(var k = 0; k < arr[i].length; k++){
-        if(arr[i][k] === 1){
+    for(var i = 0; i < this.player1_Arr.length; i++){
+      for(var k = 0; k < this.player1_Arr[i].length; k++){
+        if(this.player1_Arr[i][k] === 1){
           this.monsterGroup.children.entries[count].x = this.stageLayer.x + this.map.tileWidth * k + this.map.tileWidth/2;
           this.monsterGroup.children.entries[count].y = this.stageLayer.y + this.map.tileHeight * i + this.map.tileHeight/2;
           this.monsterGroup.children.entries[count].beforePosition.x = this.stageLayer.x + this.map.tileWidth * k + this.map.tileWidth/2;
           this.monsterGroup.children.entries[count].beforePosition.y = this.stageLayer.y + this.map.tileHeight * i + this.map.tileHeight/2;
+          this.monsterGroup.children.entries[count].MoveArea.initSetPosition(this.monsterGroup.children.entries[count]);
           count++;
         }
       }
-    } 
+    }
   }
+
+
   setEnemy(){
     /*==============================
     敵のモンスター
@@ -216,46 +301,7 @@ class GameScene extends Phaser.Scene {
       key: 'monster1',
       type: "enemy"
     });
-    // this.enemyObj2 = new Monster({
-    //   scene: this,
-    //   x: this.stageLayer.x + 60,
-    //   y: this.stageLayer.y + 90,
-    //   key: 'monster2',
-    //   type: "enemy"
-    // });
-    // this.enemyObj3 = new Monster({
-    //   scene: this,
-    //   x: this.stageLayer.x + 60,
-    //   y: this.stageLayer.y + 90,
-    //   key: 'monster3',
-    //   type: "enemy"
-    // });
-    // this.enemyObj4 = new Monster({
-    //   scene: this,
-    //   x: this.stageLayer.x + 60,
-    //   y: this.stageLayer.y + 90,
-    //   key: 'monster4',
-    //   type: "enemy"
-    // });
-    // this.enemyObj5 = new Monster({
-    //   scene: this,
-    //   x: this.stageLayer.x + 60,
-    //   y: this.stageLayer.y + 90,
-    //   key: 'monster5',
-    //   type: "enemy"
-    // });
     this.enemyGroup.add(this.enemyObj1);
-
-    // this.enemyGroup.add(this.enemyObj2);
-    // this.enemyGroup.add(this.enemyObj3);
-    // this.enemyGroup.add(this.enemyObj4);
-    // this.enemyGroup.add(this.enemyObj5);
-
-    // this.monsterGroup.children.entries.forEach(
-    //   (monster,index) => {
-    //     monster.setVisible(false);
-    //   }
-    // );
 
     let arr = [
       [1,1,1,1,1,1],
@@ -280,71 +326,20 @@ class GameScene extends Phaser.Scene {
           }
         }
       }
-      
-      // arr[randomRow].splice(randomCol, 1);
       this.enemyGroup.children.entries[i].x = randomCol * this.map.tileWidth + this.stageLayer.x + this.map.tileWidth/2;
       this.enemyGroup.children.entries[i].y = randomRow * this.map.tileHeight + this.stageLayer.y + this.map.tileHeight/2;
-      this.enemyGroup.children.entries[i].setMoveArea();
-      this.enemyGroup.children.entries[i].hideMoveArea(false);
-      // this.enemyGroup.children.entries[i].moveAreaGroup.y = this.enemyGroup.children.entries[i].y;
-      this.enemyGroup.children.entries[i].setIcon();    
+  
     }
-    // this.enemyGroup.setVisible(false);
-    this.enemyGroup.children.entries.forEach(
-      (monster,index) => {
-        monster.setVisible(false);
-        monster.depth = 1;
-        monster.typeTxt.setVisible(false);
-      }
-    );
-  }
-  NPC_turn(){
 
-    /*========================
-    駒を選ぶ
-    ========================*/
-    /*全ての相手の駒の移動エリアに自分の駒が入っているかチェック*/
-    let near_monster_arr = [];
-    let monsterGroup = this.monsterGroup;
-    this.enemyGroup.children.entries.forEach(
+  }
+  resetMonsterPosition(){
+    this.monsterGroup.children.entries.forEach(
       (enemy,index) => {
-        enemy.alpha = 0.5;
-        // for(var i = 0; i < enemy.moveAreaGroup.list.length; i++){
-        //   monsterGroup.children.entries.forEach(
-        //     (monster,index) => {
-        //       if(
-        //         monster.x === enemy.moveAreaGroup.list[i].x
-        //         && monster.y === enemy.moveAreaGroup.list[i].y
-        //       )
-        //       {
-        //         near_monster_arr.push[monster];
-        //       }
-        //     }
-        //   );
-        // }
-      }
-    );
-    let choiceEnemyNumb;
-    let enemy;
-    if(near_monster_arr.length === 0){
-      /*全ての相手の駒の移動エリアに自分の駒がない場合*/
-      /*ランダムで駒を選んで移動する*/
-      console.log("自分の駒がない場合")
-      choiceEnemyNumb = this.getRandomInt(0,this.enemyGroup.children.entries.length - 1);
-      enemy = this.enemyGroup.children.entries[choiceEnemyNumb];
-    }else{
-      /*全ての相手の駒の移動エリアに自分の駒がある場合*/
-      console.log("自分の駒がある場合")
-      choiceEnemyNumb = this.getRandomInt(0,near_monster_arr.length - 1);
-      enemy = near_monster_arr[choiceEnemyNumb];
-    }
-    enemy.alpha = 1;
-    // enemy.setMoveArea();
-    // enemy.showMoveArea();
-    
-    this.scene.turn = this.scene.turn === "PLAYER1" ? "PLAYER2" : "PLAYER1";
+        enemy.x = enemy.beforePosition.x;
+        enemy.y = enemy.beforePosition.y;
+      },this
+    );    
   }
-
 }
 
 export default GameScene;
