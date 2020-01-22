@@ -103,7 +103,6 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
             x: area.x,
             y: area.y
           }
-          console.log("movePostion",movePostion)
           postion = _this.getPostion(movePostion);
   
           arr[postion.y][postion.x] = 1;
