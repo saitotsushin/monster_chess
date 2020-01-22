@@ -13,6 +13,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
 
     this.target = config.target;
     this.moveAreaMapBase = config.target.moveAreaMapBase;
+    this.attackAreaMapBase = config.target.attackAreaMapBase;
 
     this.positionInt = {
       x: 0,
@@ -36,54 +37,80 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     モンスターの移動エリアの表示（コンテナー設定）
     ==============================*/ 
     this.moveAreaGroup = this.scene.add.group();
+    this.setArea(
+      this.moveAreaGroup,
+      this.moveAreaMapBase,
+      0.4      
+    );
+    this.attackAreaGroup = this.scene.add.group();
+    this.setArea(
+      this.attackAreaGroup,
+      this.attackAreaMapBase,
+      0.6
+    );
 
-    for(var i = 0; i < this.moveAreaMapBase.length; i++){
-      for(var k = 0; k < this.moveAreaMapBase[i].length; k++){
+  }
 
-        if(this.moveAreaMapBase[i][k] === 1 || this.moveAreaMapBase[i][k] === 2){
-          let move_area = this.scene.add.sprite(
+  setArea(group,map,alpha){
+    for(var i = 0; i < map.length; i++){
+      for(var k = 0; k < map[i].length; k++){
+
+        if(map[i][k] === 1 || map[i][k] === 2){
+          let area = this.scene.add.sprite(
             k * this.scene.map.tileWidth + this.scene.stageLayer.x + this.scene.map.tileWidth/2,
             i * this.scene.map.tileHeight + this.scene.stageLayer.y + this.scene.map.tileWidth/2,
             'move_area'
           );
-          move_area.alpha = 0.4;
-          move_area.positionInt = {
+          area.alpha = alpha;
+          area.positionInt = {
             x: k,
             y: i
           };
 
-          this.moveAreaGroup.add(move_area);
+          group.add(area);
 
         }        
       }
 
     }
-    this.width = this.moveAreaMapBase[0].length * this.scene.map.tileWidth;
-    this.height = this.moveAreaMapBase.length * this.scene.map.tileHeight;
+    group.width = map[0].length * this.scene.map.tileWidth;
+    group.height = map.length * this.scene.map.tileHeight;
 
-    this.hide();
+    this.hide(group);
   }
   
   initSetPosition(monster){
+
+    console.log("initSetPosition monster",monster)
+
+    let moveArr = monster.moveAreaArr;
+    let attackArr = monster.attackAreaArr;
     let moveAreaGroup = this.moveAreaGroup;
+    let attackAreaGroup = this.attackAreaGroup;
+    let stageLayer = this.scene.stageLayer;
+    let _this = this;
 
-    this.moveAreaGroup.children.entries.forEach(
-      (moveArea,index) => {
-        moveArea.x = monster.x + moveArea.x - this.width/2 - this.scene.stageLayer.x;
-        moveArea.y = monster.y + moveArea.y - this.height/2 - this.scene.stageLayer.y;
-        if(moveArea.x === monster.x && moveArea.y === monster.y){
-          moveArea.setVisible(false);
+    function loop(group,arr,monster){
+      group.children.entries.forEach(
+        (area,index) => {
+          area.x = monster.x + area.x - group.width/2 - stageLayer.x;
+          area.y = monster.y + area.y - group.height/2 - stageLayer.y;
+          if(area.x === monster.x && area.y === monster.y){
+            area.setVisible(false);
+          }
+          let movePostion = {
+            x: area.x,
+            y: area.y
+          }
+          console.log("movePostion",movePostion)
+          let postion = _this.getPostion(movePostion);
+  
+          arr[postion.y][postion.x] = 1;
         }
-        let movePostion = {
-          x: moveArea.x,
-          y: moveArea.y
-        }
-        let postion = this.getPostion(movePostion);
-
-        monster.moveAreaArr[postion.y][postion.x] = 1;
-      },this
-    );  
-
+      );
+    }
+    loop(moveAreaGroup,moveArr,monster);
+    loop(attackAreaGroup,attackArr,monster);
   }
   getPostion(pos){
     let setPos = {
@@ -95,7 +122,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     return setPos;
   }
   show(monster){
-    this.setResetAll();
+    this.scene.setMoveAreaResetAll();
     this.moveAreaGroup.children.entries.forEach(
       (moveArea) => {
         
@@ -104,26 +131,27 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
         }else{
           moveArea.setVisible(true);
         }
-
       }
     );  
-
+    this.attackAreaGroup.children.entries.forEach(
+      (moveArea) => {
+        
+        if(moveArea.x === monster.x && moveArea.y === monster.y){
+          moveArea.setVisible(false);
+        }else{
+          moveArea.setVisible(true);
+        }
+      }
+    );  
   }
-  hide(){
-    this.moveAreaGroup.children.entries.forEach(
+  hide(group){
+    group.children.entries.forEach(
       (sprite) => {
         sprite.setVisible(false);
         sprite.setActive(false);
       }
     );  
   }
-  setResetAll(){
-    this.scene.monsterGroup.children.entries.forEach(
-      (monster) => {
-        monster.MoveArea.hide();
-        monster.isPick = false;
-      }
-    );
-  }
+
 
 }

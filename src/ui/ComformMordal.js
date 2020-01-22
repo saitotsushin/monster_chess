@@ -55,8 +55,8 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
       //   x: this.target.x,
       //   y: this.target.y
       // };
-      this.modelClose();
-      this.target.setModalYes();         
+      this.close();
+      this.setModalYes();         
     },this);
 
     this.btn_no = this.scene.add.text(
@@ -70,8 +70,8 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
 
     this.btn_no.on('pointerdown', function (pointer) {   
       // this.target.setResetAll();
-      this.modelClose();
-      this.target.setModalNo();  
+      this.close();
+      this.setModalNo();  
     },this);
     // this.mordalText = base.width/2
     this.mordalText.depth = 101;
@@ -94,8 +94,18 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
     this.btn_no.setText(this.modelText.default.no);    
   }
 
-  modelOpen(){
+  open(){
 
+    switch (this.scene.monsterStatus) {
+      case 'attack':
+        this.mordalText.setText("攻撃しますか？")
+        break;
+        case 'move':
+          this.mordalText.setText("移動しますか？")
+          break;        
+      default:
+        console.log('ComformMordal not setting mode!');
+    }
 
     this.setVisible(true);
     this.container.setVisible(true);
@@ -104,7 +114,7 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
     this.mordalText.y = 0;
 
   }
-  modelClose(){
+  close(){
     // this.target.setModalNo();
     // this.container.setActive(false);
     this.setVisible(false);
@@ -114,20 +124,60 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
     // this.scene.
   }
   setModalYes(){
-    this.scene.monsterGroup.children.entries.forEach(
-      (monster) => {
-        // monster.alpha = 0.5;
-        monster.isPick = false;
-        monster.hideMoveArea();
-        // monster.isPick = false;
-        monster.beforePosition.x = monster.x;
-        monster.beforePosition.y = monster.y;   
-        // sprite.update(time, delta);
+    this.scene.setMoveAreaResetAll();
+
+    if(this.scene.monsterStatus === "attack"){
+      /*
+      TODO
+      ダメージを与える
+      */
+    }
+    if(this.scene.monsterStatus === "move"){
+      /*
+      ステージ上の駒の位置（Player1）の更新（前の位置をクリアする）      
+      #TODO
+      あとでPlayer2も位置の更新ができるようにする
+      */
+      let beforPos = {
+        x: this.scene.pickChess.beforePosition.x - this.scene.pickChess.width/2,
+        y: this.scene.pickChess.beforePosition.y - this.scene.pickChess.height/2
       }
-    );
+      let setBeforPos = this.scene.getMonsterPostion(beforPos);
+
+      this.scene.tilePropertyArr[setBeforPos.y][setBeforPos.x] = 0;
+      this.scene.player1_Arr[setBeforPos.y][setBeforPos.x] = 0;
+
+      /*移動後の位置の保存*/
+      this.scene.pickChess.beforePosition.x = this.scene.pickChess.x;
+      this.scene.pickChess.beforePosition.y = this.scene.pickChess.y;
+
+      let afterPos = {
+        x: this.scene.pickChess.x - this.scene.pickChess.width/2,
+        y: this.scene.pickChess.y - this.scene.pickChess.height/2
+      }
+      let setAferPos = this.scene.getMonsterPostion(afterPos);
+      /*ステージの駒の更新*/
+      this.scene.tilePropertyArr[setAferPos.y][setAferPos.x] = {
+        object: this.scene.pickChess
+      };
+
+      this.scene.player1_Arr[setAferPos.y][setAferPos.x] = 1;
+
+      /*モンスターの位置を更新*/
+      /*
+      #TODO
+      */
+
+      // this.scene.setMonster();
+      // this.scene.pickChess.MoveArea.initSetPosition(this.scene.pickChess)
+
+      /*初期化*/
+      this.scene.pickChess = null;
+    }
+
+
     // if(this.turn === "PLAYER1"){
 
-    // }
     this.scene.turn = this.scene.turn === "PLAYER1" ? "PLAYER2" : "PLAYER1";
     this.scene.NPC_turn();
   }
