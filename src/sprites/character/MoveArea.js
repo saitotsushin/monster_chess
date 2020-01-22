@@ -81,7 +81,6 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
   
   initSetPosition(monster){
 
-    console.log("initSetPosition monster",monster)
 
     let moveArr = monster.moveAreaArr;
     let attackArr = monster.attackAreaArr;

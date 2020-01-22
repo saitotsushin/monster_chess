@@ -285,7 +285,6 @@ class GameScene extends Phaser.Scene {
   }
 
   setMonster(){
-    console.log("this.player1_Arr",this.player1_Arr)
     let count = 0;
     for(var i = 0; i < this.player1_Arr.length; i++){
       for(var k = 0; k < this.player1_Arr[i].length; k++){
