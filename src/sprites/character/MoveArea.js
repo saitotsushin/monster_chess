@@ -88,6 +88,8 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     let attackAreaGroup = this.attackAreaGroup;
     let stageLayer = this.scene.stageLayer;
     let _this = this;
+    let postion;
+    let movePostion;
 
     function loop(group,arr,monster){
       group.children.entries.forEach(
@@ -97,12 +99,12 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
           if(area.x === monster.x && area.y === monster.y){
             area.setVisible(false);
           }
-          let movePostion = {
+          movePostion = {
             x: area.x,
             y: area.y
           }
           console.log("movePostion",movePostion)
-          let postion = _this.getPostion(movePostion);
+          postion = _this.getPostion(movePostion);
   
           arr[postion.y][postion.x] = 1;
         }
