@@ -131,6 +131,7 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
       TODO
       ダメージを与える
       */
+     this.scene.attackTarget.damage(this.scene.pickChess);
     }
     if(this.scene.monsterStatus === "move"){
       /*
@@ -169,7 +170,7 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
       */
 
       // this.scene.setMonster();
-      // this.scene.pickChess.MoveArea.initSetPosition(this.scene.pickChess)
+      this.scene.pickChess.MoveArea.initSetPosition(this.scene.pickChess)
 
       /*初期化*/
       this.scene.pickChess = null;

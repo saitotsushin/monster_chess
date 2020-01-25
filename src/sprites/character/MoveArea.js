@@ -19,19 +19,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
       x: 0,
       y: 0
     }
-    /*==============================
-    敵だった場合の設定
-    ==============================*/       
-    if(config.type === "enemy"){
-      this.typeTxt = this.scene.add.text(
-        config.target.x + config.target.width/2 - 10,
-        config.target.y + config.target.height/2 - 10,
-        'E',
-        { font: '10px Courier', fill: '#FFFFFF' }
-      ); 
-      this.typeTxt.depth = 11;
-      this.moveAreaMapBase.reverse();
-    }
+
 
     /*==============================
     モンスターの移動エリアの表示（コンテナー設定）
@@ -81,36 +69,73 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
   
   initSetPosition(monster){
 
-
     let moveArr = monster.moveAreaArr;
     let attackArr = monster.attackAreaArr;
     let moveAreaGroup = this.moveAreaGroup;
     let attackAreaGroup = this.attackAreaGroup;
-    let stageLayer = this.scene.stageLayer;
-    let _this = this;
-    let postion;
-    let movePostion;
+    let attackAreaMapBase = monster.attackAreaMapBase;
+    let moveAreaMapBase = monster.moveAreaMapBase;
 
-    function loop(group,arr,monster){
-      group.children.entries.forEach(
-        (area,index) => {
-          area.x = monster.x + area.x - group.width/2 - stageLayer.x;
-          area.y = monster.y + area.y - group.height/2 - stageLayer.y;
-          if(area.x === monster.x && area.y === monster.y){
-            area.setVisible(false);
-          }
-          movePostion = {
-            x: area.x,
-            y: area.y
-          }
-          postion = _this.getPostion(movePostion);
-  
-          arr[postion.y][postion.x] = 1;
-        }
-      );
+    /*==================
+    初期化
+    ====================*/
+    for(var i = 0; i < moveArr.length; i++){
+      for(var k = 0; k < moveArr[i].length; k++){
+        moveArr[i][k] = 0;
+      }
     }
-    loop(moveAreaGroup,moveArr,monster);
-    loop(attackAreaGroup,attackArr,monster);
+    for(var i = 0; i < attackArr.length; i++){
+      for(var k = 0; k < attackArr[i].length; k++){
+        attackArr[i][k] = 0;
+      }
+    }
+    /*==================
+    配置
+    ====================*/
+    let setting = {
+      group: moveAreaGroup,
+      arr: moveArr,
+      arrBase: moveAreaMapBase,
+      monster:monster
+    };
+    this.setMovePosition(setting);
+    setting = {
+      group: attackAreaGroup,
+      arr: attackArr,
+      arrBase: attackAreaMapBase,
+      monster:monster
+    }
+    this.setMovePosition(setting);
+  }
+  setMovePosition(setting){
+    let group = setting.group;
+    let arr = setting.arr;
+    let arrBase = setting.arrBase;
+    let monster = setting.monster;
+    let count = 0;
+    let movePostion;
+    let postion;
+
+    for(var i = 0; i < arrBase.length; i++){//縦の数（y）
+      for(var k = 0; k < arrBase[i].length; k++){//横の数（x）
+        if(arrBase[i][k] !== 0){
+          group.children.entries[count].x = monster.x - group.width/2 + k*monster.width + monster.width/2;
+          group.children.entries[count].y = monster.y - group.height/2 + i*monster.width + monster.width/2;
+          movePostion = {
+            x: group.children.entries[count].x,
+            y: group.children.entries[count].y
+          }
+          postion = this.getPostion(movePostion);
+          if(postion.x >= 0 && postion.y >=0){
+            arr[postion.y][postion.x] = 1;
+          }
+          if(arrBase[i][k] === 2){
+            arr[postion.y][postion.x] = 2;
+          }
+          count++;
+        }
+      }
+    }
   }
   getPostion(pos){
     let setPos = {

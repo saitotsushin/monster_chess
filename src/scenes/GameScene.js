@@ -89,6 +89,7 @@ class GameScene extends Phaser.Scene {
     this.tilePropertyData;
     this.pickChess;
     this.monsterStatus;
+    this.attackTarget;
 
     /*==============================
     ステージ
@@ -112,6 +113,7 @@ class GameScene extends Phaser.Scene {
             this.conformMordal.open();
           }else{
             this.conformMordal.close();
+            this.attackTarget = null;
           }
         }
         return;
@@ -125,9 +127,10 @@ class GameScene extends Phaser.Scene {
       }else{
         if(this.pickChess.attackAreaArr[this.touchedTile.localInt.y][this.touchedTile.localInt.x] === 1){
           this.monsterStatus = "attack";
+          this.attackTarget = this.tilePropertyData.object;
           this.conformMordal.open();
         }
-    }
+      }
     },this);
 
     /*==============================
