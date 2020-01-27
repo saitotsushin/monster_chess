@@ -104,6 +104,7 @@ export default class Monster extends Character {
       ); 
       this.typeTxt.depth = 11;
       this.moveAreaMapBase.reverse();
+      this.attackAreaMapBase.reverse();
     }
     this.damageText = this.scene.add.text(
       this.x + this.width/2 - 10,

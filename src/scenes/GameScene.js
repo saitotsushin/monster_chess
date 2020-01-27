@@ -108,8 +108,9 @@ class GameScene extends Phaser.Scene {
         if(this.pickChess){
           if(this.pickChess.moveAreaArr[this.touchedTile.localInt.y][this.touchedTile.localInt.x] === 1){
             this.monsterStatus = "move";
-            this.pickChess.x = this.touchedTile.world.x + this.pickChess.width/2;
-            this.pickChess.y = this.touchedTile.world.y + this.pickChess.width/2;
+            // this.pickChess.x = this.touchedTile.world.x + this.pickChess.width/2;
+            // this.pickChess.y = this.touchedTile.world.y + this.pickChess.width/2;
+            this.setObjectTilePosition[this.touchedTile.localInt.x,this.touchedTile.localInt.y,this.pickChess]
             this.conformMordal.open();
           }else{
             this.conformMordal.close();
@@ -266,6 +267,16 @@ class GameScene extends Phaser.Scene {
     setPos.y = (pos.y - this.stageLayer.y) / this.map.tileWidth;
     return setPos;
   }
+  setObjectTilePosition(x,y,chess){
+    console.log("x:"+x+"/y:"+y+"/chess:"+chess)
+    let setPos = {
+      x: x,
+      y: y
+    }
+    chess.x = (pos.x - this.stageLayer.x - this.map.tileWidth/2) / this.map.tileWidth;
+    chess.y = (pos.y - this.stageLayer.y - this.map.tileWidth/2) / this.map.tileWidth;
+    // return setPos;  
+  }
   setTilePropaties(){
     this.monsterGroup.children.entries.forEach(
       (enemy,index) => {
@@ -345,7 +356,7 @@ class GameScene extends Phaser.Scene {
       }
       this.enemyGroup.children.entries[i].x = randomCol * this.map.tileWidth + this.stageLayer.x + this.map.tileWidth/2;
       this.enemyGroup.children.entries[i].y = randomRow * this.map.tileHeight + this.stageLayer.y + this.map.tileHeight/2;
-  
+      this.enemyGroup.children.entries[i].MoveArea.initSetPosition(this.enemyGroup.children.entries[i]);
     }
 
   }
@@ -372,8 +383,89 @@ class GameScene extends Phaser.Scene {
     敵のターン
     一旦飛ばす
      */
+    //敵のグループ全てに評価値を計算する
+    this.enemyGroup.children.entries.forEach(
+      (enemy) => {
+        this.searchAreaToMonster(enemy);    
+      },this
+    );    
+    //攻撃か移動か
+
     this.scene.turn = this.scene.turn === "PLAYER1" ? "PLAYER2" : "PLAYER1";
   }
+  searchAreaToMonster(enemy){
+    enemy.MoveArea.show(enemy);
+    let evaluationValue = 0;//評価値
+    let monster;
+    let evaluationArr = [];
+    let mode = "";
+    let evaluationPoint = 0;
+    switch(mode){
+      case 'attackToDestroy':
+        evaluationPoint = 5;
+        break;
+      case 'attackToAlive':
+        evaluationPoint = 4;
+        break;
+      case 'moveToAttackToDestroy':
+        evaluationPoint = 3;
+        break;
+      case 'moveToAttackToAlive':
+        evaluationPoint = 1;
+        break;
+      default:
+    }
+    //攻撃→倒せる 5pt
+    //攻撃→倒せない 4pt
+    //移動→攻撃→倒せる 3pt
+    //移動→攻撃→倒せない 1pt
+    // this.searchAttackAreaToMonster(enemy);
+
+    /*=====================
+    攻撃相手を優先的に検索
+    =====================*/
+    // for(var i = 0; i < enemy.attackAreaArr.length; i++){//縦(y)
+    //   for(var k = 0; k < enemy.attackAreaArr[i].length;k++){//横(x)
+    //     if(this.tilePropertyArr[i][k] !== 0
+    //       && enemy.attackAreaArr[i][k] === 1
+    //       && this.tilePropertyArr[i][k].object.type !== "enemy")
+    //     {
+          // monster = this.tilePropertyArr[i][k];
+          // if(0 <= monster.status.hp - (monster.status.diffence - enemy.status.power)){
+          //   //モンスターを倒せる場合
+          //   evaluationValue = 2;
+          // }else{
+          //   evaluationValue = 1;
+          // }
+          // evaluationArr.push(
+          //   {
+          //     monter: monter,
+          //     value: evaluationValue,
+          //     mode: "attack"
+          //   }
+          // );
+    //     }
+    //   }
+    // }
+    // if(evaluationArr.length > 0){
+    //   //攻撃相手がいたら優先する
+    //   return;
+    // }
+    /*=====================
+    移動
+    =====================*/    
+    for(var i = 0; i < enemy.moveAreaArr.length; i++){//縦(y)
+      for(var k = 0; k < enemy.moveAreaArr[i].length;k++){//横(x)
+        if(this.tilePropertyArr[i][k] === 0
+          && enemy.moveAreaArr[i][k] === 1
+        )
+        {
+          //敵の駒を一度配置し、攻撃エリア毎に評価値を計算する
+        }
+      }
+    }
+  }
+  
 }
 
 export default GameScene;
