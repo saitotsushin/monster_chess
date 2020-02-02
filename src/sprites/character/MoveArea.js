@@ -25,16 +25,18 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     モンスターの移動エリアの表示（コンテナー設定）
     ==============================*/ 
     this.moveAreaGroup = this.scene.add.group();
+    this.moveAlpha = 0.4;
+    this.attackAlpha = 0.6;
     this.setArea(
       this.moveAreaGroup,
       this.moveAreaMapBase,
-      0.4      
+      this.moveAlpha      
     );
     this.attackAreaGroup = this.scene.add.group();
     this.setArea(
       this.attackAreaGroup,
       this.attackAreaMapBase,
-      0.6
+      this.attackAlpha
     );
 
   }
@@ -66,106 +68,87 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
 
     this.hide(group);
   }
-  
-  initSetPosition(monster){
+  setPostion(X,Y){
+    //
+    this.setPostionGroup(
+      X,
+      Y,
+      this.moveAreaGroup,
+      this.target.moveAreaMapBase,
+      this.target.moveAreaArr,
+      this.moveAlpha
+    )
+    this.setPostionGroup(
+      X,
+      Y,
+      this.attackAreaGroup,
+      this.target.attackAreaMapBase,
+      this.target.attackAreaArr,
+      this.attackAlpha
+    )
 
-    let moveArr = monster.moveAreaArr;
-    let attackArr = monster.attackAreaArr;
-    let moveAreaGroup = this.moveAreaGroup;
-    let attackAreaGroup = this.attackAreaGroup;
-    let attackAreaMapBase = monster.attackAreaMapBase;
-    let moveAreaMapBase = monster.moveAreaMapBase;
-
-    /*==================
-    初期化
-    ====================*/
-    for(var i = 0; i < moveArr.length; i++){
-      for(var k = 0; k < moveArr[i].length; k++){
-        moveArr[i][k] = 0;
-      }
-    }
-    for(var i = 0; i < attackArr.length; i++){
-      for(var k = 0; k < attackArr[i].length; k++){
-        attackArr[i][k] = 0;
-      }
-    }
-    /*==================
-    配置
-    ====================*/
-    let setting = {
-      group: moveAreaGroup,
-      arr: moveArr,
-      arrBase: moveAreaMapBase,
-      monster:monster
-    };
-    this.setMovePosition(setting);
-    setting = {
-      group: attackAreaGroup,
-      arr: attackArr,
-      arrBase: attackAreaMapBase,
-      monster:monster
-    }
-    this.setMovePosition(setting);
   }
-  setMovePosition(setting){
-    let group = setting.group;
-    let arr = setting.arr;
-    let arrBase = setting.arrBase;
-    let monster = setting.monster;
+  setPostionGroup(X,Y,group,base,area,alpha){
+    let harfHeight = (base.length - 1) / 2;
+    let harfWidth = (base[0].length - 1) / 2;
+    let baseY = harfHeight - Y;
+    let baseX = harfWidth - X;
     let count = 0;
-    let movePostion;
-    let postion;
-
-    for(var i = 0; i < arrBase.length; i++){//縦の数（y）
-      for(var k = 0; k < arrBase[i].length; k++){//横の数（x）
-        if(arrBase[i][k] !== 0){
-          group.children.entries[count].x = monster.x - group.width/2 + k*monster.width + monster.width/2;
-          group.children.entries[count].y = monster.y - group.height/2 + i*monster.width + monster.width/2;
-          movePostion = {
-            x: group.children.entries[count].x,
-            y: group.children.entries[count].y
-          }
-          postion = this.getPostion(movePostion);
-          if(postion.x >= 0 && postion.y >=0){
-            arr[postion.y][postion.x] = 1;
-          }
-          if(arrBase[i][k] === 2){
-            arr[postion.y][postion.x] = 2;
-          }
+    let i2 = 0;
+    let k2 = 0;
+    //透明度の初期化
+    group.children.entries.forEach(
+      (area,index) => {
+        area.alpha = 0;
+      }
+    ); 
+    for(var i = baseY; i < harfHeight + baseY; i++){//縦（y）
+      for(var k = baseX; k < harfWidth + baseX; k++){//横（x）
+        if(base[i][k] === 1){
+          area[i2][k2] = 1;
+          console.log("k2="+k2+"/i2="+i2)
+          let pos = this.scene.stageManager.getPositionNumber(k2,i2);
+          console.log("pos",pos)
+          group.children.entries[count].x = pos.x;
+          group.children.entries[count].y = pos.y;
+          group.children.entries[count].alpha = alpha;
           count++;
         }
+        k2++;
       }
+      k2 = 0;
+      i2++;
     }
   }
-  getPostion(pos){
-    let setPos = {
-      x: pos.x,
-      y: pos.y
-    }
-    setPos.x = (pos.x - this.scene.stageLayer.x - this.scene.map.tileWidth*0.5) / this.scene.map.tileWidth;
-    setPos.y = (pos.y - this.scene.stageLayer.y - this.scene.map.tileWidth*0.5) / this.scene.map.tileWidth;
-    return setPos;
-  }
-  show(monster){
-    this.scene.setMoveAreaResetAll();
+  showAll(){
     this.moveAreaGroup.children.entries.forEach(
       (moveArea) => {
-        
-        if(moveArea.x === monster.x && moveArea.y === monster.y){
-          moveArea.setVisible(false);
-        }else{
-          moveArea.setVisible(true);
-        }
+        moveArea.setVisible(true);        
       }
     );  
     this.attackAreaGroup.children.entries.forEach(
+      (moveArea) => {        
+        moveArea.setVisible(true);
+      }
+    );  
+  }
+  hideAll(){
+    this.moveAreaGroup.children.entries.forEach(
       (moveArea) => {
-        
-        if(moveArea.x === monster.x && moveArea.y === monster.y){
-          moveArea.setVisible(false);
-        }else{
-          moveArea.setVisible(true);
-        }
+        moveArea.setVisible(false);        
+      }
+    );  
+    this.attackAreaGroup.children.entries.forEach(
+      (moveArea) => {        
+        moveArea.setVisible(false);
+      }
+    );  
+  }
+  show(group){
+    group.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(true);
+        sprite.setActive(true);
       }
     );  
   }

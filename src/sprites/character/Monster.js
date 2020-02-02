@@ -8,7 +8,7 @@ export default class Monster extends Character {
 
     super(config);
 
-    this.type = config.type === "enemy" ? config.type : "";
+    this.type = config.type;
 
     this.depth = 10;
 

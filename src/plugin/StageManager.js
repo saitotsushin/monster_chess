@@ -5,6 +5,7 @@ export default class StageManager {
     this.scene = gameScene.scene;
     this.layer = gameScene.scene.stageLayer;
     this.map = gameScene.scene.map;
+    this.selectedChess = "";
   }
   initStage(stageArr){
     for(var i = 0; i < stageArr.length; i++){//縦：y
@@ -27,6 +28,7 @@ export default class StageManager {
           pos = this.getPositionNumber(k,i);
           group.children.entries[count].x = pos.x;
           group.children.entries[count].y = pos.y;
+          group.children.entries[count].MoveArea.setPostion(k,i);
 
           this.setProperty(k,i,"object",group.children.entries[count])
           
@@ -57,6 +59,25 @@ export default class StageManager {
       default:
         console.log('no prop');
     }
+  }
+  touchedTile(x,y){
+    let tile = this.scene.stageData.tilePropertyArr[y][x];
+    if(tile.object.type === "player1"){
+      if(this.selectedChess){
+        this.selectedChess.MoveArea.hideAll();
+      }
+      tile.object.MoveArea.showAll();        
+      this.selectedChess = tile.object;
+    }
+    
+    if(this.selectedChess){
+      if(this.selectedChess.moveAreaArr[y][x] === 1){
+        console.log("移動しますか？");
+      }
+      if(this.selectedChess.attackAreaArr[y][x] === 1 && tile.object.type === "player2"){
+        console.log("攻撃しますか？");
+      }
 
+    }
   }
 }

@@ -56,18 +56,27 @@ class GameScene extends Phaser.Scene {
       scene: this,
       x: this.stageLayer.x,
       y: this.stageLayer.y,
-      key: 'monster1'
+      key: 'monster1',
+      type: "player1"
     });
-
+    this.player1Chess2 = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster2',
+      type: "player1"
+    });
     this.player1ChessGroup = this.add.group();
 
     this.player1ChessGroup.add(this.player1Chess1);
+    this.player1ChessGroup.add(this.player1Chess2);
 
     this.player2Chess1 = new Monster({
       scene: this,
       x: this.stageLayer.x,
       y: this.stageLayer.y,
-      key: 'monster1'
+      key: 'monster1',
+      type: "player2"
     });
 
     this.player2ChessGroup = this.add.group();
@@ -101,11 +110,7 @@ class GameScene extends Phaser.Scene {
 
       this.touchedTile = this.getTilePosition();
 
-      this.stageTileProperty = this.stageData.tilePropertyArr[this.touchedTile.localNumber.y][this.touchedTile.localNumber.x]; 
-
-      if(this.stageTileProperty.object){
-        console.log("object")
-      }
+      this.stageManager.touchedTile(this.touchedTile.localNumber.x,this.touchedTile.localNumber.y);
 
     },this);
 
