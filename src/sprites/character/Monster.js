@@ -95,7 +95,7 @@ export default class Monster extends Character {
     /*==============================
     敵だった場合の設定
     ==============================*/       
-    if(config.type === "enemy"){
+    if(config.type === "player2"){
       this.typeTxt = this.scene.add.text(
         this.x + this.width/2 - 10,
         this.y + this.height/2 - 10,
@@ -124,12 +124,8 @@ export default class Monster extends Character {
     setPos.y = (pos.y - this.scene.stageLayer.y - this.width/2) / this.scene.map.tileWidth;
     return setPos;
   }
-  updateChild(){
-    this.typeTxt.x = this.x + 10;
-    this.typeTxt.y = this.y + 10;
-    this.damageText.x = this.x + 10;
-    this.damageText.y = this.y + 10;
-  }
+
+  
   damage(attackingTarget){
 
 
@@ -156,7 +152,6 @@ export default class Monster extends Character {
         },
         callbackScope: this
     });
-    console.log(this.status.hp)
     if(this.status.hp <= 0){
       console.log("HPがマイナスになりました。")
 

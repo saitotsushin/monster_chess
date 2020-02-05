@@ -69,6 +69,19 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     this.hide(group);
   }
   setPostion(X,Y){
+
+    /*初期化*/
+    for(var i = 0; i < this.target.moveAreaArr.length; i++){
+      for(var k = 0; k < this.target.moveAreaArr[i].length; k++){
+        this.target.moveAreaArr[i][k] = 0;
+      }
+    }
+    for(var i = 0; i < this.target.attackAreaArr.length; i++){
+      for(var k = 0; k < this.target.attackAreaArr[i].length; k++){
+        this.target.attackAreaArr[i][k] = 0;
+      }
+    }
+    
     //
     this.setPostionGroup(
       X,
@@ -106,9 +119,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
       for(var k = baseX; k < harfWidth + baseX; k++){//横（x）
         if(base[i][k] === 1){
           area[i2][k2] = 1;
-          console.log("k2="+k2+"/i2="+i2)
           let pos = this.scene.stageManager.getPositionNumber(k2,i2);
-          console.log("pos",pos)
           group.children.entries[count].x = pos.x;
           group.children.entries[count].y = pos.y;
           group.children.entries[count].alpha = alpha;

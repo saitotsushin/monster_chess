@@ -121,10 +121,6 @@ class GameScene extends Phaser.Scene {
       scene: this
     });
 
-    this.setStageProperty();//ステージのプロパティの追加
-
-
-
     /*==============================
     デバッグ
     ==============================*/
@@ -189,13 +185,6 @@ class GameScene extends Phaser.Scene {
         postion.localNumber.y = (postion.world.y - this.stageLayer.y) /this.map.tileHeight;
         return postion;
     }
-  }
-  setStageProperty(){
-    //自分のステージのセット
-      //ステージの読み込み
-      
-    //相手のステージのセット
-    // this.tilePropertyArr
   }
   
 }
