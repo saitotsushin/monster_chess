@@ -90,7 +90,6 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
   }
 
   open(){
-
     this.setVisible(true);
     this.container.setVisible(true);
     this.container.x = 0;

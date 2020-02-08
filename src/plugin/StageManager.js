@@ -16,6 +16,7 @@ export default class StageManager {
       x: 0,
       y: 0
     }
+    
   }
   /*==============================
   ステージの初期化
@@ -90,9 +91,11 @@ export default class StageManager {
       this.beforeChessPos.x = x;
       this.beforeChessPos.y = y;
     }
+
+
     
     if(this.selectedChess){
-      if(this.selectedChess.moveAreaArr[y][x] === 1){
+      if(this.selectedChess.areaArr[y][x] === 1){
         console.log('%c移動しますか？', 'color: #000;background-color:yellow;');
         this.scene.conformMordal.setMessage({
           text: "移動しますか？",
@@ -102,22 +105,52 @@ export default class StageManager {
         this.scene.conformMordal.open();
         this.mode = "move";
       }
-      if(this.selectedChess.attackAreaArr[y][x] === 1 && tile.object.type === "player2"){
-        console.log('%c攻撃しますか？', 'color: #FFF;background-color:red;');
-        this.enemyChess = tile.object;
-        this.scene.conformMordal.setMessage({
-          text: "攻撃しますか？",
-          yes: "はい",
-          no: "いいえ"
-        });
-        this.scene.conformMordal.open();
-        this.mode = "attack";
+      if(this.selectedChess.areaArr[y][x] === 2){
+        if(tile.object.type === "player2"){
+          console.log('%c攻撃しますか？', 'color: #FFF;background-color:red;');
+          this.enemyChess = tile.object;
+          this.scene.conformMordal.setMessage({
+            text: "攻撃しますか？",
+            yes: "はい",
+            no: "いいえ"
+          });
+          this.scene.conformMordal.open();
+          this.mode = "attack";
+        }else{
+          this.scene.conformMordal.close();
+          this.mode = "";          
+        }
+      }
+      if(this.selectedChess.areaArr[y][x] === 3){
+        if(tile.object.type === "player2"){
+          console.log('%c攻撃しますか？', 'color: #FFF;background-color:red;');
+          this.enemyChess = tile.object;
+          this.scene.conformMordal.setMessage({
+            text: "攻撃しますか？",
+            yes: "はい",
+            no: "いいえ"
+          });
+          this.scene.conformMordal.open();
+          this.mode = "attack";
+        }else{
+          console.log('%c移動しますか？', 'color: #000;background-color:yellow;');
+          this.scene.conformMordal.setMessage({
+            text: "移動しますか？",
+            yes: "はい",
+            no: "いいえ"
+          });
+          this.scene.conformMordal.open();
+          this.mode = "move";     
+        }
+      }
+      if(this.selectedChess.areaArr[y][x] === 0){
+        this.scene.conformMordal.close();
+        this.mode = "";     
       }
       this.touchedPos = {
         x: x,
         y: y
       }
-
     }
   }
   setModalYes(){
@@ -134,16 +167,14 @@ export default class StageManager {
     this.mode = "";
   }
   chessAttack(){
-    // this.selectedChess.attack(this.enemyChess);
     let damage = this.selectedChess.status.power - this.enemyChess.status.difence;
     if(damage <= 0){
       damage = this.scene.getRandomInt(0,1);
     }
     this.enemyChess.status.hp -= damage;
-    console.log(this.enemyChess.status.hp)
   }
   chessMove(){
-    // this.selectedChess.move(this.this.touchedPos);
+    
     let setPos = this.getPositionNumber(this.touchedPos.x,this.touchedPos.y);
     this.selectedChess.x = setPos.x;
     this.selectedChess.y = setPos.y;
@@ -151,45 +182,120 @@ export default class StageManager {
     this.scene.stageData.tilePropertyArr[this.touchedPos.y][this.touchedPos.x].object = this.selectedChess;
     this.selectedChess.MoveArea.setPostion(this.touchedPos.x,this.touchedPos.y);
     this.selectedChess.MoveArea.hideAll();
-    console.log(this.selectedChess.moveAreaArr);
+    
     this.searchAttackArea();
   }
   searchAttackArea(){
     /*player2の駒を検索する */
-    let playerChessArr = [];
-    let check = ""
+    let player1ChessArr = this.getPlayer1Chess();
+    let getNextStepArr = [];
+
+    this.scene.player2ChessGroup.children.entries.forEach(
+      (chess,index) => {
+        let check = this.getCanAttackChess(chess,player1ChessArr);
+        if(check){
+          getNextStepArr.push(this.getCanAttackChess(chess,player1ChessArr));     
+        }
+      }
+    ,this);
+
+    //攻撃エリアになかったら、移動した先で攻撃できるか
+    if(getNextStepArr.length === 0){
+      this.scene.player2ChessGroup.children.entries.forEach(
+        (chess,index) => {
+          getNextStepArr.push(this.getCanMoveToAttackChess(chess,player1ChessArr));        
+        }
+      ,this);
+    }
+    console.log("getNextStepArr",getNextStepArr)
+    
+  }
+  getPlayer1Chess(){
+    let arr = [];
     for(var i = 0; i < this.scene.stageData.tilePropertyArr.length; i++){
       for(var k = 0; k < this.scene.stageData.tilePropertyArr[i].length; k++){
-        if(this.scene.stageData.tilePropertyArr[i][k].object.type === "player2"){
-
-          console.log(this.scene.stageData.tilePropertyArr[i][k].object.type);
-
-          check = this.getCanAttackChess(this.scene.stageData.tilePropertyArr[i][k].object);
-
-          if(check){
-            playerChessArr.push(this.getCanAttackChess(this.scene.stageData.tilePropertyArr[i][k].object));
-          }else{
-            /*移動する*/
-          }
-
-
+        if(this.scene.stageData.tilePropertyArr[i][k].object.type === "player1"){
+          arr.push({
+            object: this.scene.stageData.tilePropertyArr[i][k].object,
+            X: k,
+            Y: i
+          })
         }
       }
     }
-    console.log("playerChessArr",playerChessArr)
+    return arr;
   }
-  getCanAttackChess(chess){
-    /*攻撃エリアに相手の駒があるかチェックして盤の位置を返す*/
-    for(var i = 0; i < chess.attackAreaArr.length; i++){
-      for(var k = 0; k < chess.attackAreaArr[i].length; k++){
-        if(chess.attackAreaArr[i][k] === 1){
-
-          if(this.scene.stageData.tilePropertyArr[i][k].object.type === "player1"){
-            return this.scene.stageData.tilePropertyArr[i][k];
+  getCanAttackChess(chess,player1ChessArr,pos){
+    let checkArr = [];
+    let moveArr = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
+    // let count = 0;
+    if(pos){
+      // console.log("chess.areaArr",chess.areaArr);
+      chess.MoveArea.setPostionGroup(
+        pos.X,
+        pos.Y,
+        chess.areaGroup,
+        chess.areaMapBase,
+        moveArr,
+        "shift"
+      )
+    }else{
+      moveArr = chess.areaArr;
+    }
+    for(var i = 0; i < player1ChessArr.length; i++){
+      if(moveArr[player1ChessArr[i].Y][player1ChessArr[i].X] === 2 
+        || moveArr[player1ChessArr[i].Y][player1ChessArr[i].X] === 3 ){
+          console.log("moveArr",moveArr)
+        
+        checkArr.push({
+          object: chess,
+          target: player1ChessArr[i],
+        })
+      }
+    }
+    if(checkArr.length > 0){
+      return checkArr;
+    }else{
+      return;
+    }
+  }
+  getCanMoveToAttackChess(chess,player1ChessArr){
+    let checkArr = [];
+    let check;
+    let pos = {
+      X: 0,
+      Y: 0
+    };
+    for(var i = 0; i < chess.areaArr.length; i++){
+      for(var k = 0; k < chess.areaArr[i].length; k++){
+        if(chess.areaArr[i][k] === 1 || chess.areaArr[i][k] === 3){
+          console.log(chess.areaArr[i][k])
+          pos.X = k;
+          pos.Y = i;
+          check = this.getCanAttackChess(chess,player1ChessArr,pos);
+          
+          if(check){
+            console.log(check)
+            checkArr.push(check);
           }
+          
         }
       }
     }
-    return "";
+    if(checkArr.length > 0){
+      return checkArr;
+    }else{
+      return;
+    }
+    // chess.MoveArea.showAll();
   }
 }

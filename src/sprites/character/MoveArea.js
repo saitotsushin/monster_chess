@@ -14,6 +14,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     this.target = config.target;
     this.moveAreaMapBase = config.target.moveAreaMapBase;
     this.attackAreaMapBase = config.target.attackAreaMapBase;
+    this.areaMapBase = config.target.areaMapBase;
 
     this.positionInt = {
       x: 0,
@@ -24,34 +25,51 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     /*==============================
     モンスターの移動エリアの表示（コンテナー設定）
     ==============================*/ 
-    this.moveAreaGroup = this.scene.add.group();
-    this.moveAlpha = 0.4;
-    this.attackAlpha = 0.6;
+    this.areaGroup = this.scene.add.group();
     this.setArea(
-      this.moveAreaGroup,
-      this.moveAreaMapBase,
-      this.moveAlpha      
+      this.areaGroup,
+      this.areaMapBase 
     );
-    this.attackAreaGroup = this.scene.add.group();
-    this.setArea(
-      this.attackAreaGroup,
-      this.attackAreaMapBase,
-      this.attackAlpha
-    );
+    if(this.target.type === "player2"){
+      this.areaGroup.children.entries.reverse();
+    }
+    // this.resetAreaArr = [
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0],      
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0],
+    //   [0,0,0,0,0,0]      
+    // ];
 
   }
 
-  setArea(group,map,alpha){
+
+
+  setArea(group,map){
+    let key = "";
     for(var i = 0; i < map.length; i++){
       for(var k = 0; k < map[i].length; k++){
-
-        if(map[i][k] === 1 || map[i][k] === 2){
+        //1:移動
+        //2:攻撃
+        //3:移動＋攻撃
+        if(map[i][k] === 1){
+          key = "move_area";
+        }
+        if(map[i][k] === 2){
+          key = "attack_area";
+        }
+        if(map[i][k] === 3){
+          key = "attack_move_area";
+        }
+        if(key !== ""){
           let area = this.scene.add.sprite(
             k * this.scene.map.tileWidth + this.scene.stageLayer.x + this.scene.map.tileWidth/2,
             i * this.scene.map.tileHeight + this.scene.stageLayer.y + this.scene.map.tileWidth/2,
-            'move_area'
+            key
           );
-          area.alpha = alpha;
           area.positionInt = {
             x: k,
             y: i
@@ -59,7 +77,9 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
 
           group.add(area);
 
-        }        
+          key = "";//リセット
+        }
+
       }
 
     }
@@ -70,38 +90,30 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
   }
   setPostion(X,Y){
 
-    /*初期化*/
-    for(var i = 0; i < this.target.moveAreaArr.length; i++){
-      for(var k = 0; k < this.target.moveAreaArr[i].length; k++){
-        this.target.moveAreaArr[i][k] = 0;
-      }
-    }
-    for(var i = 0; i < this.target.attackAreaArr.length; i++){
-      for(var k = 0; k < this.target.attackAreaArr[i].length; k++){
-        this.target.attackAreaArr[i][k] = 0;
-      }
-    }
-    
-    //
-    this.setPostionGroup(
-      X,
-      Y,
-      this.moveAreaGroup,
-      this.target.moveAreaMapBase,
-      this.target.moveAreaArr,
-      this.moveAlpha
-    )
-    this.setPostionGroup(
-      X,
-      Y,
-      this.attackAreaGroup,
-      this.target.attackAreaMapBase,
-      this.target.attackAreaArr,
-      this.attackAlpha
-    )
 
+    /*初期化*/
+    for(var i = 0; i < this.target.areaArr.length; i++){
+      for(var k = 0; k < this.target.areaArr[i].length; k++){
+        this.target.areaArr[i][k] = 0;
+      }
+    }
+
+
+    this.setPostionGroup(
+      X,
+      Y,
+      this.areaGroup,
+      this.target.areaMapBase,
+      this.target.areaArr
+    );
+
+    
   }
-  setPostionGroup(X,Y,group,base,area,alpha){
+  setPostionGroup(X,Y,group,base,area,mode){
+
+
+    let _mode = mode ? mode : ""
+
     let harfHeight = (base.length - 1) / 2;
     let harfWidth = (base[0].length - 1) / 2;
     let baseY = harfHeight - Y;
@@ -109,21 +121,17 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     let count = 0;
     let i2 = 0;
     let k2 = 0;
-    //透明度の初期化
-    group.children.entries.forEach(
-      (area,index) => {
-        area.alpha = 0;
-      }
-    ); 
+
     for(var i = baseY; i < harfHeight + baseY; i++){//縦（y）
       for(var k = baseX; k < harfWidth + baseX; k++){//横（x）
-        if(base[i][k] === 1){
-          area[i2][k2] = 1;
-          let pos = this.scene.stageManager.getPositionNumber(k2,i2);
-          group.children.entries[count].x = pos.x;
-          group.children.entries[count].y = pos.y;
-          group.children.entries[count].alpha = alpha;
-          count++;
+        if(base[i][k] !== 0 && base[i][k] !== 9){
+          area[i2][k2] = base[i][k];
+          if(_mode !== "shift"){
+            let pos = this.scene.stageManager.getPositionNumber(k2,i2);
+            group.children.entries[count].x = pos.x;
+            group.children.entries[count].y = pos.y;
+            count++;  
+          }
         }
         k2++;
       }
@@ -132,28 +140,18 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     }
   }
   showAll(){
-    this.moveAreaGroup.children.entries.forEach(
+    this.areaGroup.children.entries.forEach(
       (moveArea) => {
         moveArea.setVisible(true);        
       }
-    );  
-    this.attackAreaGroup.children.entries.forEach(
-      (moveArea) => {        
-        moveArea.setVisible(true);
-      }
-    );  
+    );
   }
   hideAll(){
-    this.moveAreaGroup.children.entries.forEach(
+    this.areaGroup.children.entries.forEach(
       (moveArea) => {
         moveArea.setVisible(false);        
       }
-    );  
-    this.attackAreaGroup.children.entries.forEach(
-      (moveArea) => {        
-        moveArea.setVisible(false);
-      }
-    );  
+    ); 
   }
   show(group){
     group.children.entries.forEach(

@@ -112,6 +112,7 @@ class GameScene extends Phaser.Scene {
 
       this.stageManager.touchedTile(this.touchedTile.localNumber.x,this.touchedTile.localNumber.y);
 
+
     },this);
 
     /*==============================
