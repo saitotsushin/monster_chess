@@ -1,7 +1,5 @@
 import Monster from '../sprites/character/Monster';
 import ComformMordal from '../ui/ComformMordal';
-import LayoutMonsters from '../ui/LayoutMonsters';
-import Common from '../plugin/Common';
 import StageManager from '../plugin/StageManager';
 import StageData from '../plugin/StageData';
 
@@ -13,11 +11,10 @@ class GameScene extends Phaser.Scene {
   }
   create(){
 
-    this.common = new Common();
 
     this.mode = "";
 
-    this.turn = "PLAYER1";
+    this.turn = "player1";
 
     this.map = this.make.tilemap({ key: 'map' });
     this.tileset = this.map.addTilesetImage('tileset', 'tiles');
@@ -59,6 +56,7 @@ class GameScene extends Phaser.Scene {
       key: 'monster1',
       type: "player1"
     });
+
     this.player1Chess2 = new Monster({
       scene: this,
       x: this.stageLayer.x,
@@ -66,6 +64,7 @@ class GameScene extends Phaser.Scene {
       key: 'monster2',
       type: "player1"
     });
+
     this.player1ChessGroup = this.add.group();
 
     this.player1ChessGroup.add(this.player1Chess1);
@@ -78,10 +77,22 @@ class GameScene extends Phaser.Scene {
       key: 'monster1',
       type: "player2"
     });
+    this.player2Chess2 = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster2',
+      type: "player2"
+    });
+    this.player2Chess1.status.power = 10;
+    this.player2Chess1.status.defense = 10;
+    this.player2Chess2.status.power = 10;
+    this.player2Chess2.status.defense = 10;
 
     this.player2ChessGroup = this.add.group();
 
     this.player2ChessGroup.add(this.player2Chess1);
+    this.player2ChessGroup.add(this.player2Chess2);
 
     this.stageManager.initStage(this.stageData.tilePropertyArr);
     this.stageManager.initSetChess(this.player1ChessGroup,this.stageData.player1_Arr);

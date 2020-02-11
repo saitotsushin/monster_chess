@@ -1,5 +1,5 @@
 import Character from './Character';
-import MoveArea from './MoveArea';
+
 
 
 export default class Monster extends Character {
@@ -87,22 +87,12 @@ export default class Monster extends Character {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0]      
     ];
-    this.mergeArea(this.moveAreaMapBase,this.attackAreaMapBase,this.areaMapBase);
+    this.areaMapBase = this.mergeArea(this.moveAreaMapBase,this.attackAreaMapBase,this.areaMapBase);
 
-
-
-    /*==============================
-    UI
-    ==============================*/        
-    this.MoveArea = new MoveArea({
-      scene: this.scene,
-      type: this.type,
-      target: this
-    });
     this.status = {
       hp: 5,
-      power: 2,
-      difence: 1
+      power: 4,
+      defense: 1
     }
     this.typeTxt;
     /*==============================
@@ -140,17 +130,39 @@ export default class Monster extends Character {
   }
 
   
-  damage(attackingTarget){
+  attack(attackingTarget){
 
+    console.log('%c'+this.type+'が攻撃しました。', 'color: #000;background-color:yellow;');
 
+    let damagePoint = this.status.power - attackingTarget.status.defense;
+
+    if(damagePoint <= 0){
+      damagePoint = this.scene.getRandomInt(0,1);
+    }
+    attackingTarget.damage(damagePoint);
+    attackingTarget.status.hp -= damagePoint;
+
+    if(attackingTarget.status.hp <= 0){
+      console.log('%c'+this.type+'のHPがマイナスになりました。', 'color: #000;background-color:yellow;');
+      this.scene.stageManager.removeChess(attackingTarget);
+    } 
+  }
+  move(x,y,player,mode){
+    // let playerStageData;
+    
+    let setPos = this.scene.stageManager.getPositionNumber(x,y);
+    this.x = setPos.x;
+    this.y = setPos.y;
+    //ステージデータの更新
+    this.scene.stageData.tilePropertyArr[this.scene.stageManager.beforeChessPos.y][this.scene.stageManager.beforeChessPos.x].object = "";
+    this.scene.stageData.tilePropertyArr[y][x].object = this;
+    //移動エリアデータの更新
+    player.areaArr = this.scene.stageManager.moveArea.setArrPosition(x,y,player,"move");
+  }
+  damage(damagePoint){
     this.damageText.x = this.x + 10;
     this.damageText.y = this.y - 10;
 
-    let damagePoint = this.status.difence - attackingTarget.status.power;
-    if(damagePoint <= 0){
-      damagePoint = Math.floor( Math.random() * (1 + 1 - 0) ) + 0 ;
-    }
-    this.status.hp -= damagePoint;
     let afterY = this.damageText.y + 10;
     this.damageText.setVisible(true);
     this.damageText.setText(damagePoint);
@@ -166,14 +178,8 @@ export default class Monster extends Character {
         },
         callbackScope: this
     });
-    if(this.status.hp <= 0){
-      console.log("HPがマイナスになりました。")
-
-    } 
   }
   mergeArea(area1,area2,merge_area){
-
-
 
     for(var i = 0; i < area1.length; i++){
       for(var k = 0; k < area1[i].length; k++){
@@ -186,8 +192,7 @@ export default class Monster extends Character {
       }
 
     }
-
-    // return merge_area;
+    return merge_area;
 
   }
 }

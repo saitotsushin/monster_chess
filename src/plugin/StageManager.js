@@ -1,4 +1,4 @@
-
+import MoveArea from './MoveArea';
 
 export default class StageManager {
   constructor(gameScene) {
@@ -16,7 +16,19 @@ export default class StageManager {
       x: 0,
       y: 0
     }
-    
+
+
+    this.moveArea = new MoveArea({
+      scene: this.scene,
+      type: this.type,
+      target: this
+    });   
+
+    this.gameStatus = "play";
+
+    this.player1Count = 0;
+    this.player2Count = 0;
+
   }
   /*==============================
   ステージの初期化
@@ -45,26 +57,39 @@ export default class StageManager {
           pos = this.getPositionNumber(k,i);
           group.children.entries[count].x = pos.x;
           group.children.entries[count].y = pos.y;
-          group.children.entries[count].MoveArea.setPostion(k,i);
-
-          this.setProperty(k,i,"object",group.children.entries[count])
-          
+          group.children.entries[count].areaArr = this.moveArea.setArrPosition(k,i,group.children.entries[count]);
+          this.setProperty(k,i,"object",group.children.entries[count]);          
           count++;
         }
       }
     }
   }
   /*==============================
-  ステージ上のX,Yを返す
+  ステージ上のx,yを返す
   ==============================*/    
-  getPositionNumber(x,y){
+  getPositionNumber(X,Y){
     let pos = {
       x: 0,
       y: 0
     };
 
-    pos.x = this.layer.x + this.map.tileWidth * x + this.map.tileWidth/2;
-    pos.y = this.layer.y + this.map.tileHeight * y + this.map.tileHeight/2;
+    pos.x = this.layer.x + this.map.tileWidth * X + this.map.tileWidth/2;
+    pos.y = this.layer.y + this.map.tileHeight * Y + this.map.tileHeight/2;
+
+    return pos;
+
+  }
+  /*==============================
+  位置(x,y)からステージのX,Yを返す
+  ==============================*/    
+  getPositionInt(x,y){
+    let pos = {
+      X: 0,
+      Y: 0
+    };
+
+    pos.X = (x - this.layer.x - this.map.tileWidth/2) / this.map.tileWidth;
+    pos.Y = (y - this.layer.y - this.map.tileHeight/2) / this.map.tileHeight;
 
     return pos;
 
@@ -81,19 +106,21 @@ export default class StageManager {
     }
   }
   touchedTile(x,y){
+    /*============
+    タイルの取得
+    ============*/
     let tile = this.scene.stageData.tilePropertyArr[y][x];
     if(tile.object.type === "player1"){
       if(this.selectedChess){
-        this.selectedChess.MoveArea.hideAll();
+        this.moveArea.hide(this.selectedChess);
       }
-      tile.object.MoveArea.showAll();        
+             
       this.selectedChess = tile.object;
+      this.moveArea.show(this.selectedChess);
       this.beforeChessPos.x = x;
       this.beforeChessPos.y = y;
     }
 
-
-    
     if(this.selectedChess){
       if(this.selectedChess.areaArr[y][x] === 1){
         console.log('%c移動しますか？', 'color: #000;background-color:yellow;');
@@ -151,50 +178,53 @@ export default class StageManager {
         x: x,
         y: y
       }
+
     }
   }
+  /*============
+  モーダル
+  ============*/
   setModalYes(){
     console.log('%c「はい」が押されました。', 'color: #000;background-color:yellow;');
     if(this.mode === "attack"){
-      this.chessAttack(); 
+      this.selectedChess.attack(this.enemyChess);
     }
     if(this.mode === "move"){
-      this.chessMove(); 
+      this.selectedChess.move(this.touchedPos.x,this.touchedPos.y,this.selectedChess);
     }
+    this.moveArea.hide();
+
+    console.log('%c「'+this.mode+'」です。', 'color: #000;background-color:yellow;');
+
+    if(this.gameStatus !== "play"){
+      return;      
+    }
+
+    this.searchAttackArea();
   }
   setModalNo(){
     console.log('%c「いいえ」が押されました。', 'color: #000;background-color:yellow;');
     this.mode = "";
   }
-  chessAttack(){
-    let damage = this.selectedChess.status.power - this.enemyChess.status.difence;
-    if(damage <= 0){
-      damage = this.scene.getRandomInt(0,1);
-    }
-    this.enemyChess.status.hp -= damage;
-  }
-  chessMove(){
-    
-    let setPos = this.getPositionNumber(this.touchedPos.x,this.touchedPos.y);
-    this.selectedChess.x = setPos.x;
-    this.selectedChess.y = setPos.y;
-    this.scene.stageData.tilePropertyArr[this.beforeChessPos.y][this.beforeChessPos.x].object = "";
-    this.scene.stageData.tilePropertyArr[this.touchedPos.y][this.touchedPos.x].object = this.selectedChess;
-    this.selectedChess.MoveArea.setPostion(this.touchedPos.x,this.touchedPos.y);
-    this.selectedChess.MoveArea.hideAll();
-    
-    this.searchAttackArea();
-  }
+  /*============
+  検索
+  ============*/
   searchAttackArea(){
     /*player2の駒を検索する */
-    let player1ChessArr = this.getPlayer1Chess();
+    let player1ChessArr = this.player1ChessArr();
     let getNextStepArr = [];
+    let choicedChessArr = [];
+    let choicedChessObject;
+    let choicedChessTarget;
+    let choicedChessTargetObject;
+    let check;
 
+    /*chessの数だけ検索する*/
     this.scene.player2ChessGroup.children.entries.forEach(
       (chess,index) => {
-        let check = this.getCanAttackChess(chess,player1ChessArr);
+        check = this.getCanAttackOnlyChess(chess,player1ChessArr);
         if(check){
-          getNextStepArr.push(this.getCanAttackChess(chess,player1ChessArr));     
+          getNextStepArr.push(check);     
         }
       }
     ,this);
@@ -203,14 +233,76 @@ export default class StageManager {
     if(getNextStepArr.length === 0){
       this.scene.player2ChessGroup.children.entries.forEach(
         (chess,index) => {
-          getNextStepArr.push(this.getCanMoveToAttackChess(chess,player1ChessArr));        
+          check = this.getCanMoveToAttackChess(chess,player1ChessArr);
+          if(check){
+            getNextStepArr.push(check);
+          }
         }
       ,this);
     }
-    console.log("getNextStepArr",getNextStepArr)
+
+    
+    if(getNextStepArr.length > 0){
+      //評価値が一番高いchessを選ぶ
+      choicedChessArr = this.searchEvaluationPoint(getNextStepArr);
+
+      choicedChessObject = choicedChessArr[0].object;
+
+      
+      let choicedChessObjectBeforePos = this.getPositionInt(choicedChessObject.x,choicedChessObject.y);
+
+      this.beforeChessPos.x = choicedChessObjectBeforePos.X;
+      this.beforeChessPos.y = choicedChessObjectBeforePos.Y;
+
+
+      choicedChessTarget = choicedChessArr[0].target;
+      choicedChessTargetObject = choicedChessArr[0].target.object;
+
+      choicedChessObject.attack(choicedChessTargetObject);
+
+      //移動->攻撃はmoveXに値があるかで判定する。
+      if(choicedChessTarget.moveX !== 0 && choicedChessTarget.moveY !== 0){
+        choicedChessObject.move(choicedChessTarget.moveX,choicedChessTarget.moveY,choicedChessObject);
+      }
+    }else{
+      //攻撃する相手がいなかったらランダムで移動する。
+      console.log('%c攻撃する相手がいなかったらランダムで移動する。', 'color: #FFF;background-color:green;');
+      //ランダムでchsssを選ぶ
+      let moveGroup = this.scene.player2ChessGroup.children.entries;
+      let moveGroupLength = moveGroup.length;
+      let moveRandom = this.scene.getRandomInt(0,moveGroupLength-1);
+      let moveChess = moveGroup[moveRandom];
+      let moveChessBeforePos = this.getPositionInt(moveChess.x,moveChess.y);
+      this.beforeChessPos.x = moveChessBeforePos.X;
+      this.beforeChessPos.y = moveChessBeforePos.Y;
+
+      let moveNextArr = [];
+      let moveNextSavePos = {
+        X: 0,
+        Y: 0
+      };
+      let moveNextPos;
+      for(var i = 0; i < moveChess.areaArr.length; i++){
+        for(var k = 0; k < moveChess.areaArr[i].length; k++){
+          if(this.scene.stageData.tilePropertyArr[i][k].object === ""){
+            if(moveChess.areaArr[i][k] === 1 || moveChess.areaArr[i][k] === 3){
+              moveNextSavePos.X = k;
+              moveNextSavePos.Y = i;
+              moveNextArr.push(moveNextSavePos);
+            }
+          }
+        }
+      }
+      moveNextPos = moveNextArr[this.scene.getRandomInt(0,moveNextArr.length-1)];
+      moveChess.move(moveNextPos.X,moveNextPos.Y,moveChess)
+
+    }
     
   }
-  getPlayer1Chess(){
+  /*==============
+  相手の駒を全て配列に入れておく。
+  ==============*/
+  player1ChessArr(){
     let arr = [];
     for(var i = 0; i < this.scene.stageData.tilePropertyArr.length; i++){
       for(var k = 0; k < this.scene.stageData.tilePropertyArr[i].length; k++){
@@ -218,14 +310,21 @@ export default class StageManager {
           arr.push({
             object: this.scene.stageData.tilePropertyArr[i][k].object,
             X: k,
-            Y: i
+            Y: i,
+            moveX: 0,
+            moveY: 0
           })
         }
       }
     }
     return arr;
   }
+
+  /*==============
+  共通で呼ばれる関数
+  ==============*/
   getCanAttackChess(chess,player1ChessArr,pos){
+
     let checkArr = [];
     let moveArr = [
       [0,0,0,0,0,0],
@@ -237,30 +336,48 @@ export default class StageManager {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0]
     ];
-    // let count = 0;
     if(pos){
-      // console.log("chess.areaArr",chess.areaArr);
-      chess.MoveArea.setPostionGroup(
+      moveArr = this.moveArea.setArrPosition(
         pos.X,
         pos.Y,
-        chess.areaGroup,
-        chess.areaMapBase,
-        moveArr,
-        "shift"
-      )
+        chess
+      );
+
     }else{
       moveArr = chess.areaArr;
     }
+
     for(var i = 0; i < player1ChessArr.length; i++){
       if(moveArr[player1ChessArr[i].Y][player1ChessArr[i].X] === 2 
         || moveArr[player1ChessArr[i].Y][player1ChessArr[i].X] === 3 ){
-          console.log("moveArr",moveArr)
+
+        let count = pos ? 1 : 0;//1回目（攻撃）：２回目（移動->攻撃）
+
+        player1ChessArr[i].moveX = pos ? pos.X : 0;
+        player1ChessArr[i].moveY = pos ? pos.Y : 0;
+
+        let evaluationPoint = this.calcEvaluationPoint(chess,player1ChessArr[i].object,count)
         
         checkArr.push({
           object: chess,
           target: player1ChessArr[i],
+          evaluationPoint: evaluationPoint
         })
       }
+    }
+
+    if(checkArr.length > 0){
+      return checkArr;
+    }else{
+      return;
+    }
+  }
+
+  getCanAttackOnlyChess(chess,player1ChessArr){
+    let checkArr = [];
+    let check = this.getCanAttackChess(chess,player1ChessArr);
+    if(check){
+      checkArr.push(check);
     }
     if(checkArr.length > 0){
       return checkArr;
@@ -268,6 +385,7 @@ export default class StageManager {
       return;
     }
   }
+
   getCanMoveToAttackChess(chess,player1ChessArr){
     let checkArr = [];
     let check;
@@ -277,17 +395,16 @@ export default class StageManager {
     };
     for(var i = 0; i < chess.areaArr.length; i++){
       for(var k = 0; k < chess.areaArr[i].length; k++){
-        if(chess.areaArr[i][k] === 1 || chess.areaArr[i][k] === 3){
-          console.log(chess.areaArr[i][k])
-          pos.X = k;
-          pos.Y = i;
-          check = this.getCanAttackChess(chess,player1ChessArr,pos);
-          
-          if(check){
-            console.log(check)
-            checkArr.push(check);
-          }
-          
+        if(this.scene.stageData.tilePropertyArr[i][k].object === ""){
+          if(chess.areaArr[i][k] === 1 || chess.areaArr[i][k] === 3){
+            pos.X = k;
+            pos.Y = i;
+            check = this.getCanAttackChess(chess,player1ChessArr,pos);
+            
+            if(check){
+              checkArr.push(check);
+            } 
+          }  
         }
       }
     }
@@ -296,6 +413,83 @@ export default class StageManager {
     }else{
       return;
     }
-    // chess.MoveArea.showAll();
   }
+  calcEvaluationPoint(chess1,chess2,count){
+    /*
+    chess1: 自分の駒
+    chess2: 相手の駒
+    count: 何回目のロジックか
+    ===
+    |ポイント| 条件         |
+    |40P    |１回目で倒せたら|
+    |30P    |１回目で倒せない|
+    |20P    |１回目で倒せたら|
+    |10P    |１回目で倒せない|
+    ※防御力＞攻撃力の場合、ランダムで0か1をダメージとして与えるので実際に倒せるかは厳密にしない。
+    */
+   let point = 0;
+   let hp = chess1.status.hp;
+  //  let saveHp = chess1.status.hp;
+
+    //相手の駒を倒せるか
+    let damage = chess1.status.power - chess2.status.defense;
+    if(damage <= 0){
+      damage = this.scene.getRandomInt(0,1);
+    }
+    hp -= damage;
+    if(hp <= 0){
+      point = 40;
+    }else{
+      point = 30;
+    }
+    if(count === 1){
+      point -= 20;
+    }
+    return point;
+  }
+  searchEvaluationPoint(data){
+
+    let checkPoint = data[0][0][0];
+    let checkData = data[0][0];
+
+    for(var i = 0; i < data.length;i++){
+      for(var k = 0; k < data[i].length;k++){//chess毎
+        if(checkPoint < data[i][k][0].evaluationPoint){
+          checkPoint = data[i][k][0].evaluationPoint;
+          checkData = data[i][k];
+        }
+      }
+    }
+    return checkData;
+  }
+  removeChess(chess){
+    let posInt = this.getPositionInt(chess.x,chess.y);
+    this.scene.stageData.tilePropertyArr[posInt.Y][posInt.X].object = "";
+    chess.destroy();
+    this.player1Count = 0;
+    this.player2Count = 0;
+
+    for(var i = 0; i < this.scene.stageData.tilePropertyArr.length; i++){
+      for(var k = 0; k < this.scene.stageData.tilePropertyArr[i].length; k++){
+        if(this.scene.stageData.tilePropertyArr[i][k].object.type === "player1"){
+          this.player1Count++;
+        }
+        if(this.scene.stageData.tilePropertyArr[i][k].object.type === "player2"){
+          this.player2Count++;          
+        }
+      }
+    }
+
+
+    if(this.player1Count === 0){
+      console.log('%cゲームオーバー！', 'color: #FFF;background-color:blue;');
+      this.gameStatus = "gameover";
+    }
+    if(this.player2Count === 0){
+      console.log('%cゲームクリア！', 'color: #FFF;background-color:blue;');
+      this.gameStatus = "gameclear";
+    }
+
+  }
+
 }
