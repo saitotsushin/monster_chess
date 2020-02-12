@@ -117,7 +117,7 @@ export default class StageManager {
         x: x,
         y: y
       }
-      if(this.scene.setChess.player1_Arr[y][x] === 1){
+      if(this.scene.setChess.player1_Arr[y][x] === 1 && this.scene.setChess.selectedChess){
         console.log('%c配置しますか？', 'color: #000;background-color:#DDD;');
         this.scene.conformMordal.setMessage({
           text: "配置しますか？",

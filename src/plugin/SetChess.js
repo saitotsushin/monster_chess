@@ -115,6 +115,7 @@ export default class SetChess {
     this.selectedChess.x = this.scene.stageLayer.x + X*this.scene.map.tileWidth + this.scene.map.tileWidth/2;
     this.selectedChess.y = this.scene.stageLayer.y + Y*this.scene.map.tileHeight + this.scene.map.tileHeight/2;
     this.setCount = 0;
+    this.selectedChess = "";
 
     this.scene.player1ChessGroup.children.entries.forEach(
       (chess,index) => {
