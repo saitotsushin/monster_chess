@@ -2,6 +2,7 @@ import Monster from '../sprites/character/Monster';
 import ComformMordal from '../ui/ComformMordal';
 import StageManager from '../plugin/StageManager';
 import StageData from '../plugin/StageData';
+import SetChess from '../plugin/SetChess';
 
 class GameScene extends Phaser.Scene {
   constructor(test) {
@@ -15,6 +16,8 @@ class GameScene extends Phaser.Scene {
     this.mode = "";
 
     this.turn = "player1";
+
+    this.stageStatus = "INIT";
 
     this.map = this.make.tilemap({ key: 'map' });
     this.tileset = this.map.addTilesetImage('tileset', 'tiles');
@@ -30,8 +33,11 @@ class GameScene extends Phaser.Scene {
     this.stageManager = new StageManager({
       scene: this
     });
+    this.player1ChessGroup = this.add.group();
     this.stageData = new StageData();
-
+    this.setChess = new SetChess({
+      scene: this
+    });
 
     this.keys = {
       TOUCH_START:{
@@ -45,30 +51,6 @@ class GameScene extends Phaser.Scene {
       isTOUCH: false,
       isRELEASE: false
     };
-
-    /*==============================
-    モンスター
-    ==============================*/        
-    this.player1Chess1 = new Monster({
-      scene: this,
-      x: this.stageLayer.x,
-      y: this.stageLayer.y,
-      key: 'monster1',
-      type: "player1"
-    });
-
-    this.player1Chess2 = new Monster({
-      scene: this,
-      x: this.stageLayer.x,
-      y: this.stageLayer.y,
-      key: 'monster2',
-      type: "player1"
-    });
-
-    this.player1ChessGroup = this.add.group();
-
-    this.player1ChessGroup.add(this.player1Chess1);
-    this.player1ChessGroup.add(this.player1Chess2);
 
     this.player2Chess1 = new Monster({
       scene: this,
@@ -84,6 +66,27 @@ class GameScene extends Phaser.Scene {
       key: 'monster2',
       type: "player2"
     });
+    this.player2Chess3 = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster3',
+      type: "player2"
+    });
+    this.player2Chess4 = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster4',
+      type: "player2"
+    }); 
+    this.player2Chess5 = new Monster({
+      scene: this,
+      x: this.stageLayer.x,
+      y: this.stageLayer.y,
+      key: 'monster5',
+      type: "player2"
+    });       
     this.player2Chess1.status.power = 10;
     this.player2Chess1.status.defense = 10;
     this.player2Chess2.status.power = 10;
@@ -93,10 +96,11 @@ class GameScene extends Phaser.Scene {
 
     this.player2ChessGroup.add(this.player2Chess1);
     this.player2ChessGroup.add(this.player2Chess2);
+    this.player2ChessGroup.add(this.player2Chess3);
+    this.player2ChessGroup.add(this.player2Chess4);
+    this.player2ChessGroup.add(this.player2Chess5);
 
     this.stageManager.initStage(this.stageData.tilePropertyArr);
-    this.stageManager.initSetChess(this.player1ChessGroup,this.stageData.player1_Arr);
-    this.stageManager.initSetChess(this.player2ChessGroup,this.stageData.player2_Arr);
 
     
 
@@ -139,6 +143,7 @@ class GameScene extends Phaser.Scene {
     this.debugText = this.add.text(10, 10, '', { font: '10px Courier', fill: '#FFFFFF' });
     this.debugText.depth = 100;
     this.debugText.setScrollFactor(0,0);
+    this.debugText.alpha = 0.3;
 
     this.marker = this.add.graphics();
     this.marker.lineStyle(3, 0xffffff, 1);
@@ -152,6 +157,7 @@ class GameScene extends Phaser.Scene {
     ------------------------------*/    
     this.debugText.setText(
       [
+        'this.stageStatus :'+this.stageStatus,
         'this.turn :'+this.turn,
       ]
     );

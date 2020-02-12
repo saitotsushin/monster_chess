@@ -56,6 +56,7 @@ class BootScene extends Phaser.Scene {
     this.load.image('monster3', 'assets/images/monster3.png');
     this.load.image('monster4', 'assets/images/monster4.png');
     this.load.image('monster5', 'assets/images/monster5.png');
+    this.load.image('set_area', 'assets/images/set_area.png');
     this.load.image('move_area', 'assets/images/move_area.png');
     this.load.image('attack_move_area', 'assets/images/attack_move_area.png');
     this.load.image('attack_area', 'assets/images/attack_area.png');

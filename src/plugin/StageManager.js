@@ -46,6 +46,7 @@ export default class StageManager {
   駒の初期化
   ==============================*/    
   initSetChess(group,stageArr){
+    console.log("stageArr",stageArr)
     let count = 0;
     let pos = {
       x: 0,
@@ -110,6 +111,28 @@ export default class StageManager {
     タイルの取得
     ============*/
     let tile = this.scene.stageData.tilePropertyArr[y][x];
+
+    if(this.scene.stageStatus === "SET_CHESS"){
+      this.touchedPos = {
+        x: x,
+        y: y
+      }
+      if(this.scene.setChess.player1_Arr[y][x] === 1){
+        console.log('%c配置しますか？', 'color: #000;background-color:#DDD;');
+        this.scene.conformMordal.setMessage({
+          text: "配置しますか？",
+          yes: "はい",
+          no: "いいえ"
+        });
+        this.scene.conformMordal.open();
+        this.mode = "set";  
+      }else{
+        this.scene.conformMordal.close();
+        this.mode = "";  
+      }
+      return;
+    }
+
     if(tile.object.type === "player1"){
       if(this.selectedChess){
         this.moveArea.hide(this.selectedChess);
@@ -192,9 +215,20 @@ export default class StageManager {
     if(this.mode === "move"){
       this.selectedChess.move(this.touchedPos.x,this.touchedPos.y,this.selectedChess);
     }
+    if(this.mode === "set"){
+      this.scene.setChess.deployPosition(this.touchedPos);
+      return;
+    }
+    if(this.mode === "set_fin"){
+      this.scene.setChess.finSet();
+      this.initSetChess(this.scene.player1ChessGroup,this.scene.stageData.player1_Arr);
+      this.initSetChess(this.scene.player2ChessGroup,this.scene.stageData.player2_Arr);
+      return;
+    }
+    console.log('%c「'+this.mode+'」です。', 'color: #000;background-color:yellow;');
+
     this.moveArea.hide();
 
-    console.log('%c「'+this.mode+'」です。', 'color: #000;background-color:yellow;');
 
     if(this.gameStatus !== "play"){
       return;      
@@ -204,6 +238,9 @@ export default class StageManager {
   }
   setModalNo(){
     console.log('%c「いいえ」が押されました。', 'color: #000;background-color:yellow;');
+    if(this.scene.stageStatus === "SET_CHESS_FIN"){
+      this.scene.stageStatus = "SET_CHESS";
+    }
     this.mode = "";
   }
   /*============
