@@ -14,6 +14,8 @@ export default class Monster extends Character {
 
     this.x +=  this.width/2;
     this.y +=  this.height/2;
+
+    this.groupIndex = config.groupIndex;
     
     this.beforePosition = {
       x: this.x,
@@ -143,7 +145,7 @@ export default class Monster extends Character {
     attackingTarget.status.hp -= damagePoint;
 
     if(attackingTarget.status.hp <= 0){
-      console.log('%c'+this.type+'のHPがマイナスになりました。', 'color: #000;background-color:yellow;');
+      console.log('%c'+attackingTarget.type+'のHPがマイナスになりました。', 'color: #000;background-color:yellow;');
       this.scene.stageManager.removeChess(attackingTarget);
     } 
   }

@@ -52,14 +52,16 @@ export default class StageManager {
       x: 0,
       y: 0
     };
+    let index;
     for(var i = 0; i < stageArr.length; i++){//縦：y
       for(var k = 0; k < stageArr[i].length; k++){//横：x
         if(stageArr[i][k] !== 0){
+          index = stageArr[i][k] - 1;
           pos = this.getPositionNumber(k,i);
-          group.children.entries[count].x = pos.x;
-          group.children.entries[count].y = pos.y;
-          group.children.entries[count].areaArr = this.moveArea.setArrPosition(k,i,group.children.entries[count]);
-          this.setProperty(k,i,"object",group.children.entries[count]);          
+          group.children.entries[index].x = pos.x;
+          group.children.entries[index].y = pos.y;
+          group.children.entries[index].areaArr = this.moveArea.setArrPosition(k,i,group.children.entries[index]);
+          this.setProperty(k,i,"object",group.children.entries[index]);          
           count++;
         }
       }
@@ -295,11 +297,11 @@ export default class StageManager {
       choicedChessTarget = choicedChessArr[0].target;
       choicedChessTargetObject = choicedChessArr[0].target.object;
 
-      choicedChessObject.attack(choicedChessTargetObject);
-
       //移動->攻撃はmoveXに値があるかで判定する。
       if(choicedChessTarget.moveX !== 0 && choicedChessTarget.moveY !== 0){
         choicedChessObject.move(choicedChessTarget.moveX,choicedChessTarget.moveY,choicedChessObject);
+      }else{
+        choicedChessObject.attack(choicedChessTargetObject);
       }
     }else{
       //攻撃する相手がいなかったらランダムで移動する。

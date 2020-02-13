@@ -103,6 +103,8 @@ class GameScene extends Phaser.Scene {
     this.stageManager.initStage(this.stageData.tilePropertyArr);
 
     
+    // this.stageManager.initSetChess(this.player1ChessGroup,this.stageData.player1_Arr);
+    // this.stageManager.initSetChess(this.player2ChessGroup,this.stageData.player2_Arr);
 
 
     this.touchedTile;

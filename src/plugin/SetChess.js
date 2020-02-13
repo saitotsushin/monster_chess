@@ -16,11 +16,11 @@ export default class SetChess {
     |key|class|
     */
     this.ownChesses = [
-      ["monster1",Monster],
-      ["monster2",Monster],
-      ["monster3",Monster],
-      ["monster4",Monster],
-      ["monster5",Monster]
+      ["monster1",Monster,1],
+      ["monster2",Monster,2],
+      ["monster3",Monster,3],
+      ["monster4",Monster,4],
+      ["monster5",Monster,5]
     ];
 
     this.setCount = 0;
@@ -61,16 +61,19 @@ export default class SetChess {
     let className;
     let keyName;
     let _this = this;
+    let index;
 
     for(var i = 0; i < this.ownChesses.length; i++){
       keyName = this.ownChesses[i][0];
       className = this.ownChesses[i][1];
+      index = this.ownChesses[i][2];
       chessObject = new className({
         scene: this.scene,
         x: this.scene.stageLayer.x + i*this.scene.map.tileWidth + this.scene.map.tileWidth/2,
         y: this.scene.stageLayer.y + this.scene.map.tileHeight*2.5,
         key: keyName,
-        type: "player1"
+        type: "player1",
+        groupIndex: index
       });   
       chessObject.setInteractive();
       chessObject.on('pointerdown', function (pointer) {
@@ -104,14 +107,13 @@ export default class SetChess {
     console.log("beforePosChess",beforePosChess);
     if(Number.isInteger(beforePosChess.X) 
       && Number.isInteger(beforePosChess.Y)){
-        console.log("this.player1_Arr[beforePosChess.Y][beforePosChess.X]",this.player1_Arr[beforePosChess.Y][beforePosChess.X])
       this.scene.stageData.player1_Arr[beforePosChess.Y][beforePosChess.X] = 0;
     }
     
 
     let X = pos.x;
     let Y = pos.y;
-    this.scene.stageData.player1_Arr[Y][X] = 1;
+    this.scene.stageData.player1_Arr[Y][X] = this.selectedChess.groupIndex;
     this.selectedChess.x = this.scene.stageLayer.x + X*this.scene.map.tileWidth + this.scene.map.tileWidth/2;
     this.selectedChess.y = this.scene.stageLayer.y + Y*this.scene.map.tileHeight + this.scene.map.tileHeight/2;
     this.setCount = 0;
