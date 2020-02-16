@@ -134,7 +134,8 @@ export default class Monster extends Character {
   
   attack(attackingTarget){
 
-    console.log('%c'+this.type+'が攻撃しました。', 'color: #000;background-color:yellow;');
+    console.log("attackingTarget",attackingTarget);
+    console.log("this",this)
 
     let damagePoint = this.status.power - attackingTarget.status.defense;
 
@@ -145,14 +146,13 @@ export default class Monster extends Character {
     attackingTarget.status.hp -= damagePoint;
 
     if(attackingTarget.status.hp <= 0){
-      console.log('%c'+attackingTarget.type+'のHPがマイナスになりました。', 'color: #000;background-color:yellow;');
       this.scene.stageManager.removeChess(attackingTarget);
     } 
   }
   move(x,y,player,mode){
     // let playerStageData;
     
-    let setPos = this.scene.stageManager.getPositionNumber(x,y);
+    let setPos = this.scene.stageManager.stageProp.getPositionNumber(x,y);
     this.x = setPos.x;
     this.y = setPos.y;
     //ステージデータの更新

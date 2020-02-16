@@ -1,5 +1,5 @@
 import Monster from '../sprites/character/Monster';
-import ComformMordal from '../ui/ComformMordal';
+import ModalManager from '../ui/ModalManager';
 import StageManager from '../plugin/StageManager';
 import StageData from '../plugin/StageData';
 import SetChess from '../plugin/SetChess';
@@ -135,9 +135,11 @@ class GameScene extends Phaser.Scene {
     /*==============================
     UI
     ==============================*/        
-    this.conformMordal = new ComformMordal({
+    this.modalManager = new ModalManager({
       scene: this
     });
+    /*オートの配置*/
+    this.modalManager.layoutAuto.open();
 
     /*==============================
     デバッグ

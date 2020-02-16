@@ -1,4 +1,5 @@
 import MoveArea from './MoveArea';
+import StageProp from '../utils/StageProp';
 
 export default class StageManager {
   constructor(gameScene) {
@@ -23,7 +24,9 @@ export default class StageManager {
       type: this.type,
       target: this
     });   
-
+    this.stageProp = new StageProp({
+      scene: this.scene
+    });   
     this.gameStatus = "play";
 
     this.player1Count = 0;
@@ -57,7 +60,7 @@ export default class StageManager {
       for(var k = 0; k < stageArr[i].length; k++){//横：x
         if(stageArr[i][k] !== 0){
           index = stageArr[i][k] - 1;
-          pos = this.getPositionNumber(k,i);
+          pos = this.stageProp.getPositionNumber(k,i);
           group.children.entries[index].x = pos.x;
           group.children.entries[index].y = pos.y;
           group.children.entries[index].areaArr = this.moveArea.setArrPosition(k,i,group.children.entries[index]);
@@ -67,36 +70,7 @@ export default class StageManager {
       }
     }
   }
-  /*==============================
-  ステージ上のx,yを返す
-  ==============================*/    
-  getPositionNumber(X,Y){
-    let pos = {
-      x: 0,
-      y: 0
-    };
 
-    pos.x = this.layer.x + this.map.tileWidth * X + this.map.tileWidth/2;
-    pos.y = this.layer.y + this.map.tileHeight * Y + this.map.tileHeight/2;
-
-    return pos;
-
-  }
-  /*==============================
-  位置(x,y)からステージのX,Yを返す
-  ==============================*/    
-  getPositionInt(x,y){
-    let pos = {
-      X: 0,
-      Y: 0
-    };
-
-    pos.X = (x - this.layer.x - this.map.tileWidth/2) / this.map.tileWidth;
-    pos.Y = (y - this.layer.y - this.map.tileHeight/2) / this.map.tileHeight;
-
-    return pos;
-
-  }
   setProperty(x,y,prop,data){
     let stageArr = this.scene.stageData.tilePropertyArr[y][x];
 
@@ -105,7 +79,6 @@ export default class StageManager {
         stageArr.object = data;
         break;
       default:
-        console.log('no prop');
     }
   }
   touchedTile(x,y){
@@ -120,16 +93,10 @@ export default class StageManager {
         y: y
       }
       if(this.scene.setChess.player1_Arr[y][x] === 1 && this.scene.setChess.selectedChess){
-        console.log('%c配置しますか？', 'color: #000;background-color:#DDD;');
-        this.scene.conformMordal.setMessage({
-          text: "配置しますか？",
-          yes: "はい",
-          no: "いいえ"
-        });
-        this.scene.conformMordal.open();
+        this.scene.modalManager.layout.open();
         this.mode = "set";  
       }else{
-        this.scene.conformMordal.close();
+        this.scene.modalManager.close();
         this.mode = "";  
       }
       return;
@@ -148,55 +115,31 @@ export default class StageManager {
 
     if(this.selectedChess){
       if(this.selectedChess.areaArr[y][x] === 1){
-        console.log('%c移動しますか？', 'color: #000;background-color:yellow;');
-        this.scene.conformMordal.setMessage({
-          text: "移動しますか？",
-          yes: "はい",
-          no: "いいえ"
-        });
-        this.scene.conformMordal.open();
+        this.scene.modalManager.move.open();
         this.mode = "move";
       }
       if(this.selectedChess.areaArr[y][x] === 2){
         if(tile.object.type === "player2"){
-          console.log('%c攻撃しますか？', 'color: #FFF;background-color:red;');
           this.enemyChess = tile.object;
-          this.scene.conformMordal.setMessage({
-            text: "攻撃しますか？",
-            yes: "はい",
-            no: "いいえ"
-          });
-          this.scene.conformMordal.open();
+          this.scene.modalManager.attack.open();
           this.mode = "attack";
         }else{
-          this.scene.conformMordal.close();
+          this.scene.modalManager.close();
           this.mode = "";          
         }
       }
       if(this.selectedChess.areaArr[y][x] === 3){
         if(tile.object.type === "player2"){
-          console.log('%c攻撃しますか？', 'color: #FFF;background-color:red;');
           this.enemyChess = tile.object;
-          this.scene.conformMordal.setMessage({
-            text: "攻撃しますか？",
-            yes: "はい",
-            no: "いいえ"
-          });
-          this.scene.conformMordal.open();
+          this.scene.modalManager.attack.open();
           this.mode = "attack";
         }else{
-          console.log('%c移動しますか？', 'color: #000;background-color:yellow;');
-          this.scene.conformMordal.setMessage({
-            text: "移動しますか？",
-            yes: "はい",
-            no: "いいえ"
-          });
-          this.scene.conformMordal.open();
+          this.scene.modalManager.move.open();
           this.mode = "move";     
         }
       }
       if(this.selectedChess.areaArr[y][x] === 0){
-        this.scene.conformMordal.close();
+        this.scene.modalManager.close();
         this.mode = "";     
       }
       this.touchedPos = {
@@ -206,45 +149,7 @@ export default class StageManager {
 
     }
   }
-  /*============
-  モーダル
-  ============*/
-  setModalYes(){
-    console.log('%c「はい」が押されました。', 'color: #000;background-color:yellow;');
-    if(this.mode === "attack"){
-      this.selectedChess.attack(this.enemyChess);
-    }
-    if(this.mode === "move"){
-      this.selectedChess.move(this.touchedPos.x,this.touchedPos.y,this.selectedChess);
-    }
-    if(this.mode === "set"){
-      this.scene.setChess.deployPosition(this.touchedPos);
-      return;
-    }
-    if(this.mode === "set_fin"){
-      this.scene.setChess.finSet();
-      this.initSetChess(this.scene.player1ChessGroup,this.scene.stageData.player1_Arr);
-      this.initSetChess(this.scene.player2ChessGroup,this.scene.stageData.player2_Arr);
-      return;
-    }
-    console.log('%c「'+this.mode+'」です。', 'color: #000;background-color:yellow;');
 
-    this.moveArea.hide();
-
-
-    if(this.gameStatus !== "play"){
-      return;      
-    }
-
-    this.searchAttackArea();
-  }
-  setModalNo(){
-    console.log('%c「いいえ」が押されました。', 'color: #000;background-color:yellow;');
-    if(this.scene.stageStatus === "SET_CHESS_FIN"){
-      this.scene.stageStatus = "SET_CHESS";
-    }
-    this.mode = "";
-  }
   /*============
   検索
   ============*/
@@ -288,7 +193,7 @@ export default class StageManager {
       choicedChessObject = choicedChessArr[0].object;
 
       
-      let choicedChessObjectBeforePos = this.getPositionInt(choicedChessObject.x,choicedChessObject.y);
+      let choicedChessObjectBeforePos = this.stageProp.getPositionInt(choicedChessObject.x,choicedChessObject.y);
 
       this.beforeChessPos.x = choicedChessObjectBeforePos.X;
       this.beforeChessPos.y = choicedChessObjectBeforePos.Y;
@@ -305,13 +210,12 @@ export default class StageManager {
       }
     }else{
       //攻撃する相手がいなかったらランダムで移動する。
-      console.log('%c攻撃する相手がいなかったらランダムで移動する。', 'color: #FFF;background-color:green;');
       //ランダムでchsssを選ぶ
       let moveGroup = this.scene.player2ChessGroup.children.entries;
       let moveGroupLength = moveGroup.length;
       let moveRandom = this.scene.getRandomInt(0,moveGroupLength-1);
       let moveChess = moveGroup[moveRandom];
-      let moveChessBeforePos = this.getPositionInt(moveChess.x,moveChess.y);
+      let moveChessBeforePos = this.stageProp.getPositionInt(moveChess.x,moveChess.y);
       this.beforeChessPos.x = moveChessBeforePos.X;
       this.beforeChessPos.y = moveChessBeforePos.Y;
 
@@ -502,7 +406,7 @@ export default class StageManager {
     return checkData;
   }
   removeChess(chess){
-    let posInt = this.getPositionInt(chess.x,chess.y);
+    let posInt = this.stageProp.getPositionInt(chess.x,chess.y);
     this.scene.stageData.tilePropertyArr[posInt.Y][posInt.X].object = "";
     chess.destroy();
     this.player1Count = 0;
@@ -521,11 +425,9 @@ export default class StageManager {
 
 
     if(this.player1Count === 0){
-      console.log('%cゲームオーバー！', 'color: #FFF;background-color:blue;');
       this.gameStatus = "gameover";
     }
     if(this.player2Count === 0){
-      console.log('%cゲームクリア！', 'color: #FFF;background-color:blue;');
       this.gameStatus = "gameclear";
     }
 

@@ -102,9 +102,7 @@ export default class SetChess {
     で判定している。
     UIを変更する時は注意！
      */
-    console.log("pos f",pos);
-    let beforePosChess = this.scene.stageManager.getPositionInt(this.selectedChess.x,this.selectedChess.y);
-    console.log("beforePosChess",beforePosChess);
+    let beforePosChess = this.scene.stageManager.stageProp.getPositionInt(this.selectedChess.x,this.selectedChess.y);
     if(Number.isInteger(beforePosChess.X) 
       && Number.isInteger(beforePosChess.Y)){
       this.scene.stageData.player1_Arr[beforePosChess.Y][beforePosChess.X] = 0;
@@ -121,14 +119,12 @@ export default class SetChess {
 
     this.scene.player1ChessGroup.children.entries.forEach(
       (chess,index) => {
-        let posChess = this.scene.stageManager.getPositionInt(chess.x,chess.y);
+        let posChess = this.scene.stageManager.stageProp.getPositionInt(chess.x,chess.y);
         //整数チェック
         if(Number.isInteger(posChess.X)
            && Number.isInteger(posChess.Y)
            && this.player1_Arr[posChess.Y][posChess.X] === 1
         ){
-
-          console.log("posChess",posChess);
 
           this.setCount++;
 
@@ -137,14 +133,8 @@ export default class SetChess {
       }
     ,this);
     if(this.setCount === this.setMaxCount){
-      console.log("セット完了");
       this.scene.stageStatus = "SET_CHESS_FIN";
-      this.scene.conformMordal.setMessage({
-        text: "配置はこれで良いですか？",
-        yes: "はい",
-        no: "いいえ"
-      });
-      this.scene.conformMordal.open();
+      this.scene.modalManager.layoutFin.open();
       this.scene.stageManager.mode = "set_fin";
     }
     /*表示ステータスのリセット */

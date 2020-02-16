@@ -1,22 +1,19 @@
-export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
+export default class Base extends Phaser.Physics.Arcade.Sprite{
   constructor(config) {
-    super(config.scene);
+    super(config);
 
-    config.scene.physics.world.enable(this);
-    config.scene.add.existing(this);
+    this.scene = config;
 
     this.target;
 
     // this.modelText = "テキスト";
-    this.modelText = {
-      default: {
-        text: "配置しますか？",
-        yes: "はい",
-        no: "いいえ"
-      } 
+    this.textData = {
+      lead: "デフォルトテキスト",
+      yes: "はい",
+      no: "いいえ"
     };
     
-    let baseRect = new Phaser.Geom.Rectangle(0, 0, config.scene.game.config.width, 40);
+    let baseRect = new Phaser.Geom.Rectangle(0, 0, config.game.config.width, 40);
     let base = this.scene.add.graphics(
       {
         fillStyle: { color: 0x000000 }
@@ -38,27 +35,27 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
     this.mordalText = this.scene.add.text(
       base.width/2,
       10,
-      this.modelText.default.text,
+      this.textData.lead,
       { font: '10px Courier', fill: '#FFFFFF' }
     );
 
     this.btn_yes = this.scene.add.text(
       10,
       25,
-      this.modelText.default.yes,
+      this.textData.yes,
       { font: '10px Courier', fill: '#FFFFFF' }
     );
 
     this.btn_yes.setInteractive();
     this.btn_yes.on('pointerdown', function (pointer) {
       this.close();
-      this.scene.stageManager.setModalYes();         
+      this.setYes();         
     },this);
 
     this.btn_no = this.scene.add.text(
       100,
       25,
-      this.modelText.default.no,
+      this.textData.no,
       { font: '10px Courier', fill: '#CCC' }
     );
 
@@ -66,7 +63,7 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
 
     this.btn_no.on('pointerdown', function (pointer) {   
       this.close();
-      this.scene.stageManager.setModalNo();         
+      this.setNo();         
     },this);
     this.mordalText.depth = 101;
 
@@ -79,27 +76,33 @@ export default class ComformMordal extends Phaser.Physics.Arcade.Sprite{
       ]
     );    
   }
-
-  setMessage(config){
-    let text = config.text ? config.text : "undefined";
-    let yes = config.yes ? config.yes : "はい";
-    let no = config.no ? config.no : "いいえ";
-    this.mordalText.setText(text);
-    this.btn_yes.setText(yes);
-    this.btn_no.setText(no);
+  /*============
+  モーダル
+  ============*/
+  setYes(){
   }
-
+  setNo(){
+    if(this.scene.stageStatus === "SET_CHESS_FIN"){
+      this.scene.stageStatus = "SET_CHESS";
+    }
+    this.mode = "";
+  }
   open(){
+    this.mordalText.setText(this.textData.lead);
+    this.btn_yes.setText(this.textData.yes);
+    this.btn_no.setText(this.textData.no);
     this.setVisible(true);
     this.container.setVisible(true);
     this.container.x = 0;
     this.mordalText.x = 0;
     this.mordalText.y = 0;
+    this.scene.modalManager.openModal = this;
 
   }
   close(){
     this.setVisible(false);
     this.container.setVisible(false);
+    this.scene.modalManager.openModal = "";
   }
 }
   
