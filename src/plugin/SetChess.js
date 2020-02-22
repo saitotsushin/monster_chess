@@ -32,7 +32,7 @@ export default class SetChess {
     this.createArea();
     this.createChess();
 
-    this.scene.stageStatus = "SET_CHESS";
+    this.scene.STAGE_STATUS = "SET_CHESS";
 
     this.chessStatusObject = this.scene.add.sprite(40,40,"set_area");
     this.chessStatusText = this.scene.add.text(60, 50, '', { font: '10px Courier', fill: '#FFFFFF' });
@@ -89,7 +89,7 @@ export default class SetChess {
       [
         'HP      :'+chess.status.hp,
         'POWER   :'+chess.status.power,
-        'DEFENSE :'+chess.status.defense,
+        'difence :'+chess.status.difence,
       ]
     );
     this.chessStatusObject.setTexture(texture);
@@ -133,9 +133,9 @@ export default class SetChess {
       }
     ,this);
     if(this.setCount === this.setMaxCount){
-      this.scene.stageStatus = "SET_CHESS_FIN";
+      this.scene.STAGE_STATUS = "SET_CHESS_FIN";
       this.scene.modalManager.layoutFin.open();
-      this.scene.stageManager.mode = "set_fin";
+      this.scene.stageManager.CHESS_STATUS = "set_fin";
     }
     /*表示ステータスのリセット */
     this.chessStatusText.setText(

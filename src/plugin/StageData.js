@@ -1,3 +1,4 @@
+import Bomb from '../sprites/Trap/Bomb';
 export default class StageData {
   constructor() {
     this.tilePropertyArr = [
@@ -54,5 +55,15 @@ export default class StageData {
       [1,1,1,1,1,1],
       [1,1,1,1,1,1]
     ];
+    this.trapList = {
+      bomb: {
+        key: "bomb",
+        class: Bomb
+      }
+    };
+    this.player1_TrapList = [
+      this.trapList.bomb,
+      this.trapList.bomb
+    ]
   }
 }

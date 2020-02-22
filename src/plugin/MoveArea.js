@@ -46,7 +46,7 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
 
     for(var i = baseY; i < harfHeight + baseY + 1; i++){//縦（y）
       for(var k = baseX; k < harfWidth + baseX + 1; k++){//横（x）
-        if(base[i][k] !== 0 && base[i][k] !== 9){
+        if(base[i][k] !== 0){
           area2[i2][k2] = base[i][k];
         }
         k2++;

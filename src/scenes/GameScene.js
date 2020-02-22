@@ -1,8 +1,12 @@
+
 import Monster from '../sprites/character/Monster';
 import ModalManager from '../ui/ModalManager';
 import StageManager from '../plugin/StageManager';
 import StageData from '../plugin/StageData';
 import SetChess from '../plugin/SetChess';
+import Player from '../plugin/Player';
+import Trap from '../ui/Trap';
+import TouchedTile from '../plugin/TouchedTile';
 
 class GameScene extends Phaser.Scene {
   constructor(test) {
@@ -12,12 +16,12 @@ class GameScene extends Phaser.Scene {
   }
   create(){
 
-
-    this.mode = "";
+    this.CHESS_STATUS = "";
 
     this.turn = "player1";
 
-    this.stageStatus = "INIT";
+    this.STAGE_STATUS = "INIT";
+    this.PLAYER_STATUS = "";
 
     this.map = this.make.tilemap({ key: 'map' });
     this.tileset = this.map.addTilesetImage('tileset', 'tiles');
@@ -30,6 +34,9 @@ class GameScene extends Phaser.Scene {
     this.stageLayer.x = (this.game.config.width - this.stageLayer.width) /2;
     this.stageLayer.y = (this.game.config.height - this.stageLayer.height) /2;
 
+    this.Player = new Player({
+      scene: this
+    });
     this.stageManager = new StageManager({
       scene: this
     });
@@ -39,18 +46,6 @@ class GameScene extends Phaser.Scene {
       scene: this
     });
 
-    this.keys = {
-      TOUCH_START:{
-        x: 0,
-        y: 0
-      },
-      TOUCH_END:{
-        x: 0,
-        y: 0
-      },
-      isTOUCH: false,
-      isRELEASE: false
-    };
 
     this.player2Chess1 = new Monster({
       scene: this,
@@ -88,9 +83,9 @@ class GameScene extends Phaser.Scene {
       type: "player2"
     });       
     this.player2Chess1.status.power = 10;
-    this.player2Chess1.status.defense = 10;
+    this.player2Chess1.status.difence = 10;
     this.player2Chess2.status.power = 10;
-    this.player2Chess2.status.defense = 10;
+    this.player2Chess2.status.difence = 10;
 
     this.player2ChessGroup = this.add.group();
 
@@ -102,32 +97,27 @@ class GameScene extends Phaser.Scene {
 
     this.stageManager.initStage(this.stageData.tilePropertyArr);
 
-    
-    // this.stageManager.initSetChess(this.player1ChessGroup,this.stageData.player1_Arr);
-    // this.stageManager.initSetChess(this.player2ChessGroup,this.stageData.player2_Arr);
+    this.TouchedTile = new TouchedTile({
+      scene: this
+    });
 
-
-    this.touchedTile;
     this.stageTileProperty;
     this.pickChess;
     this.monsterStatus;
     this.attackTarget;
-    // this.stageTile;
 
     /*==============================
     ステージ
     ==============================*/    
     this.stageLayer.setInteractive();
     this.stageLayer.on('pointerdown', function (pointer) {
-      /*----------------
-      念の為に初期化
-      ----------------*/
-      this.touchedTile = null;
-      this.tilePropertyData = null;
 
-      this.touchedTile = this.getTilePosition();
 
-      this.stageManager.touchedTile(this.touchedTile.localNumber.x,this.touchedTile.localNumber.y);
+      let tilePos = this.TouchedTile.getTilePosition();
+
+      this.stageManager.touchedPos = tilePos.localNumber;
+
+      this.TouchedTile.setStageTile(tilePos.localNumber.x,tilePos.localNumber.y);
 
 
     },this);
@@ -140,7 +130,10 @@ class GameScene extends Phaser.Scene {
     });
     /*オートの配置*/
     this.modalManager.layoutAuto.open();
-
+    /*トラップ*/
+    this.trap = new Trap({
+      scene: this
+    });
     /*==============================
     デバッグ
     ==============================*/
@@ -149,10 +142,7 @@ class GameScene extends Phaser.Scene {
     this.debugText.setScrollFactor(0,0);
     this.debugText.alpha = 0.3;
 
-    this.marker = this.add.graphics();
-    this.marker.lineStyle(3, 0xffffff, 1);
-    this.marker.strokeRect(0, 0,this. map.tileWidth, this.map.tileHeight);
-    this.marker.depth = 5;
+
   }
 
   update(time, delta) {
@@ -161,8 +151,8 @@ class GameScene extends Phaser.Scene {
     ------------------------------*/    
     this.debugText.setText(
       [
-        'this.stageStatus :'+this.stageStatus,
-        'this.turn :'+this.turn,
+        'STAGE_STATUS :'+this.STAGE_STATUS,
+        'CHESS_STATUS :'+this.CHESS_STATUS,
       ]
     );
 
@@ -171,44 +161,7 @@ class GameScene extends Phaser.Scene {
     ==============================*/
   }
   
-  getRandomInt(min, max) {
-    return Math.floor( Math.random() * (max - min + 1) ) + min;
-  };
 
-  getTilePosition(){
-
-    var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
-
-    // Rounds down to nearest tile
-    var pointerTileX = this.map.worldToTileX(worldPoint.x);
-    var pointerTileY = this.map.worldToTileY(worldPoint.y);
-
-    // Snap to tile coordinates, but in world space
-    this.marker.x = this.map.tileToWorldX(pointerTileX);
-    this.marker.y = this.map.tileToWorldY(pointerTileY);
-    var tile = this.map.getTileAt(pointerTileX, pointerTileY);
-
-    let postion = {
-      localNumber: {
-        x: 0,
-        y: 0  
-      },
-      world:{
-        x: 0,
-        y: 0  
-      }
-    }
-
-    if (tile)
-    {
-        postion.world.x = tile.x * this.map.tileWidth + this.stageLayer.x;
-        postion.world.y = tile.y * this.map.tileHeight + this.stageLayer.y;
-        postion.localNumber.x = (postion.world.x - this.stageLayer.x) /this.map.tileWidth;
-        postion.localNumber.y = (postion.world.y - this.stageLayer.y) /this.map.tileHeight;
-        return postion;
-    }
-  }
-  
 }
 
 export default GameScene;

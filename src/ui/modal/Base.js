@@ -1,3 +1,5 @@
+
+
 export default class Base extends Phaser.Physics.Arcade.Sprite{
   constructor(config) {
     super(config);
@@ -6,7 +8,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
 
     this.target;
 
-    // this.modelText = "テキスト";
+    // this.CHESS_STATUSlText = "テキスト";
     this.textData = {
       lead: "デフォルトテキスト",
       yes: "はい",
@@ -82,10 +84,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
   setYes(){
   }
   setNo(){
-    if(this.scene.stageStatus === "SET_CHESS_FIN"){
-      this.scene.stageStatus = "SET_CHESS";
+    if(this.scene.STAGE_STATUS === "SET_CHESS_FIN"){
+      this.scene.STAGE_STATUS = "SET_CHESS";
     }
-    this.mode = "";
+    this.CHESS_STATUS = "";
   }
   open(){
     this.mordalText.setText(this.textData.lead);

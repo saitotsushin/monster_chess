@@ -1,4 +1,5 @@
 import Base from './Base';
+import * as StageFunc from '../../plugin/StageFunc';
 export default class Move extends Base{
   constructor(config) {
     super(config.scene);
@@ -11,12 +12,30 @@ export default class Move extends Base{
   }
   setYes(){
     let manager = this.scene.stageManager;
-    manager.selectedChess.move(
+    let player = this.scene.Player;
+    player.selectedChess.move(
       manager.touchedPos.x,
       manager.touchedPos.y,
-      manager.selectedChess
-    ); 
+      player.selectedChess
+    );
+    StageFunc.updateTileProp(
+      {
+        afterPos: {
+          x: manager.touchedPos.x,
+          y: manager.touchedPos.y,
+        },
+        beforePos: {
+          x: manager.beforeChessPos.x,
+          y: manager.beforeChessPos.y,
+        },
+        stageData: this.scene.stageData,
+        moveArea: manager.moveArea,
+        chess: player.selectedChess
+      }
+    );
     manager.moveArea.hide();
-    manager.searchAttackArea();
+    this.scene.STAGE_STATUS = "";
+    this.scene.CHESS_STATUS = "FIN";
+    manager.modalYes();
   }
 }

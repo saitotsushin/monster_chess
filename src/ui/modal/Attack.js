@@ -10,9 +10,13 @@ export default class Attack extends Base{
     };
   }
   setYes(){
-    console.log("this.scene",this.scene)
-    this.scene.stageManager.selectedChess.attack(this.scene.stageManager.enemyChess);
+    let manager = this.scene.stageManager;
+    let player = this.scene.Player;
+    player.selectedChess.attack(manager.enemyChess);
     this.scene.stageManager.moveArea.hide();
-    this.scene.stageManager.searchAttackArea();
+    this.close();
+    this.scene.STAGE_STATUS = "";
+    this.scene.CHESS_STATUS = "FIN";
+    manager.modalYes();    
   }
 }

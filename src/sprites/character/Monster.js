@@ -1,6 +1,6 @@
 import Character from './Character';
 
-
+import * as Func from '../../common/Func';
 
 export default class Monster extends Character {
 
@@ -94,7 +94,7 @@ export default class Monster extends Character {
     this.status = {
       hp: 5,
       power: 4,
-      defense: 1
+      difence: 1
     }
     this.typeTxt;
     /*==============================
@@ -134,13 +134,10 @@ export default class Monster extends Character {
   
   attack(attackingTarget){
 
-    console.log("attackingTarget",attackingTarget);
-    console.log("this",this)
-
-    let damagePoint = this.status.power - attackingTarget.status.defense;
+    let damagePoint = this.status.power - attackingTarget.status.difence;
 
     if(damagePoint <= 0){
-      damagePoint = this.scene.getRandomInt(0,1);
+      damagePoint = Func.getRandomInt(0,1);
     }
     attackingTarget.damage(damagePoint);
     attackingTarget.status.hp -= damagePoint;
@@ -151,15 +148,11 @@ export default class Monster extends Character {
   }
   move(x,y,player,mode){
     // let playerStageData;
-    
+
     let setPos = this.scene.stageManager.stageProp.getPositionNumber(x,y);
     this.x = setPos.x;
     this.y = setPos.y;
-    //ステージデータの更新
-    this.scene.stageData.tilePropertyArr[this.scene.stageManager.beforeChessPos.y][this.scene.stageManager.beforeChessPos.x].object = "";
-    this.scene.stageData.tilePropertyArr[y][x].object = this;
-    //移動エリアデータの更新
-    player.areaArr = this.scene.stageManager.moveArea.setArrPosition(x,y,player,"move");
+
   }
   damage(damagePoint){
     this.damageText.x = this.x + 10;

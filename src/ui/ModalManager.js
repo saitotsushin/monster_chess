@@ -3,6 +3,8 @@ import Move from './modal/Move';
 import Layout from './modal/Layout';
 import LayoutAuto from './modal/LayoutAuto';
 import LayoutFin from './modal/LayoutFin';
+import Trap from './modal/Trap';
+import NextTurn from './modal/NextTurn';
 
 export default class ModalManager{
   constructor(config) {
@@ -25,9 +27,14 @@ export default class ModalManager{
     this.layoutFin = new LayoutFin({
       scene: this.scene
     });
+    this.nextTurn = new NextTurn({
+      scene: this.scene
+    });
+    this.trap = new Trap({
+      scene: this.scene
+    });
   }
   close(){
-    console.log("this.openModal",this.openModal)
     if(this.openModal){
       this.openModal.close();
     }
