@@ -1,6 +1,7 @@
 import * as Func from '../common/Func';
 import * as StageFunc from './StageFunc';
 import * as StageInit from './StageInit';
+import * as StageSearch from './StageSearch';
 import * as CalcEvaluation from './CalcEvaluation';
 import MoveArea from './MoveArea';
 import StageProp from '../utils/StageProp';
@@ -81,16 +82,15 @@ export default class StageManager {
     
     if(getNextStepArr.length > 0){
       //評価値が一番高いchessを選ぶ
+      
       choicedChessArr = CalcEvaluation.search(getNextStepArr);
 
       choicedChessObject = choicedChessArr[0].object;
 
-      
       let choicedChessObjectBeforePos = this.stageProp.getPositionInt(choicedChessObject.x,choicedChessObject.y);
 
       this.beforeChessPos.x = choicedChessObjectBeforePos.X;
       this.beforeChessPos.y = choicedChessObjectBeforePos.Y;
-
 
       choicedChessTarget = choicedChessArr[0].target;
       choicedChessTargetObject = choicedChessArr[0].target.object;
@@ -133,61 +133,16 @@ export default class StageManager {
 
     //攻撃する相手がいなかったらランダムで移動する。
     if(getNextStepArr.length === 0){
+
+      StageSearch.random({
+        group: this.scene.player2ChessGroup.children.entries,
+        beforeChessPos: this.beforeChessPos,
+        stageData: this.scene.stageData,
+        moveArea: this.moveArea,
+        stageProp: this.stageProp,
+        scene: this.scene
+      });
       
-      //ランダムでchessを選ぶ
-      let moveGroup = this.scene.player2ChessGroup.children.entries;
-      let moveGroupLength = moveGroup.length;
-      let moveRandom = Func.getRandomInt(0,moveGroupLength-1);
-      let moveChess = moveGroup[moveRandom];
-      let moveChessBeforePos = this.stageProp.getPositionInt(moveChess.x,moveChess.y);
-      this.beforeChessPos.x = moveChessBeforePos.X;
-      this.beforeChessPos.y = moveChessBeforePos.Y;
-
-      let moveNextArr = [];
-
-      let moveNextSavePos = {
-        X: 0,
-        Y: 0
-      };
-
-      let moveNextPos;
-
-      for(var i = 0; i < moveChess.areaArr.length; i++){
-        for(var k = 0; k < moveChess.areaArr[i].length; k++){
-          if(this.scene.stageData.tilePropertyArr[i][k].object === ""){
-            if(moveChess.areaArr[i][k] === 1 || moveChess.areaArr[i][k] === 3){
-              moveNextSavePos.X = k;
-              moveNextSavePos.Y = i;
-              moveNextArr.push(moveNextSavePos);
-            }
-          }
-        }
-      }
-
-      moveNextPos = moveNextArr[Func.getRandomInt(0,moveNextArr.length-1)];
-      moveChess.move(moveNextPos.X,moveNextPos.Y,moveChess);
-      StageFunc.checkTrap(
-        moveChess,
-        this.scene.stageData.tilePropertyArr,
-        this.stageProp.getPositionInt(moveChess.x,moveChess.y),
-        this.scene
-      );
-
-      StageFunc.updateTileProp(
-        {
-          afterPos: {
-            x: moveNextPos.X,
-            y: moveNextPos.Y,
-          },
-          beforePos: {
-            x: this.beforeChessPos.x,
-            y: this.beforeChessPos.y,
-          },
-          stageData: this.scene.stageData,
-          moveArea: this.moveArea,
-          chess: moveChess
-        }
-      );
     }
     
   }
