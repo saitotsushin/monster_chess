@@ -1,4 +1,4 @@
-import Monster from '../sprites/character/Monster';
+import Monster from '../object/character/Monster';
 export default class SetChess {
   constructor(config) {
     this.player1_Arr = [

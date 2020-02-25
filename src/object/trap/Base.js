@@ -1,7 +1,13 @@
 
 export default class Base extends Phaser.Physics.Arcade.Sprite {
   constructor(config) {
-    super(config.scene, config.x, config.y, config.key,config.groupIndex);
+    super(
+      config.scene,
+      config.x,
+      config.y,
+      config.key,
+      config.groupIndex
+    );
 
     this.scene = config.scene;
 

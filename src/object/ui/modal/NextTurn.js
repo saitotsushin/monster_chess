@@ -10,9 +10,7 @@ export default class Move extends Base{
     };
   }
   setYes(){
-    let manager = this.scene.stageManager;
-    manager.CHESS_STATUS = "NEXT_TURN";
-    this.close();
+    let manager = this.scene.StageManager;
     manager.modalYes();
   }
 }

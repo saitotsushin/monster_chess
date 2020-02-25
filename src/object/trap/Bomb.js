@@ -19,9 +19,10 @@ export default class Bomb extends Base {
     
     this.on('pointerdown', () => {
       
-      this.scene.STAGE_STATUS = "SELECTED_TRAP"
-      this.scene.Player.selectedTrap.object = this;
-      this.scene.stageManager.moveArea.hide(this.scene.stageManager.selectedChess);
+      this.scene.StageManager.STATUS.STAGE = "SELECTED_TRAP"
+      this.scene.PlayerManager.selectedTrap = this;
+      this.scene.StageManager.MoveArea.hide(this.scene.StageManager.selectedChess);
+      // this.scene.ModalManager.open();
     },this);  
   }
 }

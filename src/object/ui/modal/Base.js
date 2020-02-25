@@ -98,13 +98,13 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
     this.container.x = 0;
     this.mordalText.x = 0;
     this.mordalText.y = 0;
-    this.scene.modalManager.openModal = this;
+    this.scene.ModalManager.openModal = this;
 
   }
   close(){
     this.setVisible(false);
     this.container.setVisible(false);
-    this.scene.modalManager.openModal = "";
+    this.scene.ModalManager.openModal = "";
   }
 }
   

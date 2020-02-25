@@ -1,17 +1,19 @@
-import Bomb from '../sprites/Trap/Bomb';
-export default class StageData {
+export default class PlayerData {
   constructor() {
-    this.tilePropertyArr = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
+    this.player1_ChessList = [
+      "chess_1",
+      "chess_2",
+      "chess_3",
+      "chess_4",
+      "chess_5"
     ];
-
+    this.player2_ChessList = [
+      "chess_1",
+      "chess_2",
+      "chess_3",
+      "chess_4",
+      "chess_5"
+    ]
     //初期の配置で使用
     this.player1_Arr = [
       [0,0,0,0,0,0],
@@ -35,6 +37,16 @@ export default class StageData {
     ];
     //初期の配置で使用
     this.player2_Arr = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
+    this.player2Auto_Arr = [
       [0,0,1,2,3,0],
       [0,0,4,0,5,0],
       [0,0,0,0,0,0],
@@ -44,7 +56,6 @@ export default class StageData {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0]
     ];
-
     this.stageCanSetArr = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
@@ -55,15 +66,6 @@ export default class StageData {
       [1,1,1,1,1,1],
       [1,1,1,1,1,1]
     ];
-    this.trapList = {
-      bomb: {
-        key: "bomb",
-        class: Bomb
-      }
-    };
-    this.player1_TrapList = [
-      this.trapList.bomb,
-      this.trapList.bomb
-    ]
+
   }
 }

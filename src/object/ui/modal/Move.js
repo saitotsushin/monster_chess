@@ -1,18 +1,16 @@
 import Base from './Base';
-export default class Trap extends Base{
+export default class Move extends Base{
   constructor(config) {
     super(config.scene);
     this.scene = config.scene;
     this.textData = {
-      lead: "トラップを配置しますか？",
+      lead: "移動しますか？",
       yes: "はい",
       no: "いいえ"
     };
   }
   setYes(){
-    let manager = this.scene.stageManager;
-    // manager.CHESS_STATUS = "TRAP_SET";
-    this.close();
+    let manager = this.scene.StageManager;
     manager.modalYes();
   }
 }

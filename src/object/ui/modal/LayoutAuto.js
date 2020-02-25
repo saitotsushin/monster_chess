@@ -10,10 +10,8 @@ export default class LayoutAuto extends Base{
     };
   }
   setYes(){
-    this.scene.STAGE_STATUS = "LAYOUT_FIN";
-    this.scene.setChess.finSet();
-    let manager = this.scene.stageManager;
+    this.scene.StageManager.STATUS.STAGE = "LAYOUT_AUTO";
     //保存していた配列
-    manager.modalYes();
+    this.scene.StageManager.modalYes();
   }
 }

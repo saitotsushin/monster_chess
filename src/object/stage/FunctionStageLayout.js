@@ -1,0 +1,40 @@
+export function layoutAuto(scene,player,mode){
+  let playerArr = [];
+  let group;
+  if(player === "player1"){
+    if(mode === "auto"){
+      playerArr = scene.PlayerManager.player1Auto_Arr;
+      scene.PlayerManager.player1_Arr = scene.PlayerManager.player1Auto_Arr;
+    }else{
+      playerArr = scene.PlayerManager.player1_Arr;
+    }
+    group = scene.PlayerManager.player1ChessGroup;
+  }
+  if(player === "player2"){
+    if(mode === "auto"){
+      playerArr = scene.PlayerManager.player2Auto_Arr;
+      scene.PlayerManager.player2_Arr = scene.PlayerManager.player2Auto_Arr;
+    }else{
+      playerArr = scene.PlayerManager.player2_Arr;
+    }
+    group = scene.PlayerManager.player2ChessGroup;
+  }
+  let chess;
+  let position;
+
+  for(var i = 0; i < playerArr.length;i++){
+    for(var k = 0; k < playerArr[i].length;k++){
+      if(playerArr[i][k] !== 0){
+
+        position = scene.StageManager.getTilePositionNumber(k,i);
+
+        chess = group.children.entries[playerArr[i][k]-1];
+
+        chess.x = position.world.x;
+        chess.y = position.world.y;
+
+      }
+    }
+  }
+
+}

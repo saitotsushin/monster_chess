@@ -1,30 +1,28 @@
-export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
+export default class MoveArea{
   constructor(config) {
-    super(
-      config.scene,
-      config.type
-    )
-    config.scene.physics.world.enable(this);
-    config.scene.add.existing(this);
+
+    this.scene = config.scene;
+
+    this.StageManager = config.StageManager;
 
     this.x = 0;
     this.y = 0;
 
-    this.target = config.target;
+    // this.target = config.target;
     this.positionInt = {
       x: 0,
       y: 0
     }
-    this.area1Group = this.scene.add.group();
-    this.area2Group = this.scene.add.group();
-    this.area3Group = this.scene.add.group();
+    this.area1Group = config.scene.add.group();
+    this.area2Group = config.scene.add.group();
+    this.area3Group = config.scene.add.group();
     this.createAreaPanel();
   }
 
-  setArrPosition(X,Y,target,mode){
+  setArrPosition(X,Y,target){
 
     let base = target.areaMapBase;
-    let area = target.areaArr;
+    // let area = target.areaArr;
     let area2 = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
@@ -55,8 +53,8 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
       i2++;
     }
 
-
-    return area2;
+    target.areaArr = area2;
+    // return area2;
     
   }
   createAreaPanel(){
@@ -74,8 +72,8 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
     for(var i = 0; i < row; i++){
       for(var k = 0; k < col; k++){
         area = this.scene.add.sprite(0,0,key);
-        area.x = k * this.scene.map.tileWidth + this.scene.map.tileWidth/2 + this.scene.stageLayer.x;
-        area.y = i * this.scene.map.tileHeight + this.scene.map.tileHeight/2 + this.scene.stageLayer.y;  
+        area.x = k * this.scene.map.tileWidth + this.scene.map.tileWidth/2 + this.StageManager.StageLayer.layer.x;
+        area.y = i * this.scene.map.tileHeight + this.scene.map.tileHeight/2 + this.StageManager.StageLayer.layer.y;  
         area.setVisible(false);
         group.add(area);
       }
@@ -114,6 +112,4 @@ export default class MoveArea extends Phaser.Physics.Arcade.Sprite {
       }
     );  
   }
-
-
 }
