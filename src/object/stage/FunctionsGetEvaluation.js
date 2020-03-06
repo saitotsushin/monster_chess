@@ -1,4 +1,4 @@
-import * as Func from '../common/Func';
+import * as Func from '../../utils/Func';
 export function getPoint(chess1,chess2,count){
   /*
   chess1: 自分の駒
@@ -12,9 +12,8 @@ export function getPoint(chess1,chess2,count){
   |10P    |１回目で倒せない|
   ※防御力＞攻撃力の場合、ランダムで0か1をダメージとして与えるので実際に倒せるかは厳密にしない。
   */
- let point = 0;
- let hp = chess1.status.hp;
-//  let saveHp = chess1.status.hp;
+  let point = 0;
+  let hp = chess1.status.hp;
 
   //相手の駒を倒せるか
   let damage = chess1.status.power - chess2.status.difence;
@@ -32,6 +31,8 @@ export function getPoint(chess1,chess2,count){
   }
   return point;
 }
+
+
 export function search(data){
 
   let checkPoint = data[0][0][0];

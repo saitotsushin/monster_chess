@@ -19,10 +19,15 @@ export default class MoveArea{
     this.createAreaPanel();
   }
 
-  setArrPosition(X,Y,target){
+  getAreaMap(X,Y,target){
 
-    let base = target.areaMapBase;
-    // let area = target.areaArr;
+    let base1 = target.areaMapBase;
+    let base = [];
+    if(target.playerType === "player2"){
+      base = base1.slice().reverse();
+    }else{
+      base = base1;
+    }
     let area2 = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
@@ -53,8 +58,7 @@ export default class MoveArea{
       i2++;
     }
 
-    target.areaArr = area2;
-    // return area2;
+    return area2;
     
   }
   createAreaPanel(){
@@ -81,16 +85,16 @@ export default class MoveArea{
   }
   show(target){
     //添え字（y*幅+x)
-    for(var i = 0; i < target.areaArr.length; i++){//y
-      for(var k = 0; k < target.areaArr[i].length; k++){//x
-        if(target.areaArr[i][k] === 1){
-          this.area1Group.children.entries[i*target.areaArr[i].length + k].setVisible(true);
+    for(var i = 0; i < target.areaMap.length; i++){//y
+      for(var k = 0; k < target.areaMap[i].length; k++){//x
+        if(target.areaMap[i][k] === 1){
+          this.area1Group.children.entries[i*target.areaMap[i].length + k].setVisible(true);
         }
-        if(target.areaArr[i][k] === 2){
-          this.area2Group.children.entries[i*target.areaArr[i].length + k].setVisible(true);
+        if(target.areaMap[i][k] === 2){
+          this.area2Group.children.entries[i*target.areaMap[i].length + k].setVisible(true);
         }
-        if(target.areaArr[i][k] === 3){
-          this.area3Group.children.entries[i*target.areaArr[i].length + k].setVisible(true);
+        if(target.areaMap[i][k] === 3){
+          this.area3Group.children.entries[i*target.areaMap[i].length + k].setVisible(true);
         }
       }
     };

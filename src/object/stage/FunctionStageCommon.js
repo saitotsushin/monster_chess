@@ -1,29 +1,21 @@
-import * as CalcEvaluation from './CalcEvaluation';
-import * as Func from '../common/Func';
 
-export function setProperty(scene,x,y,prop,data){
-  let stageArr = scene.stageData.tilePropertyArr[y][x];
 
-  switch(prop){
-    case 'object':
-      stageArr.object = data;
-      break;
-    case 'trap':
-      stageArr.trap = data;
-      break;
-    default:
-  }
-}
 /*==============
 相手の駒を全て配列に入れておく。
 ==============*/
-export function player1ChessArr(stageData){
+export function getPlayerChessArr(tilePropMap,player){
+  /*
+  | 受け取る引数      |
+  | tilePropMap | ステージタイルのプロパティ | 
+  | player          | "player1" or "player2" |
+  */
+
   let arr = [];
-  for(var i = 0; i < stageData.tilePropertyArr.length; i++){
-    for(var k = 0; k < stageData.tilePropertyArr[i].length; k++){
-      if(stageData.tilePropertyArr[i][k].object.type === "player1"){
+  for(var i = 0; i < tilePropMap.length; i++){
+    for(var k = 0; k < tilePropMap[i].length; k++){
+      if(tilePropMap[i][k].object.playerType === player){
         arr.push({
-          object: stageData.tilePropertyArr[i][k].object,
+          object: tilePropMap[i][k].object,
           X: k,
           Y: i,
           moveX: 0,
@@ -39,7 +31,6 @@ export function player1ChessArr(stageData){
 共通で呼ばれる関数
 ==============*/
 export function getCanAttackChess(chess,player1ChessArr,pos,moveArea){
-
   let checkArr = [];
   let moveArr = [
     [0,0,0,0,0,0],
@@ -59,7 +50,7 @@ export function getCanAttackChess(chess,player1ChessArr,pos,moveArea){
     );
 
   }else{
-    moveArr = chess.areaArr;
+    moveArr = chess.areaMap;
   }
 
   for(var i = 0; i < player1ChessArr.length; i++){
@@ -87,24 +78,27 @@ export function getCanAttackChess(chess,player1ChessArr,pos,moveArea){
     return;
   }
 }
-export function updateTileProp(config){
-  let afterPosX  = config.afterPos.x || 0;
-  let afterPosY  = config.afterPos.y || 0;
-  let beforePosX = config.beforePos.x || 0;
-  let beforePosY = config.beforePos.y || 0;
-  let stageData  = config.stageData || "";
-  let moveArea   = config.moveArea || "";
-  let chess = config.chess || "";
-  //ステージデータの更新
-  stageData.tilePropertyArr[beforePosY][beforePosX].object = "";
-  stageData.tilePropertyArr[afterPosY][afterPosX].object = chess;
-  //移動エリアデータの更新
-  chess.areaArr = moveArea.setArrPosition(afterPosX,afterPosY,chess,"MOVE");
-}
-export function checkTrap(chess,tilePropertyArr,pos,scene){
+
+// export function updateTileProp(data){
+//   let beforePos = data.beforePos;
+//   let afterPos  = data.afterPos;
+//   let tilePropMap = data.tilePropMap;
+//   let moveArea  = data.moveArea;
+//   let chess     = data.chess;
+//   let areaMap   = data.chess.areaMap;
+
+//   //ステージデータの更新
+//   tilePropMap[beforePos.Y][beforePos.X].object = "";
+//   tilePropMap[afterPos.Y][afterPos.X].object = chess;
+
+//   //移動エリアデータの更新
+//   areaMap = moveArea.setArrPosition(afterPos.X,afterPos.Y,chess,"MOVE");
+// }
 
 
-  let trap = tilePropertyArr[pos.Y][pos.X].trap;
+export function checkTrap(chess,tilePropMap,pos,scene){
+
+  let trap = tilePropMap[pos.Y][pos.X].trap;
 
   let trapObject;
 
@@ -113,7 +107,7 @@ export function checkTrap(chess,tilePropertyArr,pos,scene){
 
     trap.damage(chess,pos);
 
-    tilePropertyArr[pos.Y][pos.X].trap = "";
+    tilePropMap[pos.Y][pos.X].trap = "";
 
     trapObject = scene.trap.trapGroup.children.entries[trap.groupIndex];
     trapObject.destroy();

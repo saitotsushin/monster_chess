@@ -1,7 +1,7 @@
 import Bomb from '../object/Trap/Bomb';
 export default class StageData {
   constructor() {
-    this.tilePropertyArr = [
+    this.tilePropMap = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],

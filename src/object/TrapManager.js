@@ -47,8 +47,6 @@ export default class TrapManager{
       },this);
 
     }
-    console.log("this.trapGroup",this.trapGroup)
-    console.log("this.scene",this.scene)
   }
   // setTrap(){
   //   let selectedTrap = this.scene.Player.selectedTrap;

@@ -7,7 +7,7 @@ export function tileCheck(scene,tile,pos){
   let MoveArea      = scene.StageManager.MoveArea;
   let selectedChess = scene.PlayerManager.selectedChess;
   let selectedTrap = scene.PlayerManager.selectedTrap;
-  let areaArr       = selectedChess ? selectedChess.areaArr : "";
+  let areaMap       = selectedChess ? selectedChess.areaMap : "";
   let enemyChess    = scene.StageManager.enemyChess;
   let STATUS_STAGE  = scene.StageManager.STATUS.STAGE;
   let X             = pos.number.X;
@@ -25,7 +25,6 @@ export function tileCheck(scene,tile,pos){
 
   if(playerType === "player1"){
     if(STATUS_STAGE === "SELECTED_TRAP"){
-      console.log("X="+X+"/Y="+Y)
       checkObject.nextPos.X = X;
       checkObject.nextPos.Y = Y;
       return checkObject;
@@ -35,7 +34,7 @@ export function tileCheck(scene,tile,pos){
     }
     scene.PlayerManager.selectedChess = tileObject;
     selectedChess = tileObject;
-    MoveArea.setArrPosition(X,Y,tileObject);
+    // MoveArea.setArrPosition(X,Y,tileObject);
     MoveArea.show(selectedChess);
     /*選択時の位置を保存*/
     scene.StageManager.beforeChessPos.X = X;
@@ -45,14 +44,14 @@ export function tileCheck(scene,tile,pos){
   if(playerType === "player2"){
 
   }
-  if(!playerType && areaArr !== ""){
-    if(areaArr[Y][X] === 1){
+  if(!playerType && areaMap !== ""){
+    if(areaMap[Y][X] === 1){
       console.info("移動可能");
       checkObject.MODE = "MOVE";
       checkObject.nextPos.X = X;
       checkObject.nextPos.Y = Y;
     }
-    if(areaArr[Y][X] === 2){
+    if(areaMap[Y][X] === 2){
       if(playerType === "player2"){
         console.info("攻撃可能");
         checkObject.MODE = "ATTACK";
@@ -61,7 +60,7 @@ export function tileCheck(scene,tile,pos){
         console.info("攻撃相手がいない");
       }
     }
-    if(areaArr[Y][X] === 3){
+    if(areaMap[Y][X] === 3){
       if(playerType === "player2"){
         console.info("攻撃可能");
         enemyChess = tileObject;

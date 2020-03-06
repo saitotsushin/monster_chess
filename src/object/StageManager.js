@@ -2,6 +2,8 @@ import StageData      from './StageData';
 import StageLayer     from './stage/StageLayer';
 import MoveArea       from './stage/MoveArea';
 import TouchedTile    from './stage/TouchedTile';
+
+import * as Search    from './stage/FunctionStageSearch';
 import * as Layout    from './stage/FunctionStageLayout';
 import * as Init      from './stage/FunctionStageInit';
 import * as Prop      from './stage/FunctionStageProp';
@@ -26,7 +28,7 @@ export default class StageManager {
     this.StageData = new StageData({
       scene: this.scene
     });
-    this.tilePropertyArr = this.StageData.tilePropertyArr;
+    this.tilePropMap = this.StageData.tilePropMap;
 
 
 
@@ -52,18 +54,19 @@ export default class StageManager {
       Y: 0
     }
     /*ステージの初期化*/
-    Init.initStage(this.tilePropertyArr);
+    Init.initStage(this.tilePropMap);
 
   }
   touchedStage(pos){
 
     let X = pos.number.X;
     let Y = pos.number.Y;
-    let tile = this.tilePropertyArr[Y][X];
+    let tile = this.tilePropMap[Y][X];
     let tileProp = TileCheck.tileCheck(this.scene,tile,pos);
     let modal = this.scene.ModalManager;
     if(tileProp){
-      if(tileProp.MODE){
+      console.log("tileProp",tileProp)
+      if(tileProp.MODE && this.STATUS.STAGE !== 'FIN'){
         this.STATUS.STAGE = tileProp.MODE;
       }
       this.nextChessPos.X = tileProp.nextPos.X;
@@ -81,54 +84,60 @@ export default class StageManager {
       Y: 0
     };
     let modal = this.scene.ModalManager;
-    
+
     if(this.STATUS.STAGE === "LAYOUT_AUTO"){
       Layout.layoutAuto(this.scene,"player1","auto");
       Layout.layoutAuto(this.scene,"player2","auto");
       Prop.setProp(this.scene);
       this.STATUS.STAGE = ""
+      return;
     }
+
     if(this.STATUS.STAGE === "MOVE"){
 
-      nextPos = this.getTilePositionNumber(this.nextChessPos.X,this.nextChessPos.Y);
+      nextPos = Prop.getTilePositionNumber(this.nextChessPos.X,this.nextChessPos.Y,this.scene);
+      this.scene.PlayerManager.selectedChess.move(
+        nextPos.world,
+        this.nextChessPos
+      );
 
-      this.scene.PlayerManager.selectedChess.move(nextPos.world.x,nextPos.world.y);
       this.MoveArea.hide(this.scene.PlayerManager.selectedChess);
-      Prop.setPropChess(this.scene);//ステージのプロパティの更新
+
+      //ステージのプロパティと駒の移動エリアの更新
+      Prop.updateStageProps(this.scene);
+
       this.STATUS.STAGE = "FIN";
       modal.open();
+      return;
 
     }
     if(this.STATUS.STAGE === "SELECTED_TRAP"){
       Prop.setPropTrap(this.scene,this.scene.PlayerManager.selectedTrap);
       this.STATUS.STAGE = "FIN"
+      console.log("this.tilePropMap",this.tilePropMap)
+      return;
     }
     if(this.STATUS.STAGE === "FIN"){
+      let selectedChess = Search.thinkAI(this.scene);
+      console.log("selectedChess",selectedChess);
+      this.actChess(selectedChess);
     }
   }
-  getTilePositionNumber(X,Y){
-    let position = {
-      // number: {
-      //   X: 0,
-      //   Y: 0
-      // },
-      local: {
-        x: 0,
-        y: 0  
-      },
-      world:{
-        x: 0,
-        y: 0  
-      }
-    }
-    // position.number.X = (position.world.x - this.layer.x) /this.scene.map.tileWidth;
-    // position.number.Y = (position.world.y - this.layer.y) /this.scene.map.tileHeight;
-    position.world.x = X * this.scene.map.tileWidth + this.StageLayer.layer.x + this.scene.map.tileWidth/2;
-    position.world.y = Y * this.scene.map.tileHeight + this.StageLayer.layer.y + this.scene.map.tileHeight/2;
-    position.local.x = X * this.scene.map.tileWidth;
-    position.local.y = Y * this.scene.map.tileHeight;   
-    
-    return position;
+  actChess(selectedChess){
+    // let chess = selectedChess.chess;
+    // let target = selectedChess.target;
+    // let int = selectedChess.int;
+    // let mode = selectedChess.mode;
+    // console.log("this.scene",this.scene)
+    // let pos = Prop.getTilePositionNumber(int,this.scene)
+    // if(mode === "ATTACK"){
+    //   chess.attack(target);
+    // }
+    // if(mode === "MOVE"){
+    //   chess.move(pos,int);
+    // }
+
   }
+
 
 }

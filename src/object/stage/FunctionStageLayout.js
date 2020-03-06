@@ -1,3 +1,5 @@
+import { getTilePositionNumber } from './FunctionStageProp';
+
 export function layoutAuto(scene,player,mode){
   let playerArr = [];
   let group;
@@ -26,7 +28,7 @@ export function layoutAuto(scene,player,mode){
     for(var k = 0; k < playerArr[i].length;k++){
       if(playerArr[i][k] !== 0){
 
-        position = scene.StageManager.getTilePositionNumber(k,i);
+        position = getTilePositionNumber(k,i,scene);
 
         chess = group.children.entries[playerArr[i][k]-1];
 
