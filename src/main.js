@@ -3,7 +3,7 @@ import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
 
-let BASE_WIDTH = 192;
+let BASE_WIDTH = 220;
 let BASE_HEIGHT = 288;
 let DEVICE_WIDTH = window.innerWidth;
 let DEVICE_HEIGHT = window.innerHeight;

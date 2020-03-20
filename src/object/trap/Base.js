@@ -13,6 +13,9 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     this.groupIndex = config.groupIndex;
 
+    this.configured = false;
+    this.configuredPlayer = '';
+
     config.scene.physics.world.enable(this);
     config.scene.add.existing(this);
     this.status = {
@@ -27,36 +30,18 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.damageText.depth = 12;
     this.damageText.setVisible(false);
   }
-  damage(chess,pos){
-    let damagepoint =  this.status.power - chess.status.difence;
-    if(damagepoint < 0){
-      damagepoint = 0;
-    }
-    chess.status.hp -= damagepoint;
+  attack(attackingTarget){
 
-    if(chess.status.hp <= 0){
-      this.scene.stageManager.removeChess(chess);
+    let damagePoint = this.status.power - attackingTarget.status.difence;
+
+    attackingTarget.damage(damagePoint);
+    attackingTarget.status.hp -= damagePoint;
+
+    if(attackingTarget.status.hp <= 0){
+      this.scene.StageManager.removeChess(attackingTarget);
     } 
-
-    this.damageText.x = chess.x + 10;
-    this.damageText.y = chess.y - 10;
-
-    let afterY = this.damageText.y + 10;
-    this.damageText.setVisible(true);
-    this.damageText.setText(String(damagepoint));
-    let damageTween = this.scene.tweens.add({
-        targets: this.damageText,
-        y: afterY,
-        ease: 'liner',
-        duration: 100,
-        repeat: 0,
-        completeDelay: 1000,
-        onComplete: function () {
-          this.damageText.setVisible(false);
-        },
-        callbackScope: this
-    });
-
-
+  }  
+  removeTrap(){
+    this.destroy();
   }
 }

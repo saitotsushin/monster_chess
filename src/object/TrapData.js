@@ -9,7 +9,6 @@ export default class TrapData {
       }
     ];
     this.player1_TrapList = [
-      "bomb",
       "bomb"
     ];
     this.player2_TrapList = [

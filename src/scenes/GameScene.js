@@ -11,13 +11,12 @@ class GameScene extends Phaser.Scene {
     });
   }
   create(){
-    this.StageManager = new StageManager({
-      scene: this
-    });
     this.ModalManager = new ModalManager({
       scene: this
     });
-    this.ModalManager.open();
+    this.StageManager = new StageManager({
+      scene: this
+    });
 
     this.TrapManager = new TrapManager({
       scene: this
@@ -36,7 +35,7 @@ class GameScene extends Phaser.Scene {
     this.debugText = this.add.text(10, 10, '', { font: '10px Courier', fill: '#FFFFFF' });
     this.debugText.depth = 100;
     this.debugText.setScrollFactor(0,0);
-    this.debugText.alpha = 0.3;
+    this.debugText.alpha = 0.8;
 
   }
 
@@ -47,8 +46,8 @@ class GameScene extends Phaser.Scene {
     this.debugText.setText(
       [
         'STATUS.STAGE :'+this.StageManager.STATUS.STAGE,
-        'STATUS.CHESS :'+this.StageManager.STATUS.CHESS,
         'STATUS.TURN  :'+this.StageManager.STATUS.TURN,
+        'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
       ]
     );
 

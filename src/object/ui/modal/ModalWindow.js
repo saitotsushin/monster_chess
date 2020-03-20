@@ -1,10 +1,10 @@
 
 
-export default class Base extends Phaser.Physics.Arcade.Sprite{
+export default class ModalWindow extends Phaser.Physics.Arcade.Sprite{
   constructor(config) {
-    super(config);
+    super(config.scene);
 
-    this.scene = config;
+    this.scene = config.scene;
 
     this.target;
 
@@ -15,7 +15,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
       no: "いいえ"
     };
     
-    let baseRect = new Phaser.Geom.Rectangle(0, 0, config.game.config.width, 40);
+    let baseRect = new Phaser.Geom.Rectangle(0, 0, this.scene.game.config.width, 40);
     let base = this.scene.add.graphics(
       {
         fillStyle: { color: 0x000000 }
@@ -30,12 +30,15 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
 
 
     this.container.x = 0;
-    this.container.y = 0;
+    console.log("this.scene.game.config.width",this.scene.game.config.height)
+    console.log("base.height",baseRect.height)
+    this.container.y = this.scene.game.config.height - baseRect.height - 20;
+    // this.container.y = 280;
 
     this.container.depth = 100; 
 
     this.mordalText = this.scene.add.text(
-      base.width/2,
+      10,
       10,
       this.textData.lead,
       { font: '10px Courier', fill: '#FFFFFF' }
@@ -76,28 +79,66 @@ export default class Base extends Phaser.Physics.Arcade.Sprite{
         this.btn_yes,
         this.btn_no
       ]
-    );    
+    );
+    this.messageData = [
+      {
+        key: 'ATTACK',
+        lead: '攻撃しますか？',
+        yes: 'はい',
+        no: 'いいえ'
+      },
+      {
+        key: 'MOVE',
+        lead: '移動しますか？',
+        yes: 'はい',
+        no: 'いいえ'
+      },
+      {
+        key: 'LAYOUT_AUTO',
+        lead: '自動配置しますか？',
+        yes: 'はい',
+        no: 'いいえ'
+      },
+      {
+        key: 'SELECTED_TRAP',
+        lead: 'トラップを配置しますか？',
+        yes: 'はい',
+        no: 'いいえ'
+      },
+      {
+        key: 'FIN',
+        lead: '完了しますか？',
+        yes: 'はい',
+        no: 'いいえ'
+      }
+    ]
+
   }
   /*============
   モーダル
   ============*/
   setYes(){
+    let manager = this.scene.ModalManager;
+    manager.modalYes();
   }
   setNo(){
-    if(this.scene.STAGE_STATUS === "SET_CHESS_FIN"){
-      this.scene.STAGE_STATUS = "SET_CHESS";
-    }
-    this.CHESS_STATUS = "";
+    let manager = this.scene.ModalManager;
+    manager.modalNo();
   }
-  open(){
-    this.mordalText.setText(this.textData.lead);
-    this.btn_yes.setText(this.textData.yes);
-    this.btn_no.setText(this.textData.no);
+  open(status){
+    this.messageData.filter(function(item, index){
+      if (item.key == status){
+        this.mordalText.setText(item.lead);
+        this.btn_yes.setText(item.yes);
+        this.btn_no.setText(item.no);
+      }
+    },this);
+
     this.setVisible(true);
     this.container.setVisible(true);
     this.container.x = 0;
-    this.mordalText.x = 0;
-    this.mordalText.y = 0;
+    // this.mordalText.x = 0;
+    // this.mordalText.y = 0;
     this.scene.ModalManager.openModal = this;
 
   }

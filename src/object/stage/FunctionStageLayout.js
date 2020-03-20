@@ -13,7 +13,7 @@ export function layoutAuto(scene,player,mode){
     group = scene.PlayerManager.player1ChessGroup;
   }
   if(player === "player2"){
-    if(mode === "auto"){
+    if(mode === "auto" || mode === "fin"){
       playerArr = scene.PlayerManager.player2Auto_Arr;
       scene.PlayerManager.player2_Arr = scene.PlayerManager.player2Auto_Arr;
     }else{
@@ -23,7 +23,6 @@ export function layoutAuto(scene,player,mode){
   }
   let chess;
   let position;
-
   for(var i = 0; i < playerArr.length;i++){
     for(var k = 0; k < playerArr[i].length;k++){
       if(playerArr[i][k] !== 0){
@@ -34,6 +33,8 @@ export function layoutAuto(scene,player,mode){
 
         chess.x = position.world.x;
         chess.y = position.world.y;
+        chess.pos.X = k;
+        chess.pos.Y = i;
 
       }
     }

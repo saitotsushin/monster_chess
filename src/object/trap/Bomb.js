@@ -13,6 +13,8 @@ export default class Bomb extends Base {
 
     this.y = config.y;
 
+    this.itemTYPE = 'ATTACK';
+
     this.isSet = false;
 
     this.setInteractive();

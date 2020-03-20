@@ -11,6 +11,10 @@ export default class PlayerManager {
 
     /*選択中の駒の保存*/
     this.selectedChess;
+
+    /*選択中の相手駒の保存*/
+    this.targetChess;
+    
     /*選択中のトラップの保存*/
     this.selectedTrap;
 
@@ -44,6 +48,7 @@ export default class PlayerManager {
       playerChessList = this.player1_ChessList;
       group = this.player1ChessGroup;
     }
+    
     if(mode === "player2"){
       playerChessList = this.player2_ChessList;
       group = this.player2ChessGroup;
@@ -56,9 +61,12 @@ export default class PlayerManager {
             item.key,
             mode
           );
+          sprite.status = item.status;
+          sprite.areaMapBase = sprite.mergeArea(sprite.moveAreaMapBase,sprite.attackAreaMapBase,sprite.areaMapBase);
           group.add(sprite);
         }
       },this);
+
     }
 
   }

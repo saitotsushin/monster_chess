@@ -9,7 +9,8 @@ export default class StageLoad {
     config.scene.physics.world.bounds.width = config.scene.map.widthInPixels;
     config.scene.physics.world.bounds.height = config.scene.map.heightInPixels;
     this.layer.x = (config.scene.game.config.width - this.layer.width) /2;
-    this.layer.y = (config.scene.game.config.height - this.layer.height) /2;
+    // this.layer.y = (config.scene.game.config.height - this.layer.height) /2;
+    this.layer.y = 10;
 
     this.layer.setInteractive();
     this.layer.on('pointerdown', function (pointer) {

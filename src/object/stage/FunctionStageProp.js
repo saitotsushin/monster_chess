@@ -59,11 +59,11 @@ export function setProp(scene){
 /*==============================
 ステージにチェスのプロパティ変更
 ==============================*/    
-export function updateStageProps(scene){
+export function updateStageProps(scene,chess){
   let StageManager    = scene.StageManager;
   let beforePos       = StageManager.beforeChessPos;
   let nextPos         = StageManager.nextChessPos;
-  let selectedChess   = scene.PlayerManager.selectedChess;
+  let selectedChess   = chess;
   let MoveArea        = StageManager.MoveArea;
 
   /*前の駒をステージから削除*/
@@ -80,21 +80,41 @@ export function updateStageProps(scene){
 /*==============================
 ステージにトラップのプロパティ変更
 ==============================*/    
-export function setPropTrap(scene){
-  let StageManager    = scene.StageManager;
-  let index           = scene.PlayerManager.selectedTrap.groupIndex;
-  let nextPos         = StageManager.nextChessPos;
-  let selectedTrap   = scene.PlayerManager.selectedTrap;
+export function setPropTrap(config){
+  let scene = config.scene;
+  let selectedTrap = config.selectedTrap
+  let index = config.index;
+  let nextPos = config.nextPos;
+  console.log("nextPos",nextPos)
+  // let StageManager    = scene.StageManager;
+
+  // let index           = scene.PlayerManager.selectedTrap.groupIndex;
+  // let nextPos         = StageManager.nextChessPos;
+  //
+  // nextPos = {
+  //   X: 3,
+  //   Y: 3
+  // }
+  // let selectedTrap   = selectedTrap;
   let pos = getTilePositionNumber(nextPos.X,nextPos.Y,scene);
+  let trapGroup;
+  if(scene.StageManager.STATUS.TURN === 'player1'){
+    trapGroup = scene.TrapManager.trapPlayer1Group;
+  }
+  if(scene.StageManager.STATUS.TURN === 'player2'){
+    trapGroup = scene.TrapManager.trapPlayer2Group;
+  }
+
 
   /*トラップの設置後はタッチイベント削除*/
   selectedTrap.removeInteractive();
 
   /*トラップの位置をステージに配置*/
-  scene.TrapManager.trapGroup.children.entries[index].x = pos.world.x;
-  scene.TrapManager.trapGroup.children.entries[index].y = pos.world.y;
+  trapGroup.children.entries[index].x = pos.world.x;
+  trapGroup.children.entries[index].y = pos.world.y;
   scene.StageManager.tilePropMap[nextPos.Y][nextPos.X].trap = selectedTrap;
 
   /*プレイヤーマネージャーに保存していた選択中のトラップを初期化*/
   scene.PlayerManager.selectedTrap = "";
+
 }
