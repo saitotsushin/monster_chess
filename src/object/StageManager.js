@@ -221,6 +221,7 @@ export default class StageManager {
       Y: chess.pos.Y
     }
     this.tilePropMap[posInt.Y][posInt.X].object = "";
+    chess.icon_enemy.destroy();
     chess.destroy();
     this.STATUS.PLAYER1.CHESS_COUNT = 0;
     this.STATUS.PLAYER2.CHESS_COUNT = 0;
@@ -306,7 +307,6 @@ export default class StageManager {
     this.layoutChessGroup.children.entries.forEach(
       (sprite,index) => {
         this.scene.PlayerManager.PlayerData.player1_Arr[sprite.pos.Y][sprite.pos.X] = index + 1;
-        // sprite.destroy();
       }
     );
   }

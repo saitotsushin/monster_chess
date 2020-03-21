@@ -85,6 +85,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       X: 0,
       Y: 0
     }
+    this.depth = 10;
     this.damageText = this.scene.add.text(
       this.x + this.width/2 - 10,
       this.y + this.height/2 - 10,
@@ -93,9 +94,27 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     ); 
     this.damageText.depth = 12;
     this.damageText.setVisible(false);
-    this.on('pointerdown', () => {
+    this.on('pointerdown', function (pointer) {
       this.scene.StageManager.selectedLayoutChess(this);
-    });        
+      this.cursorShow(pointer);
+    });
+    this.selectedChessMarker = this.scene.add.graphics();
+    this.selectedChessMarker.lineStyle(3, 0xff0000, 1);
+    this.selectedChessMarker.strokeRect(
+      0,
+      0,
+      config.scene.map.tileWidth,
+      config.scene.map.tileHeight
+    );
+    this.selectedChessMarker.depth = 110;
+    this.selectedChessMarker.setVisible(false);
+
+    this.icon_enemy = this.scene.add.sprite(this.x,this.y,'icon_enemy');
+    this.icon_enemy.setVisible(false);
+    this.icon_enemy.depth = 20;
+    if(this.playerType === 'player2'){
+      this.icon_enemy.setVisible(true);
+    }
   }
 
   mergeArea(area1,area2,merge_area){
@@ -119,6 +138,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.y = position.y;
     this.pos.X = int.X;
     this.pos.Y = int.Y;
+    if(this.playerType === 'player2'){
+      this.icon_enemy.x = position.x;
+      this.icon_enemy.y = position.y;
+    }
   }
   attack(attackingTarget){
 
@@ -154,4 +177,34 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
         callbackScope: this
     });
   }
+  cursorShow(pointer){
+    // var worldPoint = this.scene.input.activePointer.positionToCamera(this.scene.cameras.main);
+
+    // var pointerTileX = this.scene.map.worldToTileX(worldPoint.x);
+    // var pointerTileY = this.scene.map.worldToTileY(worldPoint.y);
+
+    // let test_x = this.scene.map.tileToWorldX(pointerTileX);
+    // let test_y  = this.scene.map.tileToWorldY(pointerTileY);
+    // var tile = this.scene.map.getTileAt(pointerTileX, pointerTileY);
+
+    // this.scene.StageManager.MoveArea.hide(this);
+
+    // this.areaMap = this.scene.StageManager.MoveArea.getAreaMap(pointerTileX,pointerTileY,this);
+    // this.scene.StageManager.MoveArea.show(this);
+    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.selectedChessMarker.setVisible(false);
+      }
+    );
+    
+    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.selectedChessMarker.setVisible(false);
+      }
+    );
+    this.selectedChessMarker.x = this.x - this.width/2;
+    this.selectedChessMarker.y = this.y - this.height/2;
+    this.selectedChessMarker.setVisible(true);  
+  }
+
 }

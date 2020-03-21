@@ -14,13 +14,13 @@ export default class ModalLayout extends Phaser.Physics.Arcade.Sprite{
       no: "いいえ"
     };
     
-    let baseRect = new Phaser.Geom.Rectangle(0, 0, this.scene.game.config.width, 100);
+    this.baseRect = new Phaser.Geom.Rectangle(0, 0, this.scene.game.config.width, 100);
     let base = this.scene.add.graphics(
       {
         fillStyle: { color: 0x000000 }
       }
     );  
-    base.fillRectShape(baseRect);
+    base.fillRectShape(this.baseRect);
     base.alpha = 0.75;
 
     this.container = this.scene.add.container();
@@ -60,7 +60,7 @@ export default class ModalLayout extends Phaser.Physics.Arcade.Sprite{
     },this);
 
     this.btn_no = this.scene.add.text(
-      100,
+      50,
       25,
       this.textData.no,
       { font: '10px Courier', fill: '#CCC' }
@@ -93,6 +93,12 @@ export default class ModalLayout extends Phaser.Physics.Arcade.Sprite{
   setComplete(){
     this.btn_yes.alpha = 1;
     this.setCompleteFlg = true;
+    this.mapContainer.setVisible(false);
+    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.selectedChessMarker.setVisible(false);
+      }
+    );
   }
   setYes(){
     let manager = this.scene.ModalManager;
@@ -117,6 +123,24 @@ export default class ModalLayout extends Phaser.Physics.Arcade.Sprite{
   open(status){
 
     let getLayoutChessGroup = this.scene.PlayerManager.player1ChessGroup.children.entries;
+    let canSetMap = this.scene.PlayerManager.PlayerData.stageCanSetArr;
+    this.mapContainer = this.scene.add.container(0, 0);
+    for(var i = 0; i < canSetMap.length; i++){
+      for(var k = 0; k < canSetMap[i].length; k++){
+        if(canSetMap[i][k] === 1){
+
+          let canSetTile = this.scene.add.sprite(
+            k * this.scene.map.tileWidth + this.scene.map.tileWidth/2 + this.scene.StageManager.StageLayer.layer.x,
+            i * this.scene.map.tileHeight + this.scene.map.tileHeight/2 + this.scene.StageManager.StageLayer.layer.y,
+            'move_area'
+          );
+  
+          this.mapContainer.add(canSetTile)
+
+        }
+      }
+    }
+
     for(var i = 0; i < getLayoutChessGroup.length; i++){
       let object = getLayoutChessGroup[i];
       this.layoutChessModalGroup.add(object);

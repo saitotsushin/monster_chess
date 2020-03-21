@@ -340,9 +340,25 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
     X: 0,
     Y: 0
   }
+  
   let map = moveChess.areaMap;
   for(var i = 0; i < map.length; i++){
     for(var k = 0; k < map[i].length; k++){
+      if(tilePropMap[i][k].trap){
+        /*移動先が、
+        トラップがあって　かつ　攻撃タイプだったらcontinueでスキップする。
+        */
+        let trap = tilePropMap[i][k].trap;
+        if(trap.itemTYPE === 'ATTACK' && trap.configuredPlayer === NOW_TURN){
+          continue;
+        }
+
+      }
+      //移動先にオブジェクトがある　かつ　自分以外だったら次へ進む。
+      if(tilePropMap[i][k].object !== ""){
+        continue;
+      }
+
       if(map[i][k] === 1){
 
         sa_X = pl_pos_X - k;

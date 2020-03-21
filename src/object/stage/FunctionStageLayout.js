@@ -30,11 +30,14 @@ export function layoutAuto(scene,player,mode){
         position = getTilePositionNumber(k,i,scene);
 
         chess = group.children.entries[playerArr[i][k]-1];
+        chess.depth = 10;
 
-        chess.x = position.world.x;
-        chess.y = position.world.y;
-        chess.pos.X = k;
-        chess.pos.Y = i;
+        chess.move(position.world,{X:k,Y:i})
+
+        // chess.x = position.world.x;
+        // chess.y = position.world.y;
+        // chess.pos.X = k;
+        // chess.pos.Y = i;
 
       }
     }

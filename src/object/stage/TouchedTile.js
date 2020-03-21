@@ -9,6 +9,7 @@ export default class TouchedTile {
       config.scene.map.tileWidth,
       config.scene.map.tileHeight
     );
+    this.marker.depth = 150;
   }
   getTilePosition(){
 

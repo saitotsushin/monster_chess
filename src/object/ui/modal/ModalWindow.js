@@ -15,7 +15,7 @@ export default class ModalWindow extends Phaser.Physics.Arcade.Sprite{
       no: "いいえ"
     };
     
-    let baseRect = new Phaser.Geom.Rectangle(0, 0, this.scene.game.config.width, 40);
+    let baseRect = new Phaser.Geom.Rectangle(0, 0, this.scene.game.config.width/2, 40);
     let base = this.scene.add.graphics(
       {
         fillStyle: { color: 0x000000 }
@@ -30,8 +30,6 @@ export default class ModalWindow extends Phaser.Physics.Arcade.Sprite{
 
 
     this.container.x = 0;
-    console.log("this.scene.game.config.width",this.scene.game.config.height)
-    console.log("base.height",baseRect.height)
     this.container.y = this.scene.game.config.height - baseRect.height - 20;
     // this.container.y = 280;
 
@@ -58,7 +56,7 @@ export default class ModalWindow extends Phaser.Physics.Arcade.Sprite{
     },this);
 
     this.btn_no = this.scene.add.text(
-      100,
+      50,
       25,
       this.textData.no,
       { font: '10px Courier', fill: '#CCC' }

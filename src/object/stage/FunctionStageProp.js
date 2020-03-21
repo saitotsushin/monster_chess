@@ -85,7 +85,6 @@ export function setPropTrap(config){
   let selectedTrap = config.selectedTrap
   let index = config.index;
   let nextPos = config.nextPos;
-  console.log("nextPos",nextPos)
   // let StageManager    = scene.StageManager;
 
   // let index           = scene.PlayerManager.selectedTrap.groupIndex;

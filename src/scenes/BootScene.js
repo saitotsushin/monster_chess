@@ -50,6 +50,7 @@ class BootScene extends Phaser.Scene {
     // this.load.tilemapTiledJSON('map', 'assets/tilemaps/tilemap.json');
 
     // this.load.spritesheet('explosion_m', 'assets/images/explosion_m.png', { frameWidth: 16, frameHeight: 16 });
+    this.load.image('icon_enemy', 'assets/images/icon_enemy.png');
     this.load.image('chess', 'assets/images/chess.png');
     this.load.image('chess_1', 'assets/images/chess_1.png');
     this.load.image('chess_2', 'assets/images/chess_2.png');
