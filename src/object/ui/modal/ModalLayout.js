@@ -94,11 +94,11 @@ export default class ModalLayout extends Phaser.Physics.Arcade.Sprite{
     this.btn_yes.alpha = 1;
     this.setCompleteFlg = true;
     this.mapContainer.setVisible(false);
-    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.selectedChessMarker.setVisible(false);
-      }
-    );
+    // this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+    //   (sprite) => {
+    //     sprite.selectedChessMarker.setVisible(false);
+    //   }
+    // );
   }
   setYes(){
     let manager = this.scene.ModalManager;

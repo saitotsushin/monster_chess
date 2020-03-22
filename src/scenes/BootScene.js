@@ -39,7 +39,7 @@ class BootScene extends Phaser.Scene {
 
     this.load.on('complete', () => {
       this.progress.destroy();
-      this.scene.start('GameScene');
+      this.scene.start('MenuScene');
     });
 
 
@@ -62,6 +62,7 @@ class BootScene extends Phaser.Scene {
     this.load.image('attack_move_area', 'assets/images/attack_move_area.png');
     this.load.image('attack_area', 'assets/images/attack_area.png');
     this.load.image('bomb', 'assets/images/bomb.png');
+    this.load.image('add_team_panel', 'assets/images/add_team_panel.png');
   }
 
 }

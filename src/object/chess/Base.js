@@ -98,16 +98,16 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       this.scene.StageManager.selectedLayoutChess(this);
       this.cursorShow(pointer);
     });
-    this.selectedChessMarker = this.scene.add.graphics();
-    this.selectedChessMarker.lineStyle(3, 0xff0000, 1);
-    this.selectedChessMarker.strokeRect(
-      0,
-      0,
-      config.scene.map.tileWidth,
-      config.scene.map.tileHeight
-    );
-    this.selectedChessMarker.depth = 110;
-    this.selectedChessMarker.setVisible(false);
+    // this.selectedChessMarker = this.scene.add.graphics();
+    // this.selectedChessMarker.lineStyle(3, 0xff0000, 1);
+    // this.selectedChessMarker.strokeRect(
+    //   0,
+    //   0,
+    //   config.scene.map.tileWidth,
+    //   config.scene.map.tileHeight
+    // );
+    // this.selectedChessMarker.depth = 110;
+    // this.selectedChessMarker.setVisible(false);
 
     this.icon_enemy = this.scene.add.sprite(this.x,this.y,'icon_enemy');
     this.icon_enemy.setVisible(false);
@@ -191,20 +191,21 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     // this.areaMap = this.scene.StageManager.MoveArea.getAreaMap(pointerTileX,pointerTileY,this);
     // this.scene.StageManager.MoveArea.show(this);
-    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.selectedChessMarker.setVisible(false);
-      }
-    );
+
+    // this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+    //   (sprite) => {
+    //     sprite.selectedChessMarker.setVisible(false);
+    //   }
+    // );
     
-    this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.selectedChessMarker.setVisible(false);
-      }
-    );
-    this.selectedChessMarker.x = this.x - this.width/2;
-    this.selectedChessMarker.y = this.y - this.height/2;
-    this.selectedChessMarker.setVisible(true);  
+    // this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
+    //   (sprite) => {
+    //     sprite.selectedChessMarker.setVisible(false);
+    //   }
+    // );
+    // this.selectedChessMarker.x = this.x - this.width/2;
+    // this.selectedChessMarker.y = this.y - this.height/2;
+    // this.selectedChessMarker.setVisible(true);  
   }
 
 }

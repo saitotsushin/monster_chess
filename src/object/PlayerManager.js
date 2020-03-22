@@ -62,7 +62,13 @@ export default class PlayerManager {
             mode
           );
           sprite.status = item.status;
-          sprite.areaMapBase = sprite.mergeArea(sprite.moveAreaMapBase,sprite.attackAreaMapBase,sprite.areaMapBase);
+          sprite.moveAreaMapBase = item.moveAreaMapBase;
+          sprite.attackAreaMapBase = item.attackAreaMapBase;
+          sprite.areaMapBase = sprite.mergeArea(
+            sprite.moveAreaMapBase,
+            sprite.attackAreaMapBase,
+            sprite.areaMapBase
+          );
           group.add(sprite);
         }
       },this);

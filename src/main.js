@@ -2,6 +2,8 @@ import 'phaser';
 import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
+import MenuScene from './scenes/MenuScene';
+import MainScene from './scenes/MainScene';
 
 let BASE_WIDTH = 220;
 let BASE_HEIGHT = 288;
@@ -24,18 +26,20 @@ const config = {
   width: BASE_WIDTH,
   height: hi,
     physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: {
-                y: 0
-            },
-            debug: true
-        }
+      default: 'arcade',
+      arcade: {
+        gravity: {
+            y: 0
+        },
+        debug: true
+      }
     },
     scene: [
-        BootScene,
-        TitleScene,
-        GameScene
+      BootScene,
+      TitleScene,
+      MenuScene,
+      GameScene,
+      MainScene
     ]
 };
 

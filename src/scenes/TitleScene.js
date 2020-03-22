@@ -7,29 +7,37 @@ class TitleScene extends Phaser.Scene {
   preload() {
   }
   create() {
-      let config = {
-          key: 'title',
-          frames: [{
-              frame: 'title',
-          }]
-      };
+    let config = {
+    key: 'title',
+    frames: [{
+        frame: 'title',
+    }]
+    };
+
+    this.title_start = this.add.text(
+        80,
+        120,
+        'START',
+        { font: '10px Courier', fill: '#CCC' }
+    );
+    this.title_start.depth = 100;
+
+    this.title_start.setInteractive();
+        
 
       
-      this.title = this.physics.add.sprite(160, 100, 'title');
-      
-      this.title_start = this.physics.add.sprite(160, 300, 'title_start').setScrollFactor(0, 0).setInteractive();;
-
-      this.title_start.on('pointerdown', () => {
-          this.startGame();
-      });
+    this.title_start.on('pointerdown', () => {
+        this.scene.start('MainScene');
+        // this.startGame();
+    });
   }
 
 
 
-  startGame() {
-      this.scene.stop('GameScene');
-      this.scene.start('GameScene');
-  }
+//   startGame() {
+//     this.scene.stop('GameScene');
+//     this.scene.start('GameScene');
+//   }
 
 
 }
