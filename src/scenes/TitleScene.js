@@ -23,6 +23,9 @@ class TitleScene extends Phaser.Scene {
     this.title_start.depth = 100;
 
     this.title_start.setInteractive();
+
+    this.registry.set('player1_ChessList', []);
+    this.registry.set('player1Auto_Arr', []);
         
 
       
