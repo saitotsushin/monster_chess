@@ -26,7 +26,7 @@ class MainScene extends Phaser.Scene {
 
     this.btnMenu = this.add.text(
       80,
-      140,
+      120,
       'MENU SCENE',
       { font: '10px Courier', fill: '#CCC' }
     );
@@ -35,6 +35,16 @@ class MainScene extends Phaser.Scene {
       this.scene.start('MenuScene');
     },this);   
 
+    this.btnStageClear = this.add.text(
+      80,
+      160,
+      'STAGE CLEAR SCENE',
+      { font: '10px Courier', fill: '#CCC' }
+    );
+    this.btnStageClear.setInteractive();
+    this.btnStageClear.on('pointerdown', () => {
+      this.scene.start('StageClearScene');
+    },this);   
   }
 
 

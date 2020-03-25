@@ -37,22 +37,7 @@ class GameScene extends Phaser.Scene {
     this.debugText.setScrollFactor(0,0);
     this.debugText.alpha = 0.8;
 
-    this.changeSceneBtn = this.add.text(
-      80,
-      120,
-      'changeSceneBtn',
-      { font: '10px Courier', fill: '#CCC' }
-    );
-    this.changeSceneBtn.depth = 100;
 
-    this.changeSceneBtn.setInteractive();
-    
-    this.changeSceneBtn.on('pointerdown', () => {
-      console.log("click changeSceneBtn")
-      
-      this.scene.switch('MenuScene');
-
-    },this);  
   }
 
   update(time, delta) {

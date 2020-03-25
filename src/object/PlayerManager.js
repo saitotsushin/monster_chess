@@ -23,11 +23,26 @@ export default class PlayerManager {
       scene: this.scene
     });
 
-    this.player1_ChessList = this.scene.registry.list.player1_ChessList;
+    this.player1_ChessList;
+
+    console.log("this.scene.registry.list.player1_ChessList",this.scene.registry.list.player1_ChessList)
+
+    if(this.scene.registry.list.player1_ChessList){
+      this.player1_ChessList = this.scene.registry.list.player1_ChessList;
+    }else{
+      this.player1_ChessList = this.PlayerData.player1_ChessList;
+    }
+
     this.player2_ChessList = this.PlayerData.player2_ChessList;
 
-    this.player1_Arr = this.PlayerData.player1_Arr;
-    this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
+    this.player1_Arr;
+
+    if(this.scene.registry.list.player1Auto_Arr){
+      this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
+    }else{
+      this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
+    }
+    this.player1_Arr = this.player1Auto_Arr;
 
     this.player2_Arr = this.PlayerData.player2_Arr;
     this.player2Auto_Arr = this.PlayerData.player2Auto_Arr;
