@@ -28,7 +28,7 @@ export default class MoveArea{
     }else{
       base = base1;
     }
-    let area2 = [
+    let moveArea = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
@@ -44,13 +44,21 @@ export default class MoveArea{
     let baseX = harfWidth - X;
     let i2 = 0;
     let k2 = 0;
+    let centePos = {
+      X: 0,
+      Y: 0
+    }
 
     /*初期化*/
 
     for(var i = baseY; i < harfHeight + baseY + 1; i++){//縦（y）
       for(var k = baseX; k < harfWidth + baseX + 1; k++){//横（x）
         if(base[i][k] !== 0){
-          area2[i2][k2] = base[i][k];
+          moveArea[i2][k2] = base[i][k];
+        }
+        if(base[i][k] === 9){
+          centePos.X = k2;
+          centePos.Y = i2;
         }
         k2++;
       }
@@ -58,7 +66,96 @@ export default class MoveArea{
       i2++;
     }
 
-    return area2;
+    let chessAttackArea = moveArea;
+
+    console.log("chessAttackArea",chessAttackArea)
+
+    console.log("centePos",centePos)
+
+    console.log("moveArea",moveArea)
+
+    let tilePropMap = this.scene.StageManager.tilePropMap;
+
+    for(var Y = 0; Y < tilePropMap.length; Y++){
+      for(var X = 0; X < tilePropMap[Y].length; X++){
+        if(tilePropMap[Y][X].object !==""){
+          
+          if(moveArea[Y][X] !== 0 && moveArea[Y][X] !== 9){
+            if(centePos.Y > Y && centePos.X === X){//真上にある時
+              for(var Y_TT = 0; Y_TT < Y; Y_TT++){
+                moveArea[Y_TT][X] = 0;
+              }
+            }
+            if(centePos.Y > Y && centePos.X > X){//上&左にあるとき
+              for(var Y_T = 0; Y_T < Y; Y_T++){
+                for(var X_l = 0; X_l <= X; X_l++){
+                  moveArea[Y_T][X_l] = 0;
+                }
+              }
+            }
+            if(centePos.Y > Y && centePos.X < X){//上&右にあるとき
+              for(var Y_T = 0; Y_T < Y; Y_T++){
+                for(var X_R = X; X_R < tilePropMap[Y].length; X_R++){
+                  moveArea[Y_T][X_R] = 0;
+                }
+              }
+            }
+            if(centePos.Y === Y && centePos.X > X){//真左にある時
+              for(var X_LL = 0; X_LL < X; X_LL++){
+                moveArea[Y][X_LL] = 0;
+              }
+            }
+            if(centePos.Y < Y && centePos.X > X){//下&左にあるとき
+              for(var Y_B = Y; Y_B < tilePropMap.length; Y_B++){
+                for(var X_L = 0; X_L < X; X_L++){
+                  moveArea[Y_B][X_L] = 0;
+                }
+              }
+            }
+            if(centePos.Y < Y && centePos.X < X){//下&右にあるとき
+              for(var Y_B = Y; Y_B < tilePropMap.length; Y_B++){
+                for(var X_R = X + 1; X_R < tilePropMap[Y].length; X_R++){
+                  moveArea[Y_B][X_R] = 0;
+                }
+              }
+            }
+            if(centePos.Y < Y && centePos.X === X){//真下にある時
+              for(var Y_BB = Y + 1; Y_BB < tilePropMap.length; Y_BB++){
+                moveArea[Y_BB][X] = 0;
+              }
+            }       
+            if(centePos.Y === Y && centePos.X < X){//真右にある時
+              for(var X_RR = X + 1; X_RR < tilePropMap[Y].length; X_RR++){
+                moveArea[Y][X_RR] = 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    for(var Y = 0; Y < tilePropMap.length; Y++){
+      for(var X = 0; X < tilePropMap[Y].length; X++){
+        if(tilePropMap[Y][X].object.playerType !== this.scene.StageManager.STATUS.TURN){
+          //仲間だったら攻撃駒はそのまま
+          if(chessAttackArea[Y][X] === 3){
+            moveArea[Y][X] = 3;
+          }
+        }else{
+          //仲間だったら攻撃駒を消す。
+          if(chessAttackArea[Y][X] === 3){
+            moveArea[Y][X] = 0;
+          }          
+        }
+        if(tilePropMap[Y][X].object){
+          if(chessAttackArea[Y][X] !== 3){
+            moveArea[Y][X] = 0;
+          }  
+        }
+      }
+    }
+    console.log("moveArea",moveArea)
+
+    return moveArea;
     
   }
   createAreaPanel(){

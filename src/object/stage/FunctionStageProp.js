@@ -40,7 +40,6 @@ export function setProp(scene){
       if(player1_Arr[i][k] !== 0){
 
         tilePropArr[i][k].object = player1ChessGroup[player1_Arr[i][k]-1];
-        tilePropArr[i][k].object.areaMap = MoveArea.getAreaMap(k,i,player1ChessGroup[player1_Arr[i][k]-1]);
 
       }
     }
@@ -50,6 +49,27 @@ export function setProp(scene){
       if(player2_Arr[i][k] !== 0){
 
         tilePropArr[i][k].object = player2ChessGroup[player2_Arr[i][k]-1];
+
+      }
+    }
+  }
+  /*
+  プロパティをセットしてから移動範囲を作る
+  移動先で駒の先を判定するため。
+  */
+  for(var i = 0; i < player1_Arr.length;i++){
+    for(var k = 0; k < player1_Arr[i].length;k++){
+      if(player1_Arr[i][k] !== 0){
+
+        tilePropArr[i][k].object.areaMap = MoveArea.getAreaMap(k,i,player1ChessGroup[player1_Arr[i][k]-1]);
+
+      }
+    }
+  }
+  for(var i = 0; i < player2_Arr.length;i++){
+    for(var k = 0; k < player2_Arr[i].length;k++){
+      if(player2_Arr[i][k] !== 0){
+
         tilePropArr[i][k].object.areaMap = MoveArea.getAreaMap(k,i,player2ChessGroup[player2_Arr[i][k]-1]);
 
       }
