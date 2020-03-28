@@ -21,6 +21,7 @@ export default class MoveArea{
 
   getAreaMap(X,Y,target){
 
+
     let base1 = target.areaMapBase;
     let base = [];
     if(target.playerType === "player2"){
@@ -68,11 +69,6 @@ export default class MoveArea{
 
     let chessAttackArea = moveArea;
 
-    console.log("chessAttackArea",chessAttackArea)
-
-    console.log("centePos",centePos)
-
-    console.log("moveArea",moveArea)
 
     let tilePropMap = this.scene.StageManager.tilePropMap;
 
@@ -136,24 +132,23 @@ export default class MoveArea{
     for(var Y = 0; Y < tilePropMap.length; Y++){
       for(var X = 0; X < tilePropMap[Y].length; X++){
         if(tilePropMap[Y][X].object.playerType !== this.scene.StageManager.STATUS.TURN){
-          //仲間だったら攻撃駒はそのまま
-          if(chessAttackArea[Y][X] === 3){
-            moveArea[Y][X] = 3;
+          //敵だったら攻撃駒はそのまま
+          if(moveArea[Y][X] === 3){
+            // moveArea[Y][X] = 3;
           }
         }else{
           //仲間だったら攻撃駒を消す。
-          if(chessAttackArea[Y][X] === 3){
+          if(moveArea[Y][X] === 3){
             moveArea[Y][X] = 0;
-          }          
+          }           
         }
-        if(tilePropMap[Y][X].object){
-          if(chessAttackArea[Y][X] !== 3){
+        if(tilePropMap[Y][X].object !== ""){
+          if(moveArea[Y][X] === 1){
             moveArea[Y][X] = 0;
-          }  
+          }
         }
       }
     }
-    console.log("moveArea",moveArea)
 
     return moveArea;
     

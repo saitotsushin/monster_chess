@@ -163,6 +163,7 @@ export default class StageManager {
       return;
     }
     if(this.STATUS.STAGE === "FIN"){
+      Prop.updateAreaMap(this.scene)
       this.STATUS.TURN = 'player2';
       let selectedChess = Search.thinkAI(this.scene);
       this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動前）
@@ -170,6 +171,7 @@ export default class StageManager {
       this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動後）
       this.STATUS.TURN = 'player1';
       this.STATUS.STAGE = "";
+      Prop.updateAreaMap(this.scene)
     }
   }
   modalNo(){
