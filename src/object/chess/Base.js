@@ -81,6 +81,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       power: 4,
       difence: 1
     }
+    this.attribute = "";
     this.pos = {
       X: 0,
       Y: 0
@@ -92,7 +93,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       '0',
       { font: '15px Courier', fill: '#FF0000' }
     ); 
-    this.damageText.depth = 12;
+    this.damageText.depth = 150;
     this.damageText.setVisible(false);
     this.on('pointerdown', function (pointer) {
       this.scene.StageManager.selectedLayoutChess(this);
@@ -145,7 +146,37 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
   }
   attack(attackingTarget){
 
-    let damagePoint = this.status.power - attackingTarget.status.difence;
+    let groundType = Number(this.scene.StageManager.tilePropMap[this.pos.Y][this.pos.X].groundType);
+    let power = 0;
+    let myAttribute = Number(this.attribute);
+    let enemyAttribute = Number(attackingTarget.attribute);
+    //地形の力
+    if(myAttribute === groundType){
+
+      power = this.status.power * 100;
+
+    }else{
+      power = this.status.power;
+    }
+    //属性の優劣
+    if(myAttribute !== enemyAttribute){
+      if(myAttribute === 1 && enemyAttribute === 2){
+        power = this.status.power * 100;
+      }
+      if(myAttribute === 2 && enemyAttribute === 3){
+        power = this.status.power * 100;
+      }
+      if(myAttribute === 3 && enemyAttribute === 1){
+        power = this.status.power * 100;
+      }
+    }
+
+    console.log("power",power)
+
+
+    let damagePoint = power - attackingTarget.status.difence;
+
+    console.log("damagePoint",damagePoint)
 
     if(damagePoint <= 0){
       damagePoint = Func.getRandomInt(0,1);

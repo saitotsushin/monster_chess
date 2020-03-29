@@ -25,10 +25,7 @@ export default class StageManager {
       }
     }
 
-    /*ステージの読み込みと設定*/
-    this.StageLayer = new StageLayer({
-      scene: this.scene
-    });
+
 
     /*ステージプロパティデータの読み込み*/
     this.StageData = new StageData({
@@ -36,7 +33,12 @@ export default class StageManager {
     });
     this.tilePropMap = this.StageData.tilePropMap;
 
-
+    /*ステージの読み込みと設定*/
+    console.log("his.StageData.map1",this.StageData.map1)
+    this.StageLayer = new StageLayer({
+      scene: this.scene,
+      mapData: this.StageData.map1
+    });
 
     /*タッチUIの生成*/
     this.TouchedTile = new TouchedTile({
@@ -61,6 +63,8 @@ export default class StageManager {
     }
     /*ステージの初期化*/
     Init.initStage(this.tilePropMap);
+    Init.initiGroudType(this.tilePropMap,this.StageData.map1);
+    console.log("this.tilePropMap",this.tilePropMap)
 
     /*ステータスの更新*/
     // this.STATUS.PLAYER1.CHESS_COUNT = this.scene.PlayerManager.player1_ChessList.length;
@@ -72,6 +76,7 @@ export default class StageManager {
 
     /*レイアウト用の駒のグループ*/
     this.layoutChessGroup = this.scene.add.group();
+
 
   }
   touchedStage(pos){

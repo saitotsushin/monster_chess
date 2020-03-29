@@ -77,6 +77,7 @@ export default class PlayerManager {
             mode
           );
           sprite.status = item.status;
+          sprite.attribute = item.attribute;
           sprite.moveAreaMapBase = item.moveAreaMapBase;
           sprite.attackAreaMapBase = item.attackAreaMapBase;
           sprite.areaMapBase = sprite.mergeArea(

@@ -63,6 +63,7 @@ export default class ChessData {
           power: 10,
           difence: 3
         },
+        attribute: "1",
         moveAreaMapBase: 
         [
           [0,0,0,0,0,0,0,0,0,0,0],
@@ -109,6 +110,7 @@ export default class ChessData {
           power: 6,
           difence: 2
         },
+        attribute: "2",
         moveAreaMapBase:
         [
           [0,0,0,0,0,0,0,0,0,0,0],
@@ -155,6 +157,7 @@ export default class ChessData {
           power: 2,
           difence: 1
         },
+        attribute: "3",
         moveAreaMapBase:
         [
           [0,0,0,0,0,0,0,0,0,0,0],
@@ -201,6 +204,7 @@ export default class ChessData {
           power: 4,
           difence: 1
         },
+        attribute: "1",
         moveAreaMapBase:
         [
           [0,0,0,0,0,1,0,0,0,0,0],
@@ -247,6 +251,7 @@ export default class ChessData {
           power: 4,
           difence: 1
         },
+        attribute: "5",
         moveAreaMapBase:
         [
           [0,0,0,0,0,1,0,0,0,0,0],
