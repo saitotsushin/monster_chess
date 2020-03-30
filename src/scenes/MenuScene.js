@@ -29,6 +29,8 @@ class MenuScene extends Phaser.Scene {
     this.EDIT_STATUS = "";//CONTINUE or FIN
 
     this.selectedLayoutChess = "";
+    this.MAX_COST = 8;
+    this.setCost = 0;
 
   }
   create(){
@@ -62,7 +64,12 @@ class MenuScene extends Phaser.Scene {
       'チーム',
       { font: '10px Courier', fill: '#CCC' }
     );
-
+    this.textCost = this.add.text(
+      100,
+      100,
+      'コスト:'+this.setCost+'/'+this.MAX_COST,
+      { font: '10px Courier', fill: '#CCC' }
+    );
     this.btnTeamEdit = this.add.text(
       50,
       180,
@@ -172,6 +179,8 @@ class MenuScene extends Phaser.Scene {
             frame: ''
           });
 
+          sprite.cost = item.cost;
+
           sprite.moveAreaMapBase = item.moveAreaMapBase;
           sprite.attackAreaMapBase = item.attackAreaMapBase;
 
@@ -244,8 +253,8 @@ class MenuScene extends Phaser.Scene {
     if(this.selectedChess.setted === true){
       this.teamGroup[this.selectedChess.tileIndex] = 0;
     }
+    this.checkCost('remove');
     this.selectedChess.setted = false;
-    console.log("設定：this.teamGroup",this.teamGroup)
     this.checkEditFin();
   }
   touchAddTile(addTile){
@@ -256,6 +265,9 @@ class MenuScene extends Phaser.Scene {
       this.teamGroup[this.selectedChess.tileIndex] = 0;
     }
     this.selectedChess.tileIndex = addTile.tileIndex;
+    if(!this.checkCost('add')){
+      return false;
+    }
     this.selectedChess.setted = true;
     this.selectedChess.x = addTile.x;
     this.selectedChess.y = addTile.y;
@@ -264,13 +276,43 @@ class MenuScene extends Phaser.Scene {
     this.checkEditFin();
 
   };
+  checkCost(mode){
+    console.log("mode=====",mode)
+    let checkCost = this.selectedChess.cost;
+    console.log("checkCost",checkCost);
+    let nowCost = this.setCost;
+    console.log("nowCost",nowCost)
+
+    if(mode === 'remove'){
+      if(this.selectedChess.setted === true){
+        this.setCost -= this.selectedChess.cost;
+      }
+    }
+    if(mode === 'add'){
+      if(checkCost + nowCost > this.MAX_COST){
+        console.log("コストオーバー");
+        return false;
+      }      
+      this.setCost += this.selectedChess.cost;
+    }
+    
+    
+    this.textCost.setText('コスト:'+this.setCost+'/'+this.MAX_COST);
+
+    return true;
+
+  }
   checkEditFin(){
+    
     let fin_count = 0;
     for(var i = 0; i < this.teamGroup.length; i++){
       if(this.teamGroup[i] !== 0){
         fin_count++;
+        
       }
     }
+    
+    
     if(fin_count === this.teamGroup.length){
       this.btnTeamEdit.setText('(編集完了？)');
       this.EDIT_STATUS = "FIN";
