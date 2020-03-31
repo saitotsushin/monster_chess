@@ -347,7 +347,7 @@ export default class StageManager {
       for(var k = 0; k < this.tilePropMap[i].length; k++){
         if(nextPos.X == k && nextPos.Y === i){
           if(this.tilePropMap[i][k].trap){
-            this.tilePropMap[i][k].trap.attack(chess);
+            this.tilePropMap[i][k].trap.firing(chess);
             this.tilePropMap[i][k].trap.removeTrap();
             this.tilePropMap[i][k].trap = "";
           }  

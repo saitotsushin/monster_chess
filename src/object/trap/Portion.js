@@ -1,5 +1,5 @@
 import Base from './Base';
-export default class Bomb extends Base {
+export default class Portion extends Base {
 
   constructor(config) {
 
@@ -13,7 +13,7 @@ export default class Bomb extends Base {
 
     this.y = config.y;
 
-    this.itemTYPE = 'ATTACK';
+    this.itemTYPE = 'CURE';
 
     this.isSet = false;
 
@@ -27,15 +27,16 @@ export default class Bomb extends Base {
       // this.scene.ModalManager.open();
     },this);  
   }
-  firing(attackingTarget){
+  firing(cureTarget){
 
-    let damagePoint = this.status.power - attackingTarget.status.difence;
-
-    attackingTarget.damage(damagePoint,'ATTACK');
-    attackingTarget.status.hp -= damagePoint;
-
-    if(attackingTarget.status.hp <= 0){
-      this.scene.StageManager.removeChess(attackingTarget);
-    } 
+    let curePoint = Math.floor(cureTarget.status.maxHp * 0.5);//切り捨て
+    let nowHp = cureTarget.status.hp + curePoint;
+    let maxHp = cureTarget.status.maxHp;
+    if(nowHp > maxHp){
+      cureTarget.status.hp = maxHp;
+    }else{
+      cureTarget.status.hp += curePoint;
+    }
+    cureTarget.damage(curePoint,'CURE');
   }  
 }

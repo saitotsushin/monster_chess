@@ -30,17 +30,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.damageText.depth = 12;
     this.damageText.setVisible(false);
   }
-  attack(attackingTarget){
 
-    let damagePoint = this.status.power - attackingTarget.status.difence;
-
-    attackingTarget.damage(damagePoint);
-    attackingTarget.status.hp -= damagePoint;
-
-    if(attackingTarget.status.hp <= 0){
-      this.scene.StageManager.removeChess(attackingTarget);
-    } 
-  }  
   removeTrap(){
     this.destroy();
   }

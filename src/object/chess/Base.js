@@ -181,14 +181,19 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     if(damagePoint <= 0){
       damagePoint = Func.getRandomInt(0,1);
     }
-    attackingTarget.damage(damagePoint);
+    attackingTarget.damage(damagePoint,'ATTACK');
     attackingTarget.status.hp -= damagePoint;
 
     if(attackingTarget.status.hp <= 0){
       this.scene.StageManager.removeChess(attackingTarget);
     } 
   }
-  damage(damagePoint){
+  damage(damagePoint,mode){
+    if(mode === "ATTACK"){
+      this.damageText.setColor('#F00')
+    }else{
+      this.damageText.setColor('#3ac551')
+    }
     this.damageText.x = this.x + 10;
     this.damageText.y = this.y - 10;
 
