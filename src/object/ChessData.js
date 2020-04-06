@@ -10,6 +10,7 @@ export default class ChessData {
     this.chessList = [
       {
         key: "chess",
+        no: '--',
         className: Chess,
         status: {
           hp: 35,
@@ -57,6 +58,7 @@ export default class ChessData {
       },
       {
         key: "chess_1",
+        no: '01',
         className: Chess1,
         status: {
           hp: 35,
@@ -105,6 +107,7 @@ export default class ChessData {
       },
       {
         key: "chess_2",
+        no: '02',
         className: Chess2,
         status: {
           hp: 25,
@@ -153,6 +156,7 @@ export default class ChessData {
       },
       {
         key: "chess_3",
+        no: '03',
         className: Chess3,
         status: {
           hp: 5,
@@ -188,7 +192,7 @@ export default class ChessData {
           [0,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,2,0,2,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,2,2,2,0,0,0,0],
           [0,0,0,0,0,9,0,0,0,0,0],
           [0,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,0,0,0,0,0,0,0],
@@ -201,6 +205,7 @@ export default class ChessData {
       },
       {
         key: "chess_4",
+        no: '04',
         className: Chess4,
         status: {
           hp: 5000,
@@ -249,6 +254,7 @@ export default class ChessData {
       },
       {
         key: "chess_5",
+        no: '05',
         className: Chess5,
         status: {
           hp: 5,

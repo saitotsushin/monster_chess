@@ -5,9 +5,10 @@ import GameScene from './scenes/GameScene';
 import MenuScene from './scenes/MenuScene';
 import MainScene from './scenes/MainScene';
 import StageClearScene from './scenes/StageClearScene';
+import SettingScene from './scenes/SettingScene';
 
-let BASE_WIDTH = 220;
-let BASE_HEIGHT = 288;
+let BASE_WIDTH = 140;
+let BASE_HEIGHT = 200;
 let DEVICE_WIDTH = window.innerWidth;
 let DEVICE_HEIGHT = window.innerHeight;
 let wd;
@@ -26,23 +27,24 @@ const config = {
   parent: 'content',
   width: BASE_WIDTH,
   height: hi,
-    physics: {
-      default: 'arcade',
-      arcade: {
-        gravity: {
-            y: 0
-        },
-        debug: true
-      }
-    },
-    scene: [
-      BootScene,
-      TitleScene,
-      MenuScene,
-      GameScene,
-      StageClearScene,
-      MainScene
-    ]
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {
+          y: 0
+      },
+      // debug: true
+    }
+  },
+  scene: [
+    BootScene,
+    TitleScene,
+    MenuScene,
+    SettingScene,
+    GameScene,
+    StageClearScene,
+    MainScene
+  ]
 };
 
 const game = new Phaser.Game(config); // eslint-disable-line no-unused-vars

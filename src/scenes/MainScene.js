@@ -1,9 +1,3 @@
-// import ModalManager from '../object/ui/ModalManager';
-// import StageManager from '../object/StageManager';
-// import TrapManager from '../object/TrapManager';
-// import PlayerManager from '../object/PlayerManager';
-// import ChessManager from '../object/ChessManager';
-
 class MainScene extends Phaser.Scene {
   constructor(test) {
     super({
@@ -12,28 +6,40 @@ class MainScene extends Phaser.Scene {
    
   }
   create(){
-    this.btnGameScene = this.add.text(
-      80,
-      80,
-      'GAME SCENE',
-      { font: '10px Courier', fill: '#CCC' }
+    /*タイトル*/
+    let title = this.add.sprite(
+      0,
+      0,
+      'spritesheet',
+      'title'
     );
-    this.btnGameScene.setInteractive();
-    this.btnGameScene.on('pointerdown', () => {
-      this.scene.start('GameScene');
-    },this);   
+    title.setOrigin(0,0);
 
-
-    this.btnMenu = this.add.text(
-      80,
-      120,
-      'MENU SCENE',
-      { font: '10px Courier', fill: '#CCC' }
+    /*メニューボタン：スタート*/
+    this.btnMenu = this.add.sprite(
+      this.sys.game.config.width/2,
+      102,
+      'spritesheet',
+      'btn_start'
     );
     this.btnMenu.setInteractive();
     this.btnMenu.on('pointerdown', () => {
       this.scene.start('MenuScene');
-    },this);   
+    },this);
+    this.btnMenu.setOrigin(0.5,0);
+
+    /*メニューボタン：HOW TO*/
+    this.btnHowTo = this.add.sprite(
+      this.sys.game.config.width/2,
+      130,
+      'spritesheet',
+      'btn_howto'
+    );
+    this.btnHowTo.setInteractive();
+    this.btnHowTo.on('pointerdown', () => {
+      this.scene.start('MenuScene');
+    },this);
+    this.btnHowTo.setOrigin(0.5,0);
 
     this.btnStageClear = this.add.text(
       80,
@@ -45,8 +51,8 @@ class MainScene extends Phaser.Scene {
     this.btnStageClear.on('pointerdown', () => {
       this.scene.start('StageClearScene');
     },this);   
+    
   }
-
 
 }
 

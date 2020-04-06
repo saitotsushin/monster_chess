@@ -5,6 +5,10 @@ export default class PlayerData {
       "chess_2",
       "chess_3",
       "chess_4",
+      "chess_1",
+      "chess_2",
+      "chess_3",
+      "chess_4",
       "chess_5"
     ];
     this.player1_ChessList = [
