@@ -171,12 +171,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
-    console.log("power",power)
-
-
     let damagePoint = power - attackingTarget.status.difence;
-
-    console.log("damagePoint",damagePoint)
 
     if(damagePoint <= 0){
       damagePoint = Func.getRandomInt(0,1);

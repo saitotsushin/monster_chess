@@ -1,7 +1,6 @@
 export default class StageLayer {
   constructor(config) {
     /*ステージプロパティデータの読み込み*/
-    console.log("config.scene.mapData",config.mapData)
     this.map1 = config.mapData;
     config.scene.map = config.scene.make.tilemap(
       { data: this.map1, tileWidth: 30, tileHeight: 30 }

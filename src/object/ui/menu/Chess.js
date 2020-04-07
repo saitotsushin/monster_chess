@@ -8,8 +8,6 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
 
     this.setInteractive();
 
-
-
     this.moveAreaMapBase = [];
     this.attackAreaMapBase = [];
     this.areaMapBase = 
@@ -42,7 +40,6 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
     ];
     this.setInteractive();
     this.on('pointerdown', function (pointer) {
-      console.log("this.scene.MODE",this.scene.MODE)
       if(this.scene.MODE === "EDIT"){
         this.scene.touchChess(this);
       }

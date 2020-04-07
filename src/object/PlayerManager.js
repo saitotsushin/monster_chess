@@ -25,7 +25,6 @@ export default class PlayerManager {
 
     this.player1_ChessList;
 
-    console.log("this.scene.registry.list.player1_ChessList",this.scene.registry.list.player1_ChessList)
 
     if(this.scene.registry.list.player1_ChessList){
       this.player1_ChessList = this.scene.registry.list.player1_ChessList;

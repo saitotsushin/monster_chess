@@ -91,16 +91,13 @@ export function updateStageProps(scene,chess){
   /*移動する駒をステージに追加*/
   scene.StageManager.tilePropMap[nextPos.Y][nextPos.X].object = selectedChess;
   /*プレイヤーマネージャーに保存していた選択中の駒の移動マップの更新*/
-  console.log("scene.StageManager.tilePropMap",scene.StageManager.tilePropMap)
   updateAreaMap(scene);
   // selectedChess.areaMap = MoveArea.getAreaMap(nextPos.X,nextPos.Y,selectedChess);
-  console.log("selectedChess.areaMap",selectedChess.areaMap)
   /*プレイヤーマネージャーに保存していた選択中の駒を初期化*/
   selectedChess = "";
 
 }
 export function updateAreaMap(scene){
-  console.log("updateAreaMap")
   let tilePropArr = scene.StageManager.tilePropMap;
   let MoveArea    = scene.StageManager.MoveArea;
 

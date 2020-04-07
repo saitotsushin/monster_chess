@@ -26,7 +26,6 @@ class StageClearScene extends Phaser.Scene {
 
       if(this.selectedChess){
         this.PlayerData.stockChesses.push(this.selectedChess.name);
-        console.log("this.PlayerData.stockChesses",this.PlayerData.stockChesses)
         // this.scene.start('MainScene');
       }
       
@@ -60,7 +59,6 @@ class StageClearScene extends Phaser.Scene {
     this.setPlayerGroup();
   }
   setPlayerGroup(){
-    console.log("setPlayerGroup")
     let chessDataList = this.ChessManager.ChessData.chessList;
     let playerChessList;
     let group;
@@ -81,8 +79,6 @@ class StageClearScene extends Phaser.Scene {
 
           sprite.setInteractive();
           sprite.on('pointerdown', () => {
-            console.log("click sprite");
-            console.log("sprite name="+sprite.name);
             this.touchChess(sprite);
           });
           group.add(sprite);
