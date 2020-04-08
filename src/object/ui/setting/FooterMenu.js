@@ -2,6 +2,9 @@ export default class FooterMenu{
   constructor(config) {
 
     this.scene = config.scene;
+ 
+  }
+  create(){
 
     /*==============================
     フッター
@@ -15,34 +18,34 @@ export default class FooterMenu{
     );
     this.btnMenu1.setInteractive();
     this.btnMenu1.on('pointerdown', () => {
-      this.scene.start('MenuScene');
+      this.scene.scene.start('MenuScene');
     },this);
     this.btnMenu1.setOrigin(0,0);
 
     /*メニューボタン：チーム＆レイアウト*/
-    this.btnTeamLayout = this.scene.add.sprite(
-      28,
+    this.btnTeamChess = this.scene.add.sprite(
+      40,
       172,
       'spritesheet',
-      'btn_team_layout'
+      'btn_team_chess'
     );
-    this.btnTeamLayout.setInteractive();
-    this.btnTeamLayout.on('pointerdown', () => {
-      this.scene.start('MenuScene');
+    this.btnTeamChess.setInteractive();
+    this.btnTeamChess.on('pointerdown', () => {
+      this.scene.scene.start('SettingScene');
     },this);
-    this.btnTeamLayout.setOrigin(0,0);
+    this.btnTeamChess.setOrigin(0,0);
 
     /*メニューボタン：チェス情報*/
-    this.btnChessInfo = this.scene.add.sprite(
-      88,
+    this.btnLayout = this.scene.add.sprite(
+      102,
       172,
       'spritesheet',
-      'btn_chess_info'
+      'btn_layout'
     );
-    this.btnChessInfo.setInteractive();
-    this.btnChessInfo.on('pointerdown', () => {
-      this.scene.start('MenuScene');
+    this.btnLayout.setInteractive();
+    this.btnLayout.on('pointerdown', () => {
+      this.scene.scene.start('SettingLayoutScene');
     },this);
-    this.btnChessInfo.setOrigin(0,0);    
+    this.btnLayout.setOrigin(0,0);       
   }
 }

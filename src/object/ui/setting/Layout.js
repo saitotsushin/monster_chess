@@ -1,3 +1,5 @@
+import Chess from '../menu/Chess';
+
 export default class Layout{
   constructor(config) {
 
@@ -11,32 +13,34 @@ export default class Layout{
     /*タイトル：lAYOUT*/
     this.titleLayout = this.scene.add.bitmapText(
       10,
-      55,
+      12,
       'bitmapFont',
       'LAYOUT',
       10
     );    
     /*ボタン：レイアウト編集*/
     this.btnLayoutEdit = this.scene.add.sprite(
-      90,
-      60,
+      92,
+      17,
       'spritesheet',
       'btn_edit'
     );
     this.btnLayoutEdit.setInteractive();
     
     this.btnLayoutEdit.on('pointerdown', () => {
+
+      console.log("EDIT_STATUS",this.scene.EDIT_STATUS)
      
-      if(this.scene.EDIT_STATUS !== 'FIN'){
-        return;
-      }
-      if(this.scene.MODE !== "LAYOUT"){
-        this.scene.MODE = "LAYOUT";
-        this.setLayoutGroup();
-        this.setLayoutChessToStage(); 
+      // if(this.scene.EDIT_STATUS !== 'FIN'){
+      //   return;
+      // }
+      if(this.scene.EDIT_STATUS !== "LAYOUT"){
+        this.scene.EDIT_STATUS = "LAYOUT";
+        // this.setLayoutGroup();
+        // this.setLayoutChessToStage(); 
         this.btnLayoutEdit.setTexture('spritesheet','btn_edit_fin');
       }else{
-        this.scene.setStageArr();
+        this.scene.EDIT_STATUS = "";
         this.btnLayoutEdit.setTexture('spritesheet','btn_edit');
       }
 
@@ -50,9 +54,11 @@ export default class Layout{
     );
 
     this.setLayoutGroup();
+    this.setLayoutChessToStage(); 
+    this.scene.ChessInfoWindow.btnChessInfoWindowClose.setVisible(false)
   }
   setLayoutGroup(){
-    let baseHeight = 82;
+    let baseHeight = 38;
     let addHeight = 20;
     let n = 0;
     let tileX = 0;
@@ -65,17 +71,19 @@ export default class Layout{
         tileX = 0;
         tileY++;
       }
-      if(5 < i && i < 12){
+    
+      if(0 <= i && i < 6){//1行目
         if(i % 2 === 1){
-          panel = "panel_layout_2";
-        }else{
           panel = "panel_layout_1";
+        }else{
+          panel = "panel_layout_2";
         }
-      }else{
+      }
+      if(6 <= i && i < 12){//2行目
         if(i % 2 === 1){
-          panel = "panel_layout_1";
-        }else{
           panel = "panel_layout_2";
+        }else{
+          panel = "panel_layout_1";
         }
       }
       let sprite = this.scene.add.sprite(
@@ -94,7 +102,7 @@ export default class Layout{
       tileX++;
       let _this = this;
       sprite.on('pointerdown', () => {
-        this.touchLayoutTile(sprite);
+        this.scene.touchLayoutTile(sprite);
       });
       this.StageLayoutTileGroup.add(sprite);
     }
@@ -102,25 +110,42 @@ export default class Layout{
   }
   setLayoutChessToStage(){
     let getKey = "";
-    this.layoutedChesses = this.teamGroup;
-    for(var i = 0; i < this.layoutedChesses.length;i++){
-      getKey = this.layoutedChesses[i];
-      let sprite = this.add.sprite(
-        i * 36 + 20,
-        216,
-        getKey
-      );
-      sprite.depth = 20;
-      sprite.setInteractive();
-      sprite.tilePos = {
-        X: i,
-        Y: 5
-      }
-      sprite.on('pointerdown', () => {
-        this.touchLayoutChess(sprite);
-      }); 
-      this.StageLayoutChessGroup.add(sprite)
+    let layoutedChesses = this.scene.teamGroup;
+    let chessDataList = this.scene.ChessManager.ChessData.chessList;
+    for(var i = 0; i < layoutedChesses.length;i++){
+      chessDataList.filter(function(item, index){
+        if(item.key === layoutedChesses[i]){
+          let sprite = new Chess({
+            scene: this.scene,
+            x:i * 20 + 20,
+            y: 38,
+            frame: item.key,
+            key: 'spritesheet'
+          }); 
+          sprite.depth = 20;
+          sprite.setInteractive();
+          sprite.tilePos = {
+            X: i,
+            Y: 5
+          }
+          sprite.status = item.status;
+          sprite.moveAreaMapBase = item.moveAreaMapBase;
+          sprite.attackAreaMapBase = item.attackAreaMapBase;
+          sprite.areaMapBase = sprite.mergeArea(
+            sprite.moveAreaMapBase,
+            sprite.attackAreaMapBase,
+            sprite.areaMapBase
+          );
+          sprite.cost = item.cost;
+          sprite.no = item.no;
+          sprite.name = item.key;
 
+          sprite.on('pointerdown', () => {
+            this.scene.touchLayoutChess(sprite);
+          }); 
+          this.StageLayoutChessGroup.add(sprite)
+        }
+      },this);
     }
   }
 }

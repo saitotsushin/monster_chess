@@ -1,11 +1,7 @@
-// // import Chess from '../menu/Chess';
-// import ChessInfoWindow from './Chess';
-
 export default class ChessInfoWindow{
   constructor(config) {
 
     this.scene = config.scene;
-
   }
   create(){
     this.ChessInfoContainer = this.scene.add.container(0, 0);

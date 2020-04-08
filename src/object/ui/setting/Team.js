@@ -16,6 +16,38 @@ export default class Team{
       'TEAM',
       10
     );
+    /*テキスト：コスト*/
+    this.costNow = this.scene.add.bitmapText(
+      110,
+      32,
+      'bitmapFont',
+      '1',
+      10
+    );
+    /*テキスト：コスト*/
+    this.costSlash = this.scene.add.bitmapText(
+      113,
+      38,
+      'bitmapFont',
+      '/',
+      10
+    );
+    /*テキスト：コスト*/
+    this.costMax = this.scene.add.bitmapText(
+      118,
+      39,
+      'bitmapFont',
+      '8',
+      10
+    );
+
+
+    this.cosePanel = this.scene.add.sprite(
+      120,
+      36,
+      'spritesheet',
+      'cost_panel'
+    );
     /*==============================
     ボタン：チーム編集
     ------------------------------*/        
@@ -30,6 +62,12 @@ export default class Team{
 
     this.btnTeamEdit.on('pointerdown', () => {
 
+      if(this.scene.MODE === "FIN"){
+        this.registry.list.player1Auto_Arr = this.scene.teamGroup;
+        this.scene.MODE = "";
+        return;
+      }
+
       if(this.scene.EDIT_STATUS === "CONTINUE"){
         return;
       }else{
@@ -42,22 +80,17 @@ export default class Team{
         this.scene.MODE = "INFO";
         this.scene.EDIT_STATUS = "";
         this.btnTeamEdit.setTexture('spritesheet','btn_edit');
-        this.scene.hideStockChess();
-        this.scene.showLayoutTile();
+
         
-        // this.StockChessContainer.setVisible(false);
-        // this.LayoutContainer.setVisible(true);
+
       }else{
         /*------------------------
         編集前
         ------------------------*/
         this.scene.MODE = "EDIT";
         this.btnTeamEdit.setTexture('spritesheet','btn_edit_fin');
-        this.scene.showStockChess();
-        this.scene.hideLayoutTile();
-        this.btnTeamEdit.alpha = 0.4;
-        // this.StockChessContainer.setVisible(true);
-        // this.LayoutContainer.setVisible(false);        
+
+        this.btnTeamEdit.alpha = 0.4;    
       }
     },this); 
 
@@ -106,7 +139,7 @@ export default class Team{
 
           this.scene.setCost += sprite.cost;
 
-          this.scene.textCost.setText('コスト:'+this.scene.setCost+'/'+this.scene.MAX_COST);
+          this.costNow.setText(this.scene.setCost);
 
 
           group.add(sprite);

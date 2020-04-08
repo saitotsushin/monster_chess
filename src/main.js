@@ -6,6 +6,7 @@ import MenuScene from './scenes/MenuScene';
 import MainScene from './scenes/MainScene';
 import StageClearScene from './scenes/StageClearScene';
 import SettingScene from './scenes/SettingScene';
+import SettingLayoutScene from './scenes/SettingLayoutScene';
 
 let BASE_WIDTH = 140;
 let BASE_HEIGHT = 200;
@@ -40,6 +41,7 @@ const config = {
     BootScene,
     TitleScene,
     MenuScene,
+    SettingLayoutScene,
     SettingScene,
     GameScene,
     StageClearScene,

@@ -1,5 +1,4 @@
 import Chess from '../menu/Chess';
-import ChessInfoWindow from './ChessInfoWindow';
 
 export default class StockChess{
   constructor(config) {
@@ -10,7 +9,6 @@ export default class StockChess{
   create(){
     this.playerStockChessGroup = this.scene.add.group();
     this.StockChessContainer = this.scene.add.container(0, 0);
-    this.StockChessContainer.setVisible(false);
     this.ChessBaseGroup = this.scene.add.group();
     /*=================
     ストックしているチェス
@@ -28,10 +26,6 @@ export default class StockChess{
         this.titleStockChess
       ]
     );
-    this.ChessInfoWindow = new ChessInfoWindow({
-      scene: this.scene
-    });
-    this.ChessInfoWindow.create();
 
     this.setStockChessGroup();
 
@@ -131,7 +125,6 @@ export default class StockChess{
       },this);
 
     }
-    this.scene.hideStockChess();
 
   }
   updateStockChess(){

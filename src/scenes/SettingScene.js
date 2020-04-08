@@ -1,11 +1,10 @@
 
 import PlayerData from '../object/PlayerData';
 import ChessManager from '../object/ChessManager';
-import Chess from '../object/ui/menu/Chess';
 import FooterMenu from '../object/ui/setting/FooterMenu';
-import Layout from '../object/ui/setting/Layout';
 import Team from '../object/ui/setting/Team';
 import StockChess from '../object/ui/setting/StockChess';
+import ChessInfoWindow from '../object/ui/setting/ChessInfoWindow';
 
 class SettingScene extends Phaser.Scene {
   constructor(test) {
@@ -31,7 +30,6 @@ class SettingScene extends Phaser.Scene {
     this.EDIT_STATUS = "";//CONTINUE or FIN
     this.EDIT_CHESS_STATUS = "";
 
-    this.selectedLayoutChess = "";
     this.MAX_COST = 8;
     this.setCost = 0;
 
@@ -39,22 +37,20 @@ class SettingScene extends Phaser.Scene {
 
   }
   create(){
+
+    this.teamGroup = 
+
+    this.registry.list.player1_ChessList = this.teamGroup;
+
+    console.log("this.registry.list.player1_ChessList",this.registry.list.player1_ChessList)
+
     /*=================
     レイアウト編集
     =================*/
-    this.textCost = this.add.text(
-      10,
-      140,
-      'コスト:'+this.setCost+'/'+this.MAX_COST,
-      { font: '10px Courier', fill: '#CCC' }
-    );
     this.FooterMenu = new FooterMenu({
       scene: this
     });
-    this.Layout = new Layout({
-      scene: this
-    });
-    this.Layout.create();
+    this.FooterMenu.create();
 
     this.Team = new Team({
       scene: this
@@ -66,21 +62,13 @@ class SettingScene extends Phaser.Scene {
     });
     this.StockChess.create();
 
-
-    // this.ChessInfoContainer = this.add.container(0, 0);
-    // this.ChessInfoMoveGroup = this.add.group();
+    this.ChessInfoWindow = new ChessInfoWindow({
+      scene: this
+    });
+    this.ChessInfoWindow.create();
 
     /*背景*/
     this.cameras.main.setBackgroundColor('#eeeeee');
-
-    /*=================
-    レイアウト編集
-    =================*/
-    this.layoutedChesses = [
-      "chess_1",
-      "chess_2",
-      "chess_3",
-    ];
 
     /*=================
     カーソル
@@ -106,16 +94,12 @@ class SettingScene extends Phaser.Scene {
     this.btnDelete.setInteractive();
     this.btnDelete.setVisible(false);
     this.btnDelete.on('pointerdown', () => {
-      // let teamChessGroup = this.Team.playerTeamChessGroup.children.entries;
       this.setCost -= this.selectedChess.cost;
       this.teamGroup[this.selectedChess.tileIndex] = 0;
       this.StockChess.updateStockChess();
       this.selectedChess.removeInteractive();
-
-      // console.log("this.selectedChess",this.selectedChess)
-
       this.selectedChess.setTexture('spritesheet','chess_shadow');
-      this.textCost.setText('コスト:'+this.setCost+'/'+this.MAX_COST);
+      this.Team.costNow.setText(this.setCost);
       this.btnDelete.setVisible(false);
     },this);
 
@@ -136,17 +120,6 @@ class SettingScene extends Phaser.Scene {
     this.btnInfo.depth = 50;
 
     /*=================
-    仮置き。設置するか確認用
-    =================*/
-    // this.shadowChess = this.add.sprite(
-    //   20,
-    //   40,
-    //   'spritesheet',
-    //   'chess_1'
-    // );
-    // this.shadowChess.setVisible(false);
-    this.btnInfo.depth = 50;
-    /*=================
     チェスの設置ボタン：決定
     =================*/
     this.btnSet = this.add.sprite(
@@ -158,7 +131,6 @@ class SettingScene extends Phaser.Scene {
     this.btnSet.setVisible(false);
     this.btnSet.setInteractive();
     this.btnSet.on('pointerdown', () => {
-      // this.showChessInfoWindow();
       this.askSetYes();
     },this);
     this.btnSet.depth = 50;
@@ -174,7 +146,6 @@ class SettingScene extends Phaser.Scene {
     this.btnReturn.setVisible(false);
     this.btnReturn.setInteractive();
     this.btnReturn.on('pointerdown', () => {
-      // this.showChessInfoWindow();
       this.askSetNo();
     },this);
     this.btnReturn.depth = 50;
@@ -183,9 +154,9 @@ class SettingScene extends Phaser.Scene {
     /*==============================
     デバッグ
     ==============================*/
-    // this.debugText = this.add.text(10, 10, '', { font: '10px Courier', fill: '#FFFFFF' });
-    // this.debugText.depth = 100;
-    // this.debugText.setScrollFactor(0,0);
+    this.debugText = this.add.text(10, 120, '', { font: '10px Courier', fill: '#000' });
+    this.debugText.depth = 100;
+    this.debugText.setScrollFactor(0,0);
     // this.debugText.alpha = 0.8;    
     // this.setTeamChessGroup();
     // this.setStockChessGroup();
@@ -200,12 +171,12 @@ class SettingScene extends Phaser.Scene {
     /*==============================
     デバッグ START
     ------------------------------*/    
-    // this.debugText.setText(
-    //   [
-    //     'EDIT_STATUS :'+this.EDIT_STATUS,
-    //     'MODE        :'+this.MODE,
-    //   ]
-    // );
+    this.debugText.setText(
+      [
+        'EDIT_STATUS :'+this.EDIT_STATUS,
+        'MODE        :'+this.MODE,
+      ]
+    );
 
     /*------------------------------
     デバッグ END
@@ -238,7 +209,7 @@ class SettingScene extends Phaser.Scene {
       this.btnInfo.setVisible(true); 
       this.btnInfo.x = this.selectedChess.x;
       this.btnInfo.y = this.selectedChess.y + this.selectedChess.height;
-      this.StockChess.ChessInfoWindow.setChessInfo(this.selectedChess)
+      this.ChessInfoWindow.setChessInfo(this.selectedChess)
     }
   }
   /*==============================
@@ -255,9 +226,6 @@ class SettingScene extends Phaser.Scene {
     if(!this.selectedChess){
       return;
     }
-    // if(this.selectedChess.setted){
-    //   this.teamGroup[this.selectedChess.tileIndex] = 0;
-    // }
     this.selectedChess.tileIndex = addTile.tileIndex;
     if(!this.checkCost('add')){
       return false;
@@ -267,18 +235,7 @@ class SettingScene extends Phaser.Scene {
     this.askSet();
 
   };
-  touchLayoutChess(layoutChess){
 
-    this.selectedLayoutChess = layoutChess;
-
-  }
-  touchLayoutTile(layoutTile){
-    if(this.selectedLayoutChess){
-      this.selectedLayoutChess.x = layoutTile.x;
-      this.selectedLayoutChess.y = layoutTile.y;
-      this.selectedLayoutChess.tilePos = layoutTile.tilePos;
-    }
-  }
 
   askSet(){
 
@@ -297,10 +254,6 @@ class SettingScene extends Phaser.Scene {
     let chengeTexture = this.selectedChess.frame.name;
     teamChessGroup[this.selectedTile.tileIndex].setTexture('spritesheet',chengeTexture);
 
-    // this.shadowChess.x = this.selectedTile.x;
-    // this.shadowChess.y = this.selectedTile.y;
-
-    // this.shadowChess.setVisible(true);
     this.btnInfo.setVisible(false);
 
 
@@ -313,9 +266,9 @@ class SettingScene extends Phaser.Scene {
     this.btnReturn.setVisible(false);
 
     this.setCost += this.selectedChess.cost;
-    
-    this.textCost.setText('コスト:'+this.setCost+'/'+this.MAX_COST);
 
+    this.Team.costNow.setText(this.setCost);
+    
 
     this.teamGroup[this.selectedTile.tileIndex] = this.selectedChess.name;
     this.StockChess.updateStockChess();
@@ -379,67 +332,15 @@ class SettingScene extends Phaser.Scene {
   }
 
 
-  /*==============================
-  表示・非表示
-  ------------------------------*/   
-  /*ストックの駒
-  ------------------------------*/
-  showStockChess(){
-    this.StockChess.StockChessContainer.setVisible(true);
-    this.Layout.LayoutContainer.setVisible(false);    
-    this.StockChess.playerStockChessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(true);
-      }
-    );
-    this.StockChess.ChessBaseGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(true);
-      }
-    );
-  }
 
-  hideStockChess(){
-    this.Layout.LayoutContainer.setVisible(true);
-    this.StockChess.StockChessContainer.setVisible(false);
-    this.StockChess.playerStockChessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(false);
-      }
-    );
-    this.StockChess.ChessBaseGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(false);
-      }
-    );
-  }
-  /*==============================
-  表示・非表示
-  ------------------------------*/   
-  /*レイアウト用のタイル
-  ------------------------------*/
-  showLayoutTile(){
-    this.Layout.StageLayoutTileGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(true);
-      }
-    );
-  }
-  hideLayoutTile(){
-    this.Layout.StageLayoutTileGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(false);
-      }
-    );
-  }
   /*==============================
   表示・非表示
   ------------------------------*/   
   /*ストックの駒
   ------------------------------*/
   showChessInfoWindow(){
-    this.StockChess.ChessInfoWindow.ChessInfoContainer.setVisible(true);
-    this.StockChess.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
+    this.ChessInfoWindow.ChessInfoContainer.setVisible(true);
+    this.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
       (sprite) => {
         sprite.setVisible(true);
       }
@@ -447,34 +348,12 @@ class SettingScene extends Phaser.Scene {
   }
 
   hideChessInfoWindow(){
-    this.StockChess.ChessInfoWindow.ChessInfoContainer.setVisible(false);
-    this.StockChess.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
+    this.ChessInfoWindow.ChessInfoContainer.setVisible(false);
+    this.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
       (sprite) => {
         sprite.setVisible(false);
       }
     );
-  }
-  /*==============================
-  共通関数
-  ==============================*/
-  setStageArr(){
-    let stageArr = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
-    ];
-    this.StageLayoutChessGroup.children.entries.forEach(
-      (sprite,index) => {
-        stageArr[sprite.tilePos.Y][sprite.tilePos.X] = index + 1;
-      }
-    );
-    
-    this.registry.list.player1Auto_Arr = stageArr;
   }
 }
 
