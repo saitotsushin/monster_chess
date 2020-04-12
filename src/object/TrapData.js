@@ -4,21 +4,21 @@ export default class TrapData {
   constructor() {
     this.trapList = [
       {
-        key: "bomb",
+        key: "item_bomb",
         className: Bomb
       },
       {
-        key: "portion",
+        key: "item_portion",
         className: Portion
       }
     ];
     this.player1_TrapList = [
-      "bomb",
-      "portion"
+      "item_bomb",
+      "item_portion"
     ];
     this.player2_TrapList = [
-      "bomb",
-      "bomb"
+      "item_bomb",
+      "item_bomb"
     ];
   }
 }

@@ -39,7 +39,7 @@ class BootScene extends Phaser.Scene {
 
     this.load.on('complete', () => {
       this.progress.destroy();
-      this.scene.start('SettingScene');
+      this.scene.start('MainScene');
     });
 
 
@@ -47,6 +47,11 @@ class BootScene extends Phaser.Scene {
     this.load.pack('Preload', 'assets/pack.json', 'Preload');
 
     this.load.bitmapFont('bitmapFont', 'assets/font/font.png', 'assets/font/font.xml');
+    this.load.bitmapFont('bitmapFontRed', 'assets/font/font_red.png', 'assets/font/font.xml');
+    this.load.bitmapFont('bitmapFontBlue', 'assets/font/font_blue.png', 'assets/font/font.xml');
+
+    this.load.spritesheet('anime_explode', 'assets/images/anime_explode.png', { frameWidth: 20, frameHeight: 20 }); 
+
     this.load.image('tiles', 'assets/tilemaps/tile.png');
     this.load.image('icon_enemy', 'assets/images/icon_enemy.png');
     this.load.image('chess', 'assets/images/chess.png');

@@ -4,6 +4,8 @@ import PlayerData from './PlayerData';
 export default class PlayerManager {
   constructor(gameScene) {
     this.scene = gameScene.scene;
+  }
+  create(){
 
     this.Player1 = new Player1({
       scene: this.scene
@@ -14,9 +16,13 @@ export default class PlayerManager {
 
     /*選択中の相手駒の保存*/
     this.targetChess;
+
+    /*移動した駒の保存*/
+    this.movedChess;
     
     /*選択中のトラップの保存*/
     this.selectedTrap;
+    
 
     /*プレイヤーデータの読み込み*/
     this.PlayerData = new PlayerData({
@@ -75,8 +81,12 @@ export default class PlayerManager {
             item.key,
             mode
           );
-          sprite.status = item.status;
           sprite.attribute = item.attribute;
+          sprite.groupIndex = i + 1;
+          sprite.status = item.status;
+          sprite.cost = item.cost;
+          sprite.no = item.no;
+          sprite.status = item.status;
           sprite.moveAreaMapBase = item.moveAreaMapBase;
           sprite.attackAreaMapBase = item.attackAreaMapBase;
           sprite.areaMapBase = sprite.mergeArea(
@@ -91,5 +101,13 @@ export default class PlayerManager {
     }
 
   }
-
+  setPlayerArrData(){
+    if(this.scene.registry.list.player1Auto_Arr){
+      this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
+    }else{
+      this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
+    }    
+    this.setPlayerGroup("player1");
+    this.setPlayerGroup("player2");
+  }
 }

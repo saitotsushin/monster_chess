@@ -87,35 +87,36 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       Y: 0
     }
     this.depth = 10;
-    this.damageText = this.scene.add.text(
-      this.x + this.width/2 - 10,
-      this.y + this.height/2 - 10,
+    this.damageText = this.scene.add.bitmapText(
+      this.x,
+      this.y + this.height/2,
+      'bitmapFont',
       '0',
-      { font: '15px Courier', fill: '#FF0000' }
-    ); 
-    this.damageText.depth = 150;
+      10
+    );
+    // this.damageText = this.scene.add.text(
+    //   this.x + this.width/2 - 10,
+    //   this.y + this.height/2 - 10,
+    //   '0',
+    //   { font: '15px Courier', fill: '#FF0000' }
+    // ); 
+    this.damageText.depth = 300;
     this.damageText.setVisible(false);
     this.on('pointerdown', function (pointer) {
       this.scene.StageManager.selectedLayoutChess(this);
       this.cursorShow(pointer);
     });
-    // this.selectedChessMarker = this.scene.add.graphics();
-    // this.selectedChessMarker.lineStyle(3, 0xff0000, 1);
-    // this.selectedChessMarker.strokeRect(
-    //   0,
-    //   0,
-    //   config.scene.map.tileWidth,
-    //   config.scene.map.tileHeight
-    // );
-    // this.selectedChessMarker.depth = 110;
-    // this.selectedChessMarker.setVisible(false);
 
-    this.icon_enemy = this.scene.add.sprite(this.x,this.y,'icon_enemy');
+
+    this.icon_enemy = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_enemy');
     this.icon_enemy.setVisible(false);
     this.icon_enemy.depth = 20;
     if(this.playerType === 'player2'){
       this.icon_enemy.setVisible(true);
     }
+    this.attackingTarget;
+    // /*アニメコンプリート->爆発を消す*/
+    this.on('animationcomplete', function(){this.explodeComplete(this)}, this);
   }
 
   mergeArea(area1,area2,merge_area){
@@ -150,6 +151,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     let power = 0;
     let myAttribute = Number(this.attribute);
     let enemyAttribute = Number(attackingTarget.attribute);
+    /*ターゲットの保存。爆発の後のremoveで使用する*/
     //地形の力
     if(myAttribute === groundType){
 
@@ -176,23 +178,34 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     if(damagePoint <= 0){
       damagePoint = Func.getRandomInt(0,1);
     }
-    attackingTarget.damage(damagePoint,'ATTACK');
+    
     attackingTarget.status.hp -= damagePoint;
 
     if(attackingTarget.status.hp <= 0){
-      this.scene.StageManager.removeChess(attackingTarget);
-    } 
-  }
-  damage(damagePoint,mode){
-    if(mode === "ATTACK"){
-      this.damageText.setColor('#F00')
+      console.log("attackingTarget",attackingTarget)
+      this.attackingTarget = attackingTarget;
+      attackingTarget.damage(damagePoint,'ATTACK','explode');
+      // this.scene.StageManager.removeChess(attackingTarget);
     }else{
-      this.damageText.setColor('#3ac551')
+      attackingTarget.damage(damagePoint,'ATTACK','');
+      this.attackingTarget = "";//爆発しなかったらリセット。
     }
-    this.damageText.x = this.x + 10;
-    this.damageText.y = this.y - 10;
 
-    let afterY = this.damageText.y + 10;
+  }
+  damage(damagePoint,mode,status){
+    if(mode === "ATTACK"){
+      // this.damageText.setColor('#F00')
+      this.damageText.setTexture('bitmapFontRed');
+    }else{
+      this.damageText.setTexture('bitmapFontBlue');
+      // this.damageText.setColor('#3ac551')
+    }
+    this.damageText.x = this.x + 5;
+    this.damageText.y = this.y - 5;
+
+    
+
+    let afterY = this.damageText.y + 5;
     this.damageText.setVisible(true);
     this.damageText.setText(damagePoint);
     let damageTween = this.scene.tweens.add({
@@ -201,42 +214,22 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
         ease: 'liner',
         duration: 100,
         repeat: 0,
-        completeDelay: 1000,
+        completeDelay: 600,
         onComplete: function () {
           this.damageText.setVisible(false);
+          if(status === "explode"){
+            console.log("status")
+            this.anims.play('anime_explode');
+            this.icon_enemy.setVisible(false);  
+          }
         },
         callbackScope: this
     });
-  }
-  cursorShow(pointer){
-    // var worldPoint = this.scene.input.activePointer.positionToCamera(this.scene.cameras.main);
-
-    // var pointerTileX = this.scene.map.worldToTileX(worldPoint.x);
-    // var pointerTileY = this.scene.map.worldToTileY(worldPoint.y);
-
-    // let test_x = this.scene.map.tileToWorldX(pointerTileX);
-    // let test_y  = this.scene.map.tileToWorldY(pointerTileY);
-    // var tile = this.scene.map.getTileAt(pointerTileX, pointerTileY);
-
-    // this.scene.StageManager.MoveArea.hide(this);
-
-    // this.areaMap = this.scene.StageManager.MoveArea.getAreaMap(pointerTileX,pointerTileY,this);
-    // this.scene.StageManager.MoveArea.show(this);
-
-    // this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
-    //   (sprite) => {
-    //     sprite.selectedChessMarker.setVisible(false);
-    //   }
-    // );
     
-    // this.scene.PlayerManager.player1ChessGroup.children.entries.forEach(
-    //   (sprite) => {
-    //     sprite.selectedChessMarker.setVisible(false);
-    //   }
-    // );
-    // this.selectedChessMarker.x = this.x - this.width/2;
-    // this.selectedChessMarker.y = this.y - this.height/2;
-    // this.selectedChessMarker.setVisible(true);  
+  }
+  explodeComplete(_this){
+    console.log("comp! _this",_this)
+    this.scene.StageManager.removeChess(_this);
   }
 
 }

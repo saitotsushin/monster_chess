@@ -157,9 +157,9 @@ export default class MoveArea{
     //1:移動      | move_area
     //2:攻撃      | attack_area
     //3:移動＋攻撃 | attack_move_area
-    this.setAreaPanel(this.area1Group,"move_area");
-    this.setAreaPanel(this.area2Group,"attack_area");
-    this.setAreaPanel(this.area3Group,"attack_move_area");    
+    this.setAreaPanel(this.area1Group,"panel_move");
+    this.setAreaPanel(this.area2Group,"panel_attack");
+    this.setAreaPanel(this.area3Group,"panel_move_attack");    
   }
   setAreaPanel(group,key){
     let area;
@@ -167,7 +167,7 @@ export default class MoveArea{
     let row = 8;
     for(var i = 0; i < row; i++){
       for(var k = 0; k < col; k++){
-        area = this.scene.add.sprite(0,0,key);
+        area = this.scene.add.sprite(0,0,'spritesheet',key);
         area.x = k * this.scene.map.tileWidth + this.scene.map.tileWidth/2 + this.StageManager.StageLayer.layer.x;
         area.y = i * this.scene.map.tileHeight + this.scene.map.tileHeight/2 + this.StageManager.StageLayer.layer.y;  
         area.setVisible(false);

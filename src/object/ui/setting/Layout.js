@@ -29,15 +29,8 @@ export default class Layout{
     
     this.btnLayoutEdit.on('pointerdown', () => {
 
-      console.log("EDIT_STATUS",this.scene.EDIT_STATUS)
-     
-      // if(this.scene.EDIT_STATUS !== 'FIN'){
-      //   return;
-      // }
       if(this.scene.EDIT_STATUS !== "LAYOUT"){
         this.scene.EDIT_STATUS = "LAYOUT";
-        // this.setLayoutGroup();
-        // this.setLayoutChessToStage(); 
         this.btnLayoutEdit.setTexture('spritesheet','btn_edit_fin');
       }else{
         this.scene.EDIT_STATUS = "";

@@ -26,6 +26,7 @@ class TitleScene extends Phaser.Scene {
 
     this.registry.set('player1_ChessList', []);
     this.registry.set('player1Auto_Arr', []);
+    // this.registry.set('chessCost', 0);
         
 
       

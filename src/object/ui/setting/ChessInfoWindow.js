@@ -90,7 +90,7 @@ export default class ChessInfoWindow{
           'spritesheet',
           'movearea_s_default'
         );
-        sprite.depth = 105;
+        sprite.depth = 405;
 
         this.ChessInfoMoveGroup.add(sprite);
 
@@ -98,10 +98,11 @@ export default class ChessInfoWindow{
     }
     
 
-    this.ChessInfoContainer.depth = 100;
+    this.ChessInfoContainer.depth = 400;
 
   }
   setChessInfo(chess){
+    console.log("setChessInfo")
     this.chessInfoNumb.setText(chess.no);
     this.chessInfoHp.setText(chess.status.maxHp);
     this.chessInfoAttack.setText(chess.status.power);

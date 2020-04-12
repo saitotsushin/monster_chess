@@ -38,11 +38,9 @@ class SettingScene extends Phaser.Scene {
   }
   create(){
 
-    this.teamGroup = 
+    this.setCost = 0;
 
     this.registry.list.player1_ChessList = this.teamGroup;
-
-    console.log("this.registry.list.player1_ChessList",this.registry.list.player1_ChessList)
 
     /*=================
     レイアウト編集
@@ -94,12 +92,14 @@ class SettingScene extends Phaser.Scene {
     this.btnDelete.setInteractive();
     this.btnDelete.setVisible(false);
     this.btnDelete.on('pointerdown', () => {
-      this.setCost -= this.selectedChess.cost;
       this.teamGroup[this.selectedChess.tileIndex] = 0;
       this.StockChess.updateStockChess();
       this.selectedChess.removeInteractive();
       this.selectedChess.setTexture('spritesheet','chess_shadow');
+      /*コストの管理*/
+      this.setCost -= this.selectedChess.cost;
       this.Team.costNow.setText(this.setCost);
+      // this.registry.list.chessCost = this.setCost;
       this.btnDelete.setVisible(false);
     },this);
 
@@ -154,9 +154,9 @@ class SettingScene extends Phaser.Scene {
     /*==============================
     デバッグ
     ==============================*/
-    this.debugText = this.add.text(10, 120, '', { font: '10px Courier', fill: '#000' });
-    this.debugText.depth = 100;
-    this.debugText.setScrollFactor(0,0);
+    // this.debugText = this.add.text(10, 120, '', { font: '10px Courier', fill: '#000' });
+    // this.debugText.depth = 100;
+    // this.debugText.setScrollFactor(0,0);
     // this.debugText.alpha = 0.8;    
     // this.setTeamChessGroup();
     // this.setStockChessGroup();
@@ -171,12 +171,12 @@ class SettingScene extends Phaser.Scene {
     /*==============================
     デバッグ START
     ------------------------------*/    
-    this.debugText.setText(
-      [
-        'EDIT_STATUS :'+this.EDIT_STATUS,
-        'MODE        :'+this.MODE,
-      ]
-    );
+    // this.debugText.setText(
+    //   [
+    //     'EDIT_STATUS :'+this.EDIT_STATUS,
+    //     'MODE        :'+this.MODE,
+    //   ]
+    // );
 
     /*------------------------------
     デバッグ END
@@ -187,7 +187,6 @@ class SettingScene extends Phaser.Scene {
   チームのチェスをタッチした時
   ------------------------------*/   
   touchChess(chess){
-    console.log("touchChess")
     /*チームへの追加パネルをタッチ中。決定or戻すのウインドウ表示中*/
     if(this.EDIT_CHESS_STATUS === 'SET'){
       return;      
@@ -216,7 +215,6 @@ class SettingScene extends Phaser.Scene {
   チームの追加パネルをタッチした時
   ------------------------------*/   
   touchAddTile(addTile){
-    console.log("touchAddTile")
 
     this.selectedTile = addTile;
     
@@ -266,6 +264,7 @@ class SettingScene extends Phaser.Scene {
     this.btnReturn.setVisible(false);
 
     this.setCost += this.selectedChess.cost;
+    // this.registry.list.chessCost = this.setCost;
 
     this.Team.costNow.setText(this.setCost);
     
@@ -295,6 +294,7 @@ class SettingScene extends Phaser.Scene {
     if(mode === 'remove'){
       // if(this.selectedChess.setted === true){
         this.setCost -= this.selectedChess.cost;
+        // this.registry.list.chessCost = this.setCost;
       // }
     }
     if(mode === 'add'){

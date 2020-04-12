@@ -20,8 +20,13 @@ export default class Portion extends Base {
     this.setInteractive();
     
     this.on('pointerdown', () => {
+
+      this.scene.TrapManager.Cursor.setVisible(true);
       
-      this.scene.StageManager.STATUS.STAGE = "SELECTED_TRAP"
+      this.scene.TrapManager.Cursor.x = this.x + 5;
+      this.scene.TrapManager.Cursor.y = this.y;
+      
+      // this.scene.StageManager.STATUS.STAGE = "SELECTED_TRAP"
       this.scene.PlayerManager.selectedTrap = this;
       this.scene.StageManager.MoveArea.hide(this.scene.StageManager.selectedChess);
       // this.scene.ModalManager.open();

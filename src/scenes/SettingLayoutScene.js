@@ -93,9 +93,9 @@ class SettingLayoutScene extends Phaser.Scene {
     /*==============================
     デバッグ
     ==============================*/
-    this.debugText = this.add.text(10, 120, '', { font: '10px Courier', fill: '#000' });
-    this.debugText.depth = 100;
-    this.debugText.setScrollFactor(0,0);
+    // this.debugText = this.add.text(10, 120, '', { font: '10px Courier', fill: '#000' });
+    // this.debugText.depth = 100;
+    // this.debugText.setScrollFactor(0,0);
     // this.debugText.alpha = 0.8;    
     // this.setTeamChessGroup();
     // this.setStockChessGroup();
@@ -111,12 +111,12 @@ class SettingLayoutScene extends Phaser.Scene {
     /*==============================
     デバッグ START
     ------------------------------*/    
-    this.debugText.setText(
-      [
-        'EDIT_STATUS :'+this.EDIT_STATUS,
-        'MODE        :'+this.MODE,
-      ]
-    );
+    // this.debugText.setText(
+    //   [
+    //     'EDIT_STATUS :'+this.EDIT_STATUS,
+    //     'MODE        :'+this.MODE,
+    //   ]
+    // );
 
     /*------------------------------
     デバッグ END
@@ -126,8 +126,8 @@ class SettingLayoutScene extends Phaser.Scene {
 
   touchLayoutChess(layoutChess){
 
+    this.ChessInfoWindow.setChessInfo(layoutChess)
     if(this.EDIT_STATUS !== 'LAYOUT'){
-      this.ChessInfoWindow.setChessInfo(layoutChess)
       return;
     }
     /*カーソルの更新 */
@@ -158,7 +158,6 @@ class SettingLayoutScene extends Phaser.Scene {
 
       /*移動ごとに保存*/
       this.registry.list.player1Auto_Arr = this.player1Auto_Arr;
-      console.log("this.player1Auto_Arr",this.player1Auto_Arr)
 
     }
   }

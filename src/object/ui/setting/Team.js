@@ -21,7 +21,7 @@ export default class Team{
       110,
       32,
       'bitmapFont',
-      '1',
+      this.scene.registry.list.chessCost,
       10
     );
     /*テキスト：コスト*/
@@ -138,6 +138,7 @@ export default class Team{
           // sprite.setted = false;
 
           this.scene.setCost += sprite.cost;
+          // this.scene.registry.list.chessCost = this.setCost;
 
           this.costNow.setText(this.scene.setCost);
 

@@ -28,8 +28,8 @@ export function getTilePositionNumber(X,Y,scene){
 ステージにプロパティ追加
 ==============================*/    
 export function setProp(scene){
-  let player1_Arr = scene.PlayerManager.player1_Arr;
-  let player2_Arr = scene.PlayerManager.player2_Arr;
+  let player1_Arr = scene.PlayerManager.player1Auto_Arr;
+  let player2_Arr = scene.PlayerManager.player2Auto_Arr;
   let player1ChessGroup = scene.PlayerManager.player1ChessGroup.children.entries;
   let player2ChessGroup = scene.PlayerManager.player2ChessGroup.children.entries;
   let tilePropArr = scene.StageManager.tilePropMap;
@@ -80,11 +80,25 @@ export function setProp(scene){
 ステージにチェスのプロパティ変更
 ==============================*/    
 export function updateStageProps(scene,chess){
+  console.log("chess",chess);
   let StageManager    = scene.StageManager;
   let beforePos       = StageManager.beforeChessPos;
-  let nextPos         = StageManager.nextChessPos;
+  let nextPos         = {
+    X: 0,
+    Y: 0
+  };
+  let nextChessPos    = StageManager.nextChessPos;
   let selectedChess   = chess;
   let MoveArea        = StageManager.MoveArea;
+  console.log("beforePos",beforePos)
+  console.log("nextPos",nextPos)
+
+  if(!nextChessPos.X && !nextChessPos.Y){
+    nextPos = beforePos;
+    return;
+  }else{
+    nextPos = nextChessPos;
+  }
 
   /*前の駒をステージから削除*/
   scene.StageManager.tilePropMap[beforePos.Y][beforePos.X].object = "";

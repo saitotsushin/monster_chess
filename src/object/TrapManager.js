@@ -1,6 +1,7 @@
 // import * as StageFunc from '../object/StageFunc';
 import TrapData from './TrapData';
 import * as Prop      from './stage/FunctionStageProp';
+import ModalItemSet from './ui/modal/ModalItemSet';
 
 export default class TrapManager{
   constructor(config) {
@@ -9,6 +10,7 @@ export default class TrapManager{
     
     this.trapPlayer1Group = config.scene.add.group();
     this.trapPlayer2Group = config.scene.add.group();
+    this.trapBaseGroup = this.scene.add.group();
 
     this.TrapData = new TrapData({
       scene: this.scene
@@ -19,6 +21,23 @@ export default class TrapManager{
     this.createTrap("player1");
     this.createTrap("player2");
 
+    this.create();
+  }
+  create(){
+    this.ModalItemSet = new ModalItemSet({
+      scene: this.scene
+    });
+    /*カーソル*/
+    this.Cursor = this.scene.add.sprite(
+      20,
+      184,
+      'spritesheet',
+      'cursor_item'
+    );
+    this.Cursor.depth = 200;
+  
+    this.Cursor.setInteractive();
+    this.Cursor.setVisible(false)
   }
   createTrap(mode){
     let playerTrapList;
@@ -26,7 +45,7 @@ export default class TrapManager{
     let trapGroup;
     if(mode === "player1"){
       playerTrapList = this.TrapData.player1_TrapList;
-      bombHeight = 280;
+      bombHeight = 182;
       trapGroup = this.trapPlayer1Group;
     }
     if(mode === "player2"){
@@ -36,27 +55,52 @@ export default class TrapManager{
     }
     let trapList = this.TrapData.trapList;
     let sprite;
-
+    /*================
+    トラップの設置
+    ================*/
     for(var i = 0; i < playerTrapList.length;i++){
-
+      // frame: item.key,
+      // key: 'spritesheet'
       trapList.filter(function(item, index){
         if(item.key === playerTrapList[i]){
           sprite = new item.className({
             scene: this.scene,
-            x: i * 40 + 100,
+            x: i * 20 + 40,
             y: bombHeight,
-            key: item.key,
+            key: 'spritesheet',
+            frame: item.key,
             groupIndex: i
           });
           if(mode === "player2"){
             sprite.removeInteractive();
-            sprite.alpha = 0;
+            // sprite.alpha = 0;
           }
+          sprite.depth = 120;
+          sprite.setted = false;
           trapGroup.add(sprite);
         }
       },this);
 
     }
+    /*================
+    下地の作成。
+    ================*/
+    if(mode === "player1"){
+      /*ベース */
+      for(var i = 0; i < 3;i++){
+        let sprite = this.scene.add.sprite(
+          i * 20 + 40,
+          bombHeight,
+          'spritesheet',
+          'panel_item'
+        );
+        sprite.depth = 110;
+
+        this.trapBaseGroup.add(sprite)
+    
+      }
+    }
+
   }
   setTrapByRandom(){
     /*配置するか */

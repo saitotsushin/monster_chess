@@ -1,13 +1,13 @@
-import StageData      from './StageData';
-import StageLayer     from './stage/StageLayer';
-import MoveArea       from './stage/MoveArea';
-import TouchedTile    from './stage/TouchedTile';
+import StageData       from './StageData';
+import StageLayer      from './stage/StageLayer';
+import MoveArea        from './stage/MoveArea';
+import TouchedTile     from './stage/TouchedTile';
+import Layout          from './stage/Layout';
+import ChessInfoWindow from './ui/setting/ChessInfoWindow';
 
-import * as Search    from './stage/FunctionStageSearch';
-import * as Layout    from './stage/FunctionStageLayout';
-import * as Init      from './stage/FunctionStageInit';
-import * as Prop      from './stage/FunctionStageProp';
-import * as TileCheck from './stage/FunctionStageTileCheck';
+import * as Search     from './stage/FunctionStageSearch';
+import * as Init       from './stage/FunctionStageInit';
+import * as Prop       from './stage/FunctionStageProp';
 
 export default class StageManager {
   constructor(gameScene) {
@@ -25,8 +25,8 @@ export default class StageManager {
       }
     }
 
-
-
+  }
+  create(){
     /*ステージプロパティデータの読み込み*/
     this.StageData = new StageData({
       scene: this.scene
@@ -50,7 +50,16 @@ export default class StageManager {
       StageManager: this
     });
 
-    // this.enemyChess = "";
+    /*レイアウトの生成*/
+    this.Layout = new Layout({
+      scene: this.scene
+    });
+
+    /*チェスの情報のウインドウの生成*/
+    this.ChessInfoWindow = new ChessInfoWindow({
+      scene: this.scene
+    });
+    this.ChessInfoWindow.create();
 
     this.beforeChessPos = {
       X: 0,
@@ -60,137 +69,117 @@ export default class StageManager {
       X: 0,
       Y: 0
     }
+    
+    /*カーソルの当たっているオブジェクト*/
+    /*インフォ用*/
+    this.nowObject;
+
     /*ステージの初期化*/
     Init.initStage(this.tilePropMap);
     Init.initiGroudType(this.tilePropMap,this.StageData.map1);
-
-    /*ステータスの更新*/
-    // this.STATUS.PLAYER1.CHESS_COUNT = this.scene.PlayerManager.player1_ChessList.length;
-    // this.STATUS.PLAYER2.CHESS_COUNT = this.scene.PlayerManager.player2_ChessList.length;
+    this.scene.hideChessInfoWindow();
 
     /*初期のモーダル*/
-    this.STATUS.STAGE = 'LAYOUT_AUTO'
-    this.scene.ModalManager.open(this.STATUS.STAGE);
+    this.STATUS.STAGE = 'LAYOUT';
+    this.Layout.setLayoutGroup();
+    this.Layout.setLayoutChessToStage();
 
     /*レイアウト用の駒のグループ*/
     this.layoutChessGroup = this.scene.add.group();
 
+    /*カーソル*/
+    this.Cursor = this.scene.add.sprite(
+      20,
+      184,
+      'spritesheet',
+      'cursor_item'
+    );
+    this.Cursor.setVisible(false);
 
+    this.scene.anims.create({
+      key: 'anime_explode',
+      frames: this.scene.anims.generateFrameNumbers('anime_explode', { start: 0, end: 5 }),
+      frameRate: 16,
+      repeat: 0,
+      hideOnComplete: true
+    });
+    
   }
   touchedStage(pos){
 
+    if(this.STATUS.STAGE === "FIN"){
+      return;
+    }
     let X = pos.number.X;
     let Y = pos.number.Y;
     let tile = this.tilePropMap[Y][X];
-    let tileProp = TileCheck.tileCheck(this.scene,tile,pos);
+    let tileProp = this.TouchedTile.tileCheck(tile,pos);
     let modal = this.scene.ModalManager;
+    if(this.STATUS.STAGE === "INFO"){
+      console.log("this.nowObject",this.nowObject)
+      this.scene.showChessInfoWindow();
+      this.ChessInfoWindow.setChessInfo(this.nowObject)
+      return;
+    }
+
     if(tileProp){
-      if(tileProp.MODE && this.STATUS.STAGE !== 'FIN'){
-        this.STATUS.STAGE = tileProp.MODE;
-      }
-      if(this.STATUS.STAGE === 'LAYOUT_MANUAL'){
-        return;
-      }  
-      if(this.STATUS.STAGE === 'ATTACK'){
-        this.scene.PlayerManager.targetChess = tileProp.object;
-      }
-      if(this.STATUS.STAGE === 'MOVE'){
-        this.nextChessPos.X = tileProp.nextPos.X;
-        this.nextChessPos.Y = tileProp.nextPos.Y;
-      }
-      if(this.STATUS.STAGE === 'SELECTED_TRAP'){
-        this.nextChessPos.X = tileProp.nextPos.X;
-        this.nextChessPos.Y = tileProp.nextPos.Y;
-      }
-    }
-    if(this.STATUS.STAGE === 'SELECTED_LAYOUT_CHESS'){
-      this.checkCanSetLayout(X,Y);
-      return;
-    }
+      // console.log("this.scene.PlayerManager.movedChess",)
 
-    if(this.STATUS.STAGE !== ""){
-      modal.open(this.STATUS.STAGE);
-    }
-    
-  }
-  modalYes(){
-    let modal = this.scene.ModalManager;
-    if(this.STATUS.STAGE === "LAYOUT_AUTO"){
-      this.layoutChess('AUTO');
-      return;
-    }
-    if(this.STATUS.STAGE === "ATTACK"){
-      this.attackChess(
-        this.scene.PlayerManager.selectedChess,
-        this.scene.PlayerManager.targetChess,
-      );
-      if(this.STATUS.STAGE === "GAMEOVER"){
-        return;
-      }
-      this.STATUS.STAGE = "FIN";
-      modal.open(this.STATUS.STAGE);
-      return;
+      if(this.STATUS.STAGE === ''){
 
-    }
-    if(this.STATUS.STAGE === "MOVE"){
-      this.moveChess(
-        this.scene.PlayerManager.selectedChess,
-        this.nextChessPos
-      );
-      if(this.STATUS.STAGE === "GAMEOVER"){
-        return;
-      }
-      this.STATUS.STAGE = "FIN";
-      modal.open(this.STATUS.STAGE);
-      return;
-
-    }
-    if(this.STATUS.STAGE === "SELECTED_TRAP"){
-      let trapConfig = {
-        scene: this.scene,
-        selectedTrap: this.scene.PlayerManager.selectedTrap,
-        index: this.scene.PlayerManager.selectedTrap.groupIndex,
-        nextPos: {
-          X: this.nextChessPos.X,
-          Y: this.nextChessPos.Y
+        if(tileProp.MODE === 'ATTACK'){
+          this.scene.PlayerManager.targetChess = tileProp.object;
+          modal.close();
+          modal.open(tileProp.MODE);
+        }
+        if(tileProp.MODE === 'MOVE'){
+          this.nextChessPos.X = tileProp.nextPos.X;
+          this.nextChessPos.Y = tileProp.nextPos.Y;
+          modal.open(tileProp.MODE);
         }
       }
-      Prop.setPropTrap(trapConfig);
-      this.STATUS.STAGE = "FIN";
-      modal.open(this.STATUS.STAGE);
-      return;
+
+      if(this.STATUS.STAGE === 'ITEM'){
+        if(this.scene.PlayerManager.selectedTrap){
+          this.nextChessPos.X = tileProp.nextPos.X;
+          this.nextChessPos.Y = tileProp.nextPos.Y;
+          this.scene.TrapManager.ModalItemSet.open();  
+        }
+      }
+      if(tileProp.MODE === ""){
+        modal.close();
+      }
+      console.log("tileProp.objec",tileProp.object)
     }
-    if(this.STATUS.STAGE === "SELECTED_LAYOUT_CHESS"){
-      this.setLayout();
-      this.layoutChess('FIN');
-      return;
-    }
-    if(this.STATUS.STAGE === "FIN"){
-      Prop.updateAreaMap(this.scene)
-      this.STATUS.TURN = 'player2';
-      let selectedChess = Search.thinkAI(this.scene);
-      this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動前）
-      this.actChess(selectedChess);
-      this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動後）
-      this.STATUS.TURN = 'player1';
-      this.STATUS.STAGE = "";
-      Prop.updateAreaMap(this.scene)
-    }
+    
+
+    
   }
-  modalNo(){
-    if(this.STATUS.STAGE === "LAYOUT_AUTO"){
-      this.STATUS.STAGE = "LAYOUT_MANUAL"
-      this.layoutChess('MANUAL');
-      return;
-    }
+  turnFin(){
+    Prop.updateAreaMap(this.scene)
+    this.STATUS.TURN = 'player2';
+    let selectedChess = Search.thinkAI(this.scene);
+    this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動前）
+    this.actChess(selectedChess);
+    this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動後）
+    this.STATUS.TURN = 'player1';
+    this.STATUS.STAGE = "";
+    this.scene.PlayerManager.movedChess = "";
+    Prop.updateAreaMap(this.scene)    
   }
+  /*==================
+  敵のチェスの行動
+  ==================*/
   actChess(selectedChess){
     let chess = selectedChess.chess;
     
     let pos = selectedChess.pos;
     let mode = selectedChess.mode;
     // let pos = Prop.getTilePositionNumber(int.X,int.Y,this.scene)
-    if(mode === "ATTACK"){
+    this.Cursor.x = selectedChess.x;
+    this.Cursor.y = selectedChess.y;
+    this.Cursor.setVisible(true);
+  if(mode === "ATTACK"){
       let target = selectedChess.attackTarget;
       chess.attack(target);
     }
@@ -221,6 +210,7 @@ export default class StageManager {
 
   }
   removeChess(chess){
+    console.log("chess",chess)
     let posInt = {
       X: chess.pos.X,
       Y: chess.pos.Y
@@ -252,68 +242,42 @@ export default class StageManager {
 
   }
   
-  layoutChess(mode){
-    if(mode === "FIN"){
-      Layout.layoutAuto(this.scene,"player1","fin");
-      Layout.layoutAuto(this.scene,"player2","fin");
-      Prop.setProp(this.scene);
-      this.STATUS.STAGE = "";
+  layoutChess(player){
+    let playerArr = [];
+    let group;
+    if(player === "player1"){
+      playerArr = this.scene.registry.list.player1Auto_Arr;
+      group = this.scene.PlayerManager.player1ChessGroup;
     }
-    if(mode === "AUTO"){
-      Layout.layoutAuto(this.scene,"player1","auto");
-      Layout.layoutAuto(this.scene,"player2","auto");
-      Prop.setProp(this.scene);
-      this.STATUS.STAGE = "";
+    if(player === "player2"){
+      playerArr = this.scene.PlayerManager.player2Auto_Arr;
+      group = this.scene.PlayerManager.player2ChessGroup;
     }
-    if(mode === "MANUAL"){
-      this.scene.ModalManager.open(this.STATUS.STAGE);
-
+    let chess;
+    let position;
+    for(var i = 0; i < playerArr.length;i++){
+      for(var k = 0; k < playerArr[i].length;k++){
+        if(playerArr[i][k] !== 0){
+  
+          position = Prop.getTilePositionNumber(k,i,this.scene);
+  
+          chess = group.children.entries[playerArr[i][k]-1];
+          chess.depth = 10;
+  
+          chess.move(position.world,{X:k,Y:i})
+        }
+      }    
     }
+  }
+  layoutFin(){
+    this.scene.PlayerManager.setPlayerArrData();
+    this.scene.StageManager.layoutChess('player1');
+    this.scene.StageManager.layoutChess('player2');
+    Prop.setProp(this.scene);
   }
   selectedLayoutChess(chess){
     this.STATUS.STAGE = "SELECTED_LAYOUT_CHESS";
     this.scene.PlayerManager.selectedChess = chess;
-  }
-  checkCanSetLayout(X,Y){
-
-    let chess = this.scene.PlayerManager.selectedChess;
-
-    let checkMap = this.scene.PlayerManager.PlayerData.stageCanSetArr;
-
-    if( checkMap[Y][X] === 1 ){
-      let setNextPos = Prop.getTilePositionNumber(
-        X,
-        Y,
-        this.scene
-      );
-      chess.x = setNextPos.world.x;
-      chess.y = setNextPos.world.y;
-      chess.pos.X = X;
-      chess.pos.Y = Y;
-    }
-    let chessMaxCount = this.scene.PlayerManager.player1ChessGroup.children.entries.length;
-    let chessGroup = this.scene.PlayerManager.player1ChessGroup.children.entries;
-    let playerStageMap = this.scene.PlayerManager.player2_Arr;
-    let chessCount = 0;
-
-    for(var i = 0; i < chessGroup.length;i++){
-      let chessChessX = chessGroup[i].pos.X;
-      let chessChessY = chessGroup[i].pos.Y;
-      if(checkMap[chessChessY][chessChessX] === 1){
-        chessCount++;
-      }
-    }
-    if(chessCount === chessMaxCount){
-      this.scene.ModalManager.ModalLayout.setComplete();
-    }    
-    return;
-  }
-  setLayout(){
-    this.layoutChessGroup.children.entries.forEach(
-      (sprite,index) => {
-        this.scene.PlayerManager.PlayerData.player1_Arr[sprite.pos.Y][sprite.pos.X] = index + 1;
-      }
-    );
   }
   moveChess(chess,nextPos){
     let setNextPos = Prop.getTilePositionNumber(
@@ -353,4 +317,5 @@ export default class StageManager {
       }
     }
   }
+
 }

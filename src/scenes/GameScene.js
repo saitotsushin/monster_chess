@@ -1,8 +1,11 @@
-import ModalManager from '../object/ui/ModalManager';
-import StageManager from '../object/StageManager';
-import TrapManager from '../object/TrapManager';
+import ModalManager  from '../object/ui/ModalManager';
+import StageManager  from '../object/StageManager';
+import TrapManager   from '../object/TrapManager';
 import PlayerManager from '../object/PlayerManager';
-import ChessManager from '../object/ChessManager';
+import ChessManager  from '../object/ChessManager';
+
+
+import StageMenu    from '../object/StageMenu';
 
 class GameScene extends Phaser.Scene {
   constructor(test) {
@@ -11,16 +14,6 @@ class GameScene extends Phaser.Scene {
     });
   }
   create(){
-    this.ModalManager = new ModalManager({
-      scene: this
-    });
-    this.StageManager = new StageManager({
-      scene: this
-    });
-
-    this.TrapManager = new TrapManager({
-      scene: this
-    });
 
     this.ChessManager = new ChessManager({
       scene: this
@@ -29,6 +22,24 @@ class GameScene extends Phaser.Scene {
     this.PlayerManager = new PlayerManager({
       scene: this
     });
+    this.PlayerManager.create();
+    this.registry.list.player1Auto_Arr = this.PlayerManager.player1Auto_Arr;
+
+    this.ModalManager = new ModalManager({
+      scene: this
+    });
+    this.StageManager = new StageManager({
+      scene: this
+    });
+    this.StageManager.create();
+
+    this.TrapManager = new TrapManager({
+      scene: this
+    });
+    this.StageMenu = new StageMenu({
+      scene: this
+    });
+
     /*==============================
     デバッグ
     ==============================*/
@@ -48,7 +59,7 @@ class GameScene extends Phaser.Scene {
       [
         'STATUS.STAGE :'+this.StageManager.STATUS.STAGE,
         'STATUS.TURN  :'+this.StageManager.STATUS.TURN,
-        'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
+        // 'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
       ]
     );
 
@@ -57,7 +68,28 @@ class GameScene extends Phaser.Scene {
     ==============================*/
   }
   
+  /*==============================
+  表示・非表示
+  ------------------------------*/   
+  /*ストックの駒
+  ------------------------------*/
+  showChessInfoWindow(){
+    this.StageManager.ChessInfoWindow.ChessInfoContainer.setVisible(true);
+    this.StageManager.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(true);
+      }
+    );
+  }
 
+  hideChessInfoWindow(){
+    this.StageManager.ChessInfoWindow.ChessInfoContainer.setVisible(false);
+    this.StageManager.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(false);
+      }
+    );
+  }
 }
 
 export default GameScene;

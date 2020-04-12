@@ -6,6 +6,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       config.x,
       config.y,
       config.key,
+      config.frame,
       config.groupIndex
     );
 

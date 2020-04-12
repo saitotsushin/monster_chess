@@ -11,7 +11,10 @@ export default class ChessManager {
   createChess(className,key,playerType){
     let sprite = new className({
       scene: this.scene,
-      key: key,
+      x: 0,
+      y: 0,
+      frame: key,
+      key: 'spritesheet',
       playerType: playerType
     });
     return sprite;
