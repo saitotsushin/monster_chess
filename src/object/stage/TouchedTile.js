@@ -88,7 +88,7 @@ export default class TouchedTile {
       }
     }
     this.scene.StageManager.nowObject = tileObject;
-    console.log("this.scene.StageManager.nowObject",this.scene.StageManager.nowObject)
+
     if(tileObject.playerType === "player1"){
       if(STATUS_STAGE === "ITEM"){
         checkObject.nextPos.X = X;

@@ -9,15 +9,15 @@ export default class PlayerData {
     ];
     this.player1_ChessList = [
       "chess_1",
-      "chess_4",
-      "chess_3",
+      // "chess_4",
+      // "chess_3",
       // "chess_4",
       // "chess_5"
     ];
     this.player2_ChessList = [
       "chess_1",
-      "chess_2",
-      "chess_3",
+      // "chess_2",
+      // "chess_3",
       // "chess_4",
       // "chess_5"
     ]
@@ -38,8 +38,8 @@ export default class PlayerData {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
-      [1,0,3,0,0,0],
-      [0,2,0,0,0,0],
+      [1,0,0,0,0,0],
+      [0,0,0,0,0,0],
       [0,0,0,0,0,0]
     ];
     //初期の配置で使用
@@ -57,10 +57,10 @@ export default class PlayerData {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
-      [0,0,0,0,3,0],
-      [0,0,0,2,0,0],
       [0,0,0,0,0,0],
-      [0,0,0,0,1,0],
+      [0,1,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
       [0,0,0,0,0,0]
     ];
 

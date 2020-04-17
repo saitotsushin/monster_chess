@@ -47,7 +47,8 @@ class MenuScene extends Phaser.Scene {
 
     this.btnStage2.setInteractive();
     this.btnStage2.on('pointerdown', () => {
-      this.scene.start('GameScene');
+      this.scene.start('RoomScene');
+      this.registry.list.gameMode = "NET";
     },this);
     this.btnStage2.setOrigin(0.5,0);
   

@@ -151,26 +151,5 @@ export default class TrapManager{
     }
 
   }
-  
-  // setTrap(){
-  //   let selectedTrap = this.scene.Player.selectedTrap;
-  //   let k = selectedTrap.x;
-  //   let i = selectedTrap.y;
-  //   StageFunc.setProperty(
-  //     this.scene,
-  //     k,
-  //     i,
-  //     "trap",
-  //     selectedTrap.object
-  //   );
-
-  //   let setPos = this.scene.stageManager.stageProp.getPositionNumber(k,i);
-
-  //   selectedTrap.object.x = setPos.x;
-  //   selectedTrap.object.y = setPos.y;
-
-  //   selectedTrap.object.removeInteractive();
-
-  // }
 }
   

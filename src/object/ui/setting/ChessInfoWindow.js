@@ -102,7 +102,6 @@ export default class ChessInfoWindow{
 
   }
   setChessInfo(chess){
-    console.log("setChessInfo")
     this.chessInfoNumb.setText(chess.no);
     this.chessInfoHp.setText(chess.status.maxHp);
     this.chessInfoAttack.setText(chess.status.power);

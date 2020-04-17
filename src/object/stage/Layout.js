@@ -178,7 +178,7 @@ export default class Layout{
   setLayoutChessPos(){
     let baseLeft = 20;
     let baseHeight = 20;
-    let layoutedChesses = this.scene.PlayerManager.player1_Arr;
+    let layoutedChesses = this.scene.PlayerManager.player1Auto_Arr;
     let StageLayoutChessGroup = this.StageLayoutChessGroup.children.entries;
     for(var i = 0; i < layoutedChesses.length; i++){
       for(var k = 0; k < layoutedChesses[i].length; k++){
@@ -197,6 +197,7 @@ export default class Layout{
     }
   }
   setYes(){
+    console.log("レイアウトモーダル　はい")
     this.hideAll();
     /*レイアウト設定*/
     this.scene.StageManager.layoutFin();

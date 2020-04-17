@@ -1,3 +1,5 @@
+import PlayerData from '../object/PlayerData';
+
 class MainScene extends Phaser.Scene {
   constructor(test) {
     super({
@@ -51,6 +53,23 @@ class MainScene extends Phaser.Scene {
     this.btnStageClear.on('pointerdown', () => {
       this.scene.start('StageClearScene');
     },this);   
+    /*=================
+    プレイヤーデータの呼び出し
+    -------------------*/
+    this.PlayerData = new PlayerData({
+      scene: this
+    });
+
+    this.registry.set('player1_ChessList', []);
+    this.registry.set('player1Auto_Arr', []);
+    this.registry.set('stockChesses', []);
+    this.registry.set('gameMode', []);
+    this.registry.set('room', []);
+
+    this.registry.list.player1_ChessList = this.PlayerData.player1_ChessList;
+    this.registry.list.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
+    this.registry.list.stockChesses = this.PlayerData.stockChesses;
+    this.registry.list.gameMode = "";
     
   }
 

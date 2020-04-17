@@ -111,9 +111,6 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.icon_enemy = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_enemy');
     this.icon_enemy.setVisible(false);
     this.icon_enemy.depth = 20;
-    if(this.playerType === 'player2'){
-      this.icon_enemy.setVisible(true);
-    }
     this.attackingTarget;
     // /*アニメコンプリート->爆発を消す*/
     this.on('animationcomplete', function(){this.explodeComplete(this)}, this);
@@ -182,10 +179,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     attackingTarget.status.hp -= damagePoint;
 
     if(attackingTarget.status.hp <= 0){
-      console.log("attackingTarget",attackingTarget)
       this.attackingTarget = attackingTarget;
       attackingTarget.damage(damagePoint,'ATTACK','explode');
-      // this.scene.StageManager.removeChess(attackingTarget);
     }else{
       attackingTarget.damage(damagePoint,'ATTACK','');
       this.attackingTarget = "";//爆発しなかったらリセット。
@@ -194,41 +189,47 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
   }
   damage(damagePoint,mode,status){
     if(mode === "ATTACK"){
-      // this.damageText.setColor('#F00')
       this.damageText.setTexture('bitmapFontRed');
     }else{
       this.damageText.setTexture('bitmapFontBlue');
-      // this.damageText.setColor('#3ac551')
     }
     this.damageText.x = this.x + 5;
     this.damageText.y = this.y - 5;
 
-    
+    /*攻撃アニメーションの追加*/
+    this.scene.StageManager.AnimeAttack.anims.play('anime_attack');
+    this.scene.StageManager.AnimeAttack.x = this.x;
+    this.scene.StageManager.AnimeAttack.y = this.y;
+    this.scene.StageManager.AnimeAttack.setVisible(true)
 
     let afterY = this.damageText.y + 5;
+
     this.damageText.setVisible(true);
     this.damageText.setText(damagePoint);
+
+    this.damageText.alpha = 0;
+
     let damageTween = this.scene.tweens.add({
-        targets: this.damageText,
-        y: afterY,
-        ease: 'liner',
-        duration: 100,
-        repeat: 0,
-        completeDelay: 600,
-        onComplete: function () {
-          this.damageText.setVisible(false);
-          if(status === "explode"){
-            console.log("status")
-            this.anims.play('anime_explode');
-            this.icon_enemy.setVisible(false);  
-          }
-        },
-        callbackScope: this
+      targets: this.damageText,
+      alpha: 1,
+      y: afterY,
+      ease: 'liner',
+      duration: 100,
+      delay: 400,
+      repeat: 0,
+      completeDelay: 600,
+      onComplete: function () {
+        this.damageText.setVisible(false);
+        if(status === "explode"){
+          this.anims.play('anime_explode');
+          this.icon_enemy.setVisible(false);  
+        }
+      },
+      callbackScope: this
     });
     
   }
   explodeComplete(_this){
-    console.log("comp! _this",_this)
     this.scene.StageManager.removeChess(_this);
   }
 

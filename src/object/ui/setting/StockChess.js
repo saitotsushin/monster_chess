@@ -36,8 +36,8 @@ export default class StockChess{
   setStockChessGroup(){
     let chessDataList = this.scene.ChessManager.ChessData.chessList;
     let sprite;
-    let playerChessList = this.scene.PlayerData.stockChesses;
-    let teamChessList = this.scene.PlayerData.player1_ChessList;
+    let playerChessList = this.scene.registry.list.stockChesses;
+    let teamChessList = this.scene.registry.list.player1_ChessList;
     let group = this.playerStockChessGroup;
     /*レイアウトの設定周り START*/
     let baseHeight = 82;

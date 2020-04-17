@@ -3,9 +3,8 @@ import StageManager  from '../object/StageManager';
 import TrapManager   from '../object/TrapManager';
 import PlayerManager from '../object/PlayerManager';
 import ChessManager  from '../object/ChessManager';
-
-
-import StageMenu    from '../object/StageMenu';
+import ClearGame     from '../object/ui/ClearGame';
+import StageMenu     from '../object/StageMenu';
 
 class GameScene extends Phaser.Scene {
   constructor(test) {
@@ -39,6 +38,10 @@ class GameScene extends Phaser.Scene {
     this.StageMenu = new StageMenu({
       scene: this
     });
+    this.ClearGame = new ClearGame({
+      scene: this
+    });
+
 
     /*==============================
     デバッグ

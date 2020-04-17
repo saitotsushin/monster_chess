@@ -51,22 +51,22 @@ class BootScene extends Phaser.Scene {
     this.load.bitmapFont('bitmapFontBlue', 'assets/font/font_blue.png', 'assets/font/font.xml');
 
     this.load.spritesheet('anime_explode', 'assets/images/anime_explode.png', { frameWidth: 20, frameHeight: 20 }); 
+    this.load.spritesheet('anime_attack', 'assets/images/anime_attack.png', { frameWidth: 20, frameHeight: 20 }); 
 
     this.load.image('tiles', 'assets/tilemaps/tile.png');
-    this.load.image('icon_enemy', 'assets/images/icon_enemy.png');
-    this.load.image('chess', 'assets/images/chess.png');
-    this.load.image('chess_1', 'assets/images/chess_1.png');
-    this.load.image('chess_2', 'assets/images/chess_2.png');
-    this.load.image('chess_3', 'assets/images/chess_3.png');
-    this.load.image('chess_4', 'assets/images/chess_4.png');
-    this.load.image('chess_5', 'assets/images/chess_5.png');
-    this.load.image('set_area', 'assets/images/set_area.png');
-    this.load.image('move_area', 'assets/images/move_area.png');
-    this.load.image('attack_move_area', 'assets/images/attack_move_area.png');
-    this.load.image('attack_area', 'assets/images/attack_area.png');
-    this.load.image('bomb', 'assets/images/bomb.png');
-    this.load.image('portion', 'assets/images/portion.png');
-    this.load.image('add_team_panel', 'assets/images/add_team_panel.png');
+    // this.load.image('chess', 'assets/images/chess.png');
+    // this.load.image('chess_1', 'assets/images/chess_1.png');
+    // this.load.image('chess_2', 'assets/images/chess_2.png');
+    // this.load.image('chess_3', 'assets/images/chess_3.png');
+    // this.load.image('chess_4', 'assets/images/chess_4.png');
+    // this.load.image('chess_5', 'assets/images/chess_5.png');
+    // this.load.image('set_area', 'assets/images/set_area.png');
+    // this.load.image('move_area', 'assets/images/move_area.png');
+    // this.load.image('attack_move_area', 'assets/images/attack_move_area.png');
+    // this.load.image('attack_area', 'assets/images/attack_area.png');
+    // this.load.image('bomb', 'assets/images/bomb.png');
+    // this.load.image('portion', 'assets/images/portion.png');
+    // this.load.image('add_team_panel', 'assets/images/add_team_panel.png');
     this.load.atlas('spritesheet', 'assets/images/spritesheet.png', 'assets/sprites.json');
   }
 

@@ -1,3 +1,5 @@
+import PlayerData from '../object/PlayerData';
+
 class TitleScene extends Phaser.Scene {
   constructor(test) {
       super({
@@ -8,31 +10,25 @@ class TitleScene extends Phaser.Scene {
   }
   create() {
     let config = {
-    key: 'title',
-    frames: [{
+      key: 'title',
+      frames: [{
         frame: 'title',
-    }]
+      }]
     };
 
     this.title_start = this.add.text(
-        80,
-        120,
-        'START',
-        { font: '10px Courier', fill: '#CCC' }
+      80,
+      120,
+      'START',
+      { font: '10px Courier', fill: '#CCC' }
     );
     this.title_start.depth = 100;
 
     this.title_start.setInteractive();
 
-    this.registry.set('player1_ChessList', []);
-    this.registry.set('player1Auto_Arr', []);
-    // this.registry.set('chessCost', 0);
-        
 
-      
     this.title_start.on('pointerdown', () => {
-        this.scene.start('MainScene');
-        // this.startGame();
+      this.scene.start('MainScene');
     });
   }
 

@@ -73,6 +73,7 @@ export default class PlayerManager {
       playerChessList = this.player2_ChessList;
       group = this.player2ChessGroup;
     }
+
     for(var i = 0; i < playerChessList.length; i++){
       chessDataList.filter(function(item, index){
         if(item.key === playerChessList[i]){
@@ -83,6 +84,7 @@ export default class PlayerManager {
           );
           sprite.attribute = item.attribute;
           sprite.groupIndex = i + 1;
+          sprite.x = -40;//画面外にしておく
           sprite.status = item.status;
           sprite.cost = item.cost;
           sprite.no = item.no;
@@ -101,13 +103,13 @@ export default class PlayerManager {
     }
 
   }
-  setPlayerArrData(){
-    if(this.scene.registry.list.player1Auto_Arr){
-      this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
-    }else{
-      this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
-    }    
-    this.setPlayerGroup("player1");
-    this.setPlayerGroup("player2");
-  }
+  // setPlayerArrData(){
+  //   if(this.scene.registry.list.player1Auto_Arr){
+  //     this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
+  //   }else{
+  //     this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
+  //   }
+  //   // this.setPlayerGroup("player1");
+  //   // this.setPlayerGroup("player2");
+  // }
 }
