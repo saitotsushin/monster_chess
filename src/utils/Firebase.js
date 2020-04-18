@@ -47,14 +47,8 @@ export function getUserID(){
   // let getUID;
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      // var isAnonymous = user.isAnonymous;
-      console.log("onAuthStateChanged")
-      console.log("user.uid",user.uid)
-
-      // getUID = user.uid;
       UID = user.uid;
       createRoom();
-      // return user.uid;
     }
   });
 }
@@ -68,8 +62,6 @@ export function createRoom(){
   /*--------------
   自分が作った部屋は削除する？
   --------------*/
-  /*自分のUID*/
-  console.log("createRoom uid",firebase.auth().currentUser)
 
   /*空いている部屋の検索*/
   let roomCheck = DB.ref("stage/");
@@ -78,19 +70,11 @@ export function createRoom(){
     roomData = snapshot.val();
     if(!roomData){
       /*部屋が1つもないとき*/
-      console.log("部屋が1つもないとき")
       setRoom();
       return;
     }else{
-      /*guestが空の部屋を検索*/
-      console.log("guestが空の部屋を検索")
       /*自分が作った部屋は削除する*/
-      // DB.ref('stage/')
-      // .orderByChild('guest').startAt('').endAt('').limitToFirst(1)
-      // .once('value',function(snapshot) {
-      //   guestCheck = snapshot.val();
-      //   setRoom();
-      // });
+      /*TODO*/
       DB.ref('stage/')
       .orderByChild('guest').startAt('').endAt('').limitToFirst(1)
       .once('value',function(snapshot) {
@@ -111,8 +95,6 @@ export function setRoom(){
     
   /*部屋がなかったら新規作成*/
   if(!guestCheck){
-
-    console.log("部屋がなかったら新規作成")
     roomId = create_privateid(8);//8桁の乱数
     
     //DB参照
@@ -120,7 +102,6 @@ export function setRoom(){
     let snapshot = ref.once("value");
 
     var newPostKey = firebase.database().ref().child('stage').push().key;
-    console.log("newPostKey",newPostKey)
     var updates = {};
     updates['/stage/' + newPostKey] = roomId;
     ref.set({
@@ -129,109 +110,26 @@ export function setRoom(){
       turn: "",
       layout: 0,
       attackPoint: 0,
-      player1: {
-        ChessGroup: {
-          chess1: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess1: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess2: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess3: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess4: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess5: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          }
-        },
+      syncChess: {
+        groupIndex: "",
+        nextPosX: 0,
+        nextPosY: 0
       },
-      player2: {
-        ChessGroup: {
-          chess1: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess1: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess2: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess3: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess4: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          },
-          chess5: {
-            key: '',
-            hp: 0,
-            pos: {
-              X: 0,
-              Y: 0
-            }
-          }
-        },
+      player1:{
+        group: [],
+        stage: {
+          row1: [0,0,0,0,0,0],
+          row2: [0,0,0,0,0,0],
+          row3: [0,0,0,0,0,0]
+        }
+      },
+      player2:{
+        group: [],
+        stage: {
+          row1: [0,0,0,0,0,0],
+          row2: [0,0,0,0,0,0],
+          row3: [0,0,0,0,0,0]
+        }
       }
     });
     let room = DB.ref("/stage/" + roomId);
@@ -248,16 +146,10 @@ export function setRoom(){
     // });
   }else{
     /*部屋があったらguestに自分のIDを設定*/
-    // let result = Object.keys(guestCheck);
-    console.log("部屋があったらguestに自分のIDを設定")
     ref = DB.ref("/stage/" + Object.keys(guestCheck)[0]+"/guest/");
     ref.set(UID);
     global_roomID = Object.keys(guestCheck)[0];
-    // global_room = DB.ref("/stage/" + Object.keys(guestCheck)[0]);
-    // scene.registry.list.room = room;
-    // scene.registry.list.room.on('child_changed', function(data) {
-    //   console.info("データの変更を感知",data);
-    // }); 
+    
     scene.goGameScene();
   }
 

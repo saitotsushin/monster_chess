@@ -4,15 +4,14 @@ import MoveArea        from './stage/MoveArea';
 import TouchedTile     from './stage/TouchedTile';
 import Layout          from './stage/Layout';
 import ChessInfoWindow from './ui/setting/ChessInfoWindow';
-
-import * as Search     from './stage/FunctionStageSearch';
+import NPC             from './stage/NPC';
+// import * as Search     from './stage/FunctionStageSearch';
 import * as Init       from './stage/FunctionStageInit';
 import * as Prop       from './stage/FunctionStageProp';
+import GameAnimations  from '../utils/GameAnimations';
+import Network         from './stage/Network';
 
-import firebase from 'firebase/app';
-// import firebase = require("firebase/app");
-import 'firebase/auth';
-import 'firebase/database';
+
 
 export default class StageManager {
   constructor(gameScene) {
@@ -31,14 +30,20 @@ export default class StageManager {
       WIN_PLAYER: ''
     }
 
+    this.PLAYER2 = "";
+
   }
   create(){
-
-
+    if(this.scene.registry.list.gameMode !== "NET"){
+      // this.PLAYER2 = "NPC";
+      this.PLAYER2 = new NPC({scene: this.scene});
+    }else{
+      this.Network = new Network({scene: this.scene});
+      this.Network.create();
+    }
     /*ステージプロパティデータの読み込み*/
-    this.StageData = new StageData({
-      scene: this.scene
-    });
+    this.StageData = new StageData({scene: this.scene});
+
     this.tilePropMap = this.StageData.tilePropMap;
 
     /*ステージの読み込みと設定*/
@@ -48,9 +53,7 @@ export default class StageManager {
     });
 
     /*タッチUIの生成*/
-    this.TouchedTile = new TouchedTile({
-      scene: this.scene
-    });
+    this.TouchedTile = new TouchedTile({scene: this.scene});
 
     /*移動エリアの生成*/
     this.MoveArea = new MoveArea({
@@ -59,9 +62,7 @@ export default class StageManager {
     });
 
     /*レイアウトの生成*/
-    this.Layout = new Layout({
-      scene: this.scene
-    });
+    this.Layout = new Layout({scene: this.scene});
 
     /*チェスの情報のウインドウの生成*/
     this.ChessInfoWindow = new ChessInfoWindow({
@@ -104,85 +105,15 @@ export default class StageManager {
     );
     this.Cursor.setVisible(false);
 
-    /*通信対戦用*/
-    this.DB_host;
-    this.DB_guest;
-    this.myUID = firebase.auth().currentUser;
-    // update["/stage/" + global_roomID] = setData;
-    console.log("global_roomID",global_roomID)
-    let ref = global_DB.ref("/stage/" + global_roomID);
-
-    let setData = {
-      key: "test",
-      hp: 10
-    };
-    var updates = {};
-    updates["/stage/" + global_roomID + "/player1/ChessGroup/chess1/"] = setData;
-    console.log("updates",updates)
-    firebase.database().ref("/stage/" + global_roomID).update(updates);
-
     /*==================
     アニメーション
     ==================*/
-    /*------------------
-    爆発
-    ------------------*/
-    this.scene.anims.create({
-      key: 'anime_explode',
-      frames: this.scene.anims.generateFrameNumbers('anime_explode', { start: 0, end: 5 }),
-      frameRate: 16,
-      repeat: 0,
-      hideOnComplete: true
+    this.GameAnimations = new GameAnimations({
+      scene: this.scene
     });
-    /*------------------
-    攻撃：通常
-    ------------------*/
-    /*攻撃のsprite*/
-    this.AnimeAttack = this.scene.add.sprite(
-      20,
-      184,
-      'spritesheet',
-      'chess_shadow'//ダミー//cursor_item
-    );
-    this.AnimeAttack.depth = 200;
 
-    this.scene.anims.create({
-      key: 'anime_attack',
-      frames: this.scene.anims.generateFrameNumbers('anime_attack', { start: 0, end: 5 }),
-      frameRate: 16,
-      repeat: 0,
-      hideOnComplete: true
-    });
-    /*------------------
-    通信対戦用：レイアウト設定済みかの監視
-    ------------------*/
-    if(this.scene.registry.list.gameMode === "NET"){
-      let _this = this;
-      let DB_room = firebase.database().ref("/stage/" + global_roomID);
-      let DB_layout = firebase.database().ref("/stage/" + global_roomID + "/layout/");
+    
 
-      DB_room.on('child_changed', function(data) {
-        console.info("レイアウト設定済み");
-        DB_layout.once('value', function(snapshot) {
-          if(snapshot.val() === 2){
-            console.info("両プレイヤーのレイアウト設定完了");
-            /*２で完了 */
-            // _this.setNetDistributionPlayer();
-          }
-        });
-      }); 
-      /*host と guest のIDを取得して置く*/
-      this.DB_host;
-      this.DB_guest;
-      let getDB_host = firebase.database().ref("/stage/" + global_roomID + "/host/");
-      let getDB_guest = firebase.database().ref("/stage/" + global_roomID + "/guest/");
-      getDB_host.once('value', function(snapshot) {
-        _this.DB_host = snapshot.val();
-      }); 
-      getDB_guest.once('value', function(snapshot) {
-        _this.DB_guest = snapshot.val();
-      });
-    } 
   }
   touchedStage(pos){
 
@@ -232,58 +163,17 @@ export default class StageManager {
     
   }
   turnFin(){
-    Prop.updateAreaMap(this.scene)
-    this.STATUS.TURN = 'player2';
-    let selectedChess = Search.thinkAI(this.scene);
-    this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動前）
-    this.actChess(selectedChess);
-    this.scene.TrapManager.setTrapByRandom();//トラップを置くか（移動後）
-    this.STATUS.TURN = 'player1';
-    this.STATUS.STAGE = "";
-    this.scene.PlayerManager.movedChess = "";
-    Prop.updateAreaMap(this.scene)    
-  }
-  /*==================
-  敵のチェスの行動
-  ==================*/
-  actChess(selectedChess){
-    let chess = selectedChess.chess;
-    
-    let pos = selectedChess.pos;
-    let mode = selectedChess.mode;
-    this.Cursor.x = selectedChess.x;
-    this.Cursor.y = selectedChess.y;
-    this.Cursor.setVisible(true);
-
-    if(mode === "ATTACK"){
-      let target = selectedChess.attackTarget;
-      chess.attack(target);
-    }
-    if(mode === "MOVE"){
-      this.beforeChessPos = {
-        X: chess.pos.X,
-        Y: chess.pos.Y
+    Prop.updateAreaMap(this.scene);
+    //ターンを反転
+    if(this.STATUS.TURN === "player1"){
+      this.STATUS.TURN = 'player2';
+      if(this.PLAYER2){
+        this.PLAYER2.myTurn();
       }
-      this.nextChessPos = {
-        X: pos.X,
-        Y: pos.Y
-      } 
-      this.moveChess(
-        chess,
-        pos
-      );
-      //リセット
-      this.beforeChessPos = {
-        X: 0,
-        Y: 0,
-      }
-      this.nextChessPos = {
-        X: 0,
-        Y: 0
-      }
+    }else{
+      this.STATUS.TURN = 'player1';
     }
     
-
   }
   removeChess(chess){
     let posInt = {
@@ -320,7 +210,9 @@ export default class StageManager {
     }
 
   }
-  
+  /*==================
+  駒のレイアウト移動
+  ==================*/  
   layoutChess(player){
     let playerArr = [];
     let group;
@@ -329,6 +221,10 @@ export default class StageManager {
       group = this.scene.PlayerManager.player1ChessGroup;
     }
     if(player === "player2"){
+      for(var i = 0; i < this.scene.PlayerManager.player2Auto_Arr.length; i++){
+        this.scene.PlayerManager.player2Auto_Arr[i].reverse();
+      }
+      this.scene.PlayerManager.player2Auto_Arr.reverse();
       playerArr = this.scene.PlayerManager.player2Auto_Arr;
       group = this.scene.PlayerManager.player2ChessGroup;  
     }
@@ -354,44 +250,18 @@ export default class StageManager {
   /*==================
   レイアウトの完了 -> ゲームスタート
   ==================*/
-  layoutFin(){
-    // let _this = this;
-  
-    if(this.scene.registry.list.gameMode !== "NET"){
-      this.scene.StageManager.layoutChess('player1');
-      this.scene.StageManager.layoutChess('player2');
-      Prop.setProp(
-        this.scene,
-        this.scene.PlayerManager.player1ChessGroup.children.entries,
-        this.scene.PlayerManager.player2ChessGroup.children.entries
-      );
-    }else{  
-      /*各プレイヤーがレイアウト完了したかをカウントする */
-      let DB_layout = firebase.database().ref("/stage/" + global_roomID + "/layout/");
-      DB_layout.once('value', function(snapshot) {
-        let layoutCount = snapshot.val() + 1;
-        DB_layout.set(layoutCount); 
-      });    
-    }
+  gameStart(){
+    this.scene.PlayerManager.createPlayerGroup("player1");
+    this.scene.PlayerManager.createPlayerGroup("player2");
+    this.scene.StageManager.layoutChess('player1');
+    this.scene.StageManager.layoutChess('player2');
+
+    Prop.setProp(
+      this.scene,
+      this.scene.PlayerManager.player1ChessGroup.children.entries,
+      this.scene.PlayerManager.player2ChessGroup.children.entries
+    );
     
-  }
-  /*==================
-  通信対戦：プレイヤーの先行後攻の振り分け
-  ==================*/  
-  setNetDistributionPlayer(){
-    // let myUID = firebase.auth().currentUser;
-    // console.log("myUID",myUID)
-    console.log("this.DB_host",this.DB_host);
-    if(this.DB_host === this.myUID.uid){
-      /*先行 host*/
-      console.log("先行です");
-    }else{
-      /*後攻 guest*/
-      console.log("後攻です");
-      this.STATUS.STAGE ="WAIT";
-      // this.player2NetChessGroup.set(this.scene.PlayerManager.player1ChessGroup.children.entries);
-    }
-    this.setLayoutPlayers();
   }
 
   selectedLayoutChess(chess){
@@ -399,11 +269,17 @@ export default class StageManager {
     this.scene.PlayerManager.selectedChess = chess;
   }
   moveChess(chess,nextPos){
+    if(this.scene.registry.list.gameMode !== "NET"){
+      /*プレイヤー２からもらったデータは逆にして更新*/
+    }
     let setNextPos = Prop.getTilePositionNumber(
       nextPos.X,
       nextPos.Y,
       this.scene
     );
+
+    console.log("setNextPos",setNextPos)
+    console.log("nextPos",nextPos)
 
    
     chess.move(
@@ -413,13 +289,26 @@ export default class StageManager {
 
     this.checkTrap(chess,nextPos);
 
-
     this.MoveArea.hide(chess);
-
+   
     //ステージのプロパティと駒の移動エリアの更新
     Prop.updateStageProps(this.scene,chess);
-    if(this.scene.registry.list.gameMode !== "NET"){
-    }   
+  }
+  finMove(){
+    console.log("this.scene.PlayerManager.selectedChess",this.scene.PlayerManager.selectedChess)
+    console.log("this.scene.StageManager.nextChessPos",this.scene.StageManager.nextChessPos)
+    this.moveChess(
+      this.scene.PlayerManager.selectedChess,
+      this.scene.StageManager.nextChessPos
+    );
+    /*移動した駒の保存*/
+    this.scene.PlayerManager.movedChess = this.scene.PlayerManager.selectedChess;
+    let movedChess = this.scene.PlayerManager.movedChess;
+    this.scene.StageManager.MoveArea.show(movedChess);
+
+    this.STATUS.STAGE = "FIN";
+
+    this.scene.ModalManager.ModalMove.close();    
   }
   attackChess(playerChess,enemyChess){   
     playerChess.attack(enemyChess);

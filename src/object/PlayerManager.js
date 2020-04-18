@@ -31,6 +31,8 @@ export default class PlayerManager {
 
     this.player1_ChessList;
 
+    this.PLAYER_NUMBER = "";//player1 or player2
+
 
     if(this.scene.registry.list.player1_ChessList){
       this.player1_ChessList = this.scene.registry.list.player1_ChessList;
@@ -42,10 +44,13 @@ export default class PlayerManager {
 
     this.player1_Arr;
 
+    this.player1_Map;
+
     if(this.scene.registry.list.player1Auto_Arr){
       this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
     }else{
       this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
+      this.player1_Map = this.PlayerData.player1_Map;
     }
     this.player1_Arr = this.player1Auto_Arr;
 
@@ -55,11 +60,9 @@ export default class PlayerManager {
     this.player1ChessGroup = this.scene.add.group();
     this.player2ChessGroup = this.scene.add.group();
 
-    this.setPlayerGroup("player1");
-    this.setPlayerGroup("player2");
 
   }
-  setPlayerGroup(mode){
+  createPlayerGroup(mode){
     let chessDataList = this.scene.ChessManager.ChessData.chessList;
     let playerChessList;
     let group;
@@ -103,13 +106,4 @@ export default class PlayerManager {
     }
 
   }
-  // setPlayerArrData(){
-  //   if(this.scene.registry.list.player1Auto_Arr){
-  //     this.player1Auto_Arr = this.scene.registry.list.player1Auto_Arr;
-  //   }else{
-  //     this.player1Auto_Arr = this.PlayerData.player1Auto_Arr;
-  //   }
-  //   // this.setPlayerGroup("player1");
-  //   // this.setPlayerGroup("player2");
-  // }
 }

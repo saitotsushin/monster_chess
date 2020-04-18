@@ -32,12 +32,6 @@ class RoomScene extends Phaser.Scene {
     this.roomCheck;  
     this.ref;
     this.roomId;
-
-
-
-    // this.create();
-    // this.getUserID();
-    // this.createRoom();
   
   }
   create(){
@@ -45,12 +39,6 @@ class RoomScene extends Phaser.Scene {
     global_DB = this.db;
 
     Firebase.getStart(this.db,this);
-    // console.log("create this.data",this.data)
-
-    // firebase.auth().signInAnonymously().catch(function(error) {
-    //   var errorCode = error.code;
-    //   var errorMessage = error.message;
-    // });
   }
   goGameScene(){
     // this.registry.list.ref = _ref;

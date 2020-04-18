@@ -60,19 +60,15 @@ export default class ModalMove{
   モーダル
   ============*/
   setYes(){
-    this.scene.StageManager.moveChess(
-      this.scene.PlayerManager.selectedChess,
-      this.scene.StageManager.nextChessPos
-    );
-    /*移動した駒の保存*/
-    this.scene.PlayerManager.movedChess = this.scene.PlayerManager.selectedChess;
-    let movedChess = this.scene.PlayerManager.movedChess;
-    this.scene.StageManager.MoveArea.show(movedChess);
 
-    this.scene.StageManager.STATUS.STAGE = "FIN";
+    console.log("setYes this.scene.PlayerManager.selectedChess",this.scene.PlayerManager.selectedChess)
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.setDBMoveChess();
+    }else{
+      this.scene.StageManager.finMove();
+    }
+    
 
-
-    this.close();
   }
   setNo(){
     this.container.setVisible(false);

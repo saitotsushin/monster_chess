@@ -51,7 +51,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     チェスグループの表示
     -------------------*/
     this.chessGroup = this.scene.add.group();
-    this.setPlayerGroup();
+    this.createPlayerGroup();
 
     /*=================
     タイトル：ゲットチェス
@@ -122,7 +122,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       this.titleGetChess.setVisible(false)
     }
   }
-  setPlayerGroup(){
+  createPlayerGroup(){
     let chessDataList = this.scene.ChessManager.ChessData.chessList;
     let playerChessList = this.scene.PlayerManager.player1_ChessList;
     let group = this.chessGroup;

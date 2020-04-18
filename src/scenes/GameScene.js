@@ -62,6 +62,7 @@ class GameScene extends Phaser.Scene {
       [
         'STATUS.STAGE :'+this.StageManager.STATUS.STAGE,
         'STATUS.TURN  :'+this.StageManager.STATUS.TURN,
+        'PLAYER_NUMBER:'+this.PlayerManager.PLAYER_NUMBER,
         // 'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
       ]
     );

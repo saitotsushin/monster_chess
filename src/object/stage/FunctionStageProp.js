@@ -130,16 +130,6 @@ export function setPropTrap(config){
   let selectedTrap = config.selectedTrap
   let index = config.index;
   let nextPos = config.nextPos;
-  // let StageManager    = scene.StageManager;
-
-  // let index           = scene.PlayerManager.selectedTrap.groupIndex;
-  // let nextPos         = StageManager.nextChessPos;
-  //
-  // nextPos = {
-  //   X: 3,
-  //   Y: 3
-  // }
-  // let selectedTrap   = selectedTrap;
   let pos = getTilePositionNumber(nextPos.X,nextPos.Y,scene);
   let trapGroup;
   if(scene.StageManager.STATUS.TURN === 'player1'){
@@ -148,7 +138,6 @@ export function setPropTrap(config){
   if(scene.StageManager.STATUS.TURN === 'player2'){
     trapGroup = scene.TrapManager.trapPlayer2Group;
   }
-
 
   /*トラップの設置後はタッチイベント削除*/
   selectedTrap.removeInteractive();

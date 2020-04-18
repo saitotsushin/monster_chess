@@ -197,10 +197,13 @@ export default class Layout{
     }
   }
   setYes(){
-    console.log("レイアウトモーダル　はい")
     this.hideAll();
     /*レイアウト設定*/
-    this.scene.StageManager.layoutFin();
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.setDBLayout();
+    }else{
+      this.scene.StageManager.gameStart();
+    }
     this.scene.StageManager.STATUS.STAGE = '';
   }
   hideAll(){

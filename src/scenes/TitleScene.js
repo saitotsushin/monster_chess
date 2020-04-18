@@ -28,6 +28,7 @@ class TitleScene extends Phaser.Scene {
 
 
     this.title_start.on('pointerdown', () => {
+      const context = new AudioContext();      
       this.scene.start('MainScene');
     });
   }

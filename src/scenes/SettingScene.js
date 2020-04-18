@@ -264,7 +264,6 @@ class SettingScene extends Phaser.Scene {
     this.btnReturn.setVisible(false);
 
     this.setCost += this.selectedChess.cost;
-    // this.registry.list.chessCost = this.setCost;
 
     this.Team.costNow.setText(this.setCost);
     
@@ -292,14 +291,10 @@ class SettingScene extends Phaser.Scene {
     let nowCost = this.setCost;
 
     if(mode === 'remove'){
-      // if(this.selectedChess.setted === true){
-        this.setCost -= this.selectedChess.cost;
-        // this.registry.list.chessCost = this.setCost;
-      // }
+      this.setCost -= this.selectedChess.cost;
     }
     if(mode === 'add'){
       if(checkCost + nowCost > this.MAX_COST){
-        console.log("コストオーバー");
         return false;
       }      
       
@@ -320,11 +315,9 @@ class SettingScene extends Phaser.Scene {
     
     
     if(fin_count === this.teamGroup.length){
-      // this.btnTeamEdit.setText('(編集完了？)');
       this.EDIT_STATUS = "FIN";
       this.Team.btnTeamEdit.alpha = 1;
     }else{
-      // this.btnTeamEdit.setText('(編集中)');
       this.EDIT_STATUS = "CONTINUE";
       this.Team.btnTeamEdit.alpha = 0.4;
     }

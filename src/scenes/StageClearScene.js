@@ -56,9 +56,9 @@ class StageClearScene extends Phaser.Scene {
     this.selectedChess = "";
     this.playerChessGroup = this.add.group();
 
-    this.setPlayerGroup();
+    this.createPlayerGroup();
   }
-  setPlayerGroup(){
+  createPlayerGroup(){
     let chessDataList = this.ChessManager.ChessData.chessList;
     let playerChessList;
     let group;
