@@ -19,6 +19,8 @@ export default class StageManager {
 
     this.STATUS = {
       STAGE: "INIT",
+      MOVE: "",//FIN or none
+      ATTACK: "",
       CHESS: "",
       TURN: "player1",
       PLAYER1:{
@@ -112,12 +114,11 @@ export default class StageManager {
       scene: this.scene
     });
 
-    
-
   }
   touchedStage(pos){
 
-    if(this.STATUS.STAGE === "FIN"){
+    if(this.STATUS.MOVE === "FIN" && this.STATUS.ATTACK === "FIN"){
+      console.log("MOVE ATTACK 両方fin")
       return;
     }
     let X = pos.number.X;
@@ -130,22 +131,36 @@ export default class StageManager {
       this.ChessInfoWindow.setChessInfo(this.nowObject)
       return;
     }
+    if(this.scene.registry.list.gameMode === "NET"){
+      if(this.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
+        return;
+      }else{
+      }
+    }    
 
     if(tileProp){
 
-      if(this.STATUS.STAGE === ''){
+      // if(this.STATUS.STAGE === ''){
 
         if(tileProp.MODE === 'ATTACK'){
+          if(this.STATUS.ATTACK === "FIN"){
+            return;
+          }          
           this.scene.PlayerManager.targetChess = tileProp.object;
           modal.close();
+          console.log("ATTACK")
           modal.open(tileProp.MODE);
         }
         if(tileProp.MODE === 'MOVE'){
+          if(this.STATUS.MOVE === "FIN"){
+            return;
+          }
+          console.log("MOVE")
           this.nextChessPos.X = tileProp.nextPos.X;
           this.nextChessPos.Y = tileProp.nextPos.Y;
           modal.open(tileProp.MODE);
         }
-      }
+      // }
 
       if(this.STATUS.STAGE === 'ITEM'){
         if(this.scene.PlayerManager.selectedTrap){
@@ -167,13 +182,21 @@ export default class StageManager {
     //ターンを反転
     if(this.STATUS.TURN === "player1"){
       this.STATUS.TURN = 'player2';
-      if(this.PLAYER2){
+      if(this.scene.registry.list.gameMode !== "NET"){
         this.PLAYER2.myTurn();
       }
     }else{
       this.STATUS.TURN = 'player1';
     }
-    
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.attackFlg = false;
+      this.scene.StageManager.Network.changeTurn();
+    }     
+    this.STATUS.STAGE = "";
+    this.STATUS.ATTACK = "";
+    this.STATUS.MOVE = "";
+    this.movedChess = "";
+    this.Network.attackFlg = false
   }
   removeChess(chess){
     let posInt = {
@@ -268,7 +291,7 @@ export default class StageManager {
     this.STATUS.STAGE = "SELECTED_LAYOUT_CHESS";
     this.scene.PlayerManager.selectedChess = chess;
   }
-  moveChess(chess,nextPos){
+  moveChess(chess,nextPos,test){
     if(this.scene.registry.list.gameMode !== "NET"){
       /*プレイヤー２からもらったデータは逆にして更新*/
     }
@@ -278,10 +301,6 @@ export default class StageManager {
       this.scene
     );
 
-    console.log("setNextPos",setNextPos)
-    console.log("nextPos",nextPos)
-
-   
     chess.move(
       setNextPos.world,
       nextPos
@@ -293,10 +312,11 @@ export default class StageManager {
    
     //ステージのプロパティと駒の移動エリアの更新
     Prop.updateStageProps(this.scene,chess);
+
+    console.log("更新後 tilePropMap",this.scene.StageManager.tilePropMap)
+
   }
   finMove(){
-    console.log("this.scene.PlayerManager.selectedChess",this.scene.PlayerManager.selectedChess)
-    console.log("this.scene.StageManager.nextChessPos",this.scene.StageManager.nextChessPos)
     this.moveChess(
       this.scene.PlayerManager.selectedChess,
       this.scene.StageManager.nextChessPos
@@ -307,9 +327,22 @@ export default class StageManager {
     this.scene.StageManager.MoveArea.show(movedChess);
 
     this.STATUS.STAGE = "FIN";
-
-    this.scene.ModalManager.ModalMove.close();    
+    this.STATUS.MOVE = "FIN";
+ 
   }
+  finAttack(){
+    this.attackChess(
+      this.scene.PlayerManager.selectedChess,
+      this.scene.PlayerManager.targetChess,
+    );
+
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.setDBAttackChess('ATTACK');
+    }    
+    this.STATUS.STAGE = "FIN";
+    this.STATUS.ATTACK = "FIN";      
+  }
+
   attackChess(playerChess,enemyChess){   
     playerChess.attack(enemyChess);
     this.MoveArea.hide(enemyChess);

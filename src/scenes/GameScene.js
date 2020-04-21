@@ -46,7 +46,7 @@ class GameScene extends Phaser.Scene {
     /*==============================
     デバッグ
     ==============================*/
-    this.debugText = this.add.text(10, 10, '', { font: '10px Courier', fill: '#FFFFFF' });
+    this.debugText = this.add.text(10, 10, '', { font: '8px Courier', fill: '#FFFFFF' });
     this.debugText.depth = 100;
     this.debugText.setScrollFactor(0,0);
     this.debugText.alpha = 0.8;
@@ -61,8 +61,11 @@ class GameScene extends Phaser.Scene {
     this.debugText.setText(
       [
         'STATUS.STAGE :'+this.StageManager.STATUS.STAGE,
+        'STATUS.MOVE  :'+this.StageManager.STATUS.MOVE,
+        'STATUS.ATTACK:'+this.StageManager.STATUS.ATTACK,
         'STATUS.TURN  :'+this.StageManager.STATUS.TURN,
         'PLAYER_NUMBER:'+this.PlayerManager.PLAYER_NUMBER,
+        'ROOM ID      :'+global_roomID,
         // 'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
       ]
     );

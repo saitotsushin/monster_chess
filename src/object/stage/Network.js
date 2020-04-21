@@ -18,8 +18,14 @@ export default class Network {
     this.myUID = firebase.auth().currentUser;
     this.groupIndex;
     this.pos;
+    this.condition;//状態
+    this.attackPoint;//
+    // this.damagePoint;
 
     if(this.scene.registry.list.gameMode === "NET"){
+      /*------------------
+      通信対戦用：部屋の監視
+      ------------------*/      
       let ref = global_DB.ref("/stage/" + global_roomID);
 
       let setData = {
@@ -31,15 +37,17 @@ export default class Network {
       firebase.database().ref("/stage/" + global_roomID).update(updates);
 
       let _this = this;
+
       let DB_room = firebase.database().ref("/stage/" + global_roomID);
       let DB_layout = firebase.database().ref("/stage/" + global_roomID + "/layout/");
-      let DB_syncChess = firebase.database().ref("/stage/" + global_roomID + "/syncChess/");
+      let DB_syncMoveChess = firebase.database().ref("/stage/" + global_roomID + "/syncMoveChess/");
+      let DB_syncAttackChess = firebase.database().ref("/stage/" + global_roomID + "/syncAttackChess/");
+
+      let DB_syncTurn = firebase.database().ref("/stage/" + global_roomID + "/turn/");
 
       DB_room.on('child_changed', function(data) {
         DB_layout.once('value', function(snapshot) {
-          console.info("snapshot.val()",snapshot.val());
           if(snapshot.val() === 2){
-            console.info("両プレイヤーのレイアウト設定完了");
             /*２で完了 */
             DB_room.off();//リスナーのデタッチ、コールバックを削除
             _this.setNetDistributionPlayer();
@@ -57,30 +65,56 @@ export default class Network {
       getDB_guest.once('value', function(snapshot) {
         _this.DB_guest = snapshot.val();
       });
+
+      /*------------------
+      通信対戦用：移動する駒の監視
+      ------------------*/
       /*
         value: どんな更新であってもオブジェクトそのものを取得する
       */
-      DB_syncChess.on('value', function(data) {
-        // DB_syncChess.once('value', function(snapshot) {
-          console.info("駒::",data.val());
-          console.log("this.scene.StageManager.STATUS.TURN",_this.scene.StageManager.STATUS.TURN)
-          console.log("this.scene.PlayerManager.PLAYER_NUMBER",_this.scene.PlayerManager.PLAYER_NUMBER)
-          let pos = data.val().nextChessPos;
+      DB_syncMoveChess.on('value', function(data) {
+        let pos = data.val().nextChessPos;
+        let groupIndex = data.val().groupIndex;
+        if(_this.scene.StageManager.STATUS.TURN !== _this.scene.PlayerManager.PLAYER_NUMBER){
+          if(pos){
+            _this.moveSyncMoveChess(groupIndex,pos);
+          }
+        }
+      });
+      /*------------------
+      通信対戦用：攻撃する駒の監視
+      ------------------*/
+      /*
+        value: どんな更新であってもオブジェクトそのものを取得する
+      */
+      this.attackFlg = false;
+      DB_syncAttackChess.on('child_changed', function(data) {
+
+        DB_syncAttackChess.on('value', function(data) {
+
           let groupIndex = data.val().groupIndex;
+          let attackPoint = data.val().attackPoint;
+          let mode = data.val().mode;
+          let condition = data.val().condition;
           if(_this.scene.StageManager.STATUS.TURN !== _this.scene.PlayerManager.PLAYER_NUMBER){
-            console.log("turn ok!!!!");
-            console.log("pos",pos)
-            console.log("groupIndex",groupIndex)
-            console.log("data",data.val())
-            if(pos){
-              _this.moveSyncChess(groupIndex,pos);
+            if(_this.attackFlg === false){
+
+              _this.moveSyncAttackChess(
+                groupIndex,
+                mode,
+                attackPoint,
+                condition
+              );
+              
             }
           }
-          // if(_this.scene.PlayerManager.selectedChess){
-          // }
-        // });
-      }); 
-    } 
+        });
+      });
+      DB_syncTurn.on('value', function(data) {
+        _this.scene.StageManager.STATUS.TURN = data.val();
+        _this.syncTurn();
+      });
+    }
   }
 
   /*==================
@@ -112,10 +146,6 @@ export default class Network {
         _this.finLayout(DB_player2group,DB_player2stage);
       });
     }
-
-
-
-    // this.setLayoutPlayers();
   }
   finLayout(DB_chessGroup,DB_player2stage){
     let set_playerStage = [0,0,0];
@@ -182,9 +212,6 @@ export default class Network {
       firebase.database().ref().update(updates).then((snapshot) => {
         _this.layoutCount();
       });
-
-      // DB_stage.once('value', function(snapshot) {
-      // });
     }    
   }
   layoutCount(){
@@ -195,6 +222,9 @@ export default class Network {
       DB_layout.set(layoutCount);
     });  
   }
+  /*==============================
+  移動DBの更新
+  ------------------------------*/
   setDBMoveChess(){
     this.groupIndex = this.scene.PlayerManager.selectedChess.groupIndex;
     this.pos = this.scene.StageManager.nextChessPos;  
@@ -202,38 +232,98 @@ export default class Network {
     var updates = {};
     let setObject = {
       groupIndex: this.groupIndex,
-      nextChessPos: this.pos
+      nextChessPos: this.pos,
+      player: this.scene.PlayerManager.PLAYER_NUMBER
     }
-    updates["/stage/" + global_roomID + "/syncChess/"] = setObject;
-    // updates["/stage/" + global_roomID + "/syncChess/nextPos/"] = this.pos;
+    updates["/stage/" + global_roomID + "/syncMoveChess/"] = setObject;
     firebase.database().ref().update(updates).then((snapshot) => {
-      // _this.layoutCount();
       _this.scene.StageManager.finMove();
     });
-    // let DB_syncChess = firebase.database().ref("/stage/" + global_roomID + "/syncChess/");
-    // firebase.database().ref("/stage/" + global_roomID + "/syncChess/").set({
-    //   groupIndex: _this.groupIndex
-    // }).then((snapshot) => {
-    //   _this.scene.StageManager.finMove();
-    //   // _this.moveSyncChess();
-    // });  
   }
   /*==============================
-  
+  攻撃DBの更新
+  ------------------------------*/
+  setDBAttackChess(_mode){
+    // this.condition = this.condition;
+    this.groupIndex = this.scene.PlayerManager.selectedChess.groupIndex;
+    // let attackPoint = this.scene.PlayerManager.selectedChess.status.p
+    // this.pos = this.scene.StageManager.nextChessPos;  
+    let _this = this;
+    var updates = {};
+    let setObject = {
+      groupIndex: this.groupIndex,
+      attackPoint: this.attackPoint,
+      condition: this.condition,
+      mode: _mode,
+      player: this.scene.PlayerManager.PLAYER_NUMBER
+    }
+    updates["/stage/" + global_roomID + "/syncAttackChess/"] = setObject;
+    firebase.database().ref().update(updates).then((snapshot) => {
+      // _this.scene.StageManager.finAttack();
+    });
+  }
+  /*==============================
+  同期してからの処理（移動）
   ------------------------------*/  
-  moveSyncChess(_groupIndex,_pos){
+  moveSyncMoveChess(_groupIndex,_nextPos){
+    console.log("moveSyncMoveChess 移動の感知")
+    console.log("tilePropMap",this.scene.StageManager.tilePropMap)
     let chess;
-    console.log("moveSyncChess this.pos",_pos)
-    console.log("moveSyncChess _groupIndex",_groupIndex)
-    let pos = _pos;
-    pos.X = 5 - pos.X;
-    pos.Y = 7 - pos.Y;
-    console.log("moveSyncChess pos",pos)
+    let nextPos = _nextPos;
+    nextPos.X = 5 - nextPos.X;
+    nextPos.Y = 7 - nextPos.Y;
+    let beforePos = {
+      X: 0,
+      Y: 0
+    };
     if(this.scene.StageManager.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
       chess = this.scene.PlayerManager.player2ChessGroup.children.entries[_groupIndex - 1];
-      console.log("chess",chess);
-      this.scene.StageManager.moveChess(chess,pos);
+      beforePos.X = chess.pos.X;
+      beforePos.Y = chess.pos.Y;
+      this.scene.StageManager.beforeChessPos = beforePos;
+      this.scene.StageManager.nextChessPos   = nextPos;
+      console.log("moveSyncMoveChess beforeChessPos",this.scene.StageManager.beforeChessPos)
+      console.log("moveSyncMoveChess nextChessPos",this.scene.StageManager.nextChessPos)
+      this.scene.StageManager.moveChess(chess,nextPos,chess.pos);
+      /*リセット*/
+      this.scene.StageManager.nextPos = {
+        X: 0,
+        Y: 0
+      };
+      this.scene.StageManager.beforeChessPos = {
+        X: 0,
+        Y: 0
+      };
     }
+  }
+  /*==============================
+  同期してからの処理（攻撃）
+  ------------------------------*/  
+  moveSyncAttackChess(_groupIndex,_mode,_attackPoint,_condition){
+    let chess;
+    let mode = _mode;
+    let attackPoint = _attackPoint;
+    let condition = _condition;
+    if(this.scene.StageManager.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
+      chess = this.scene.PlayerManager.player1ChessGroup.children.entries[_groupIndex - 1];
+      chess.damage(attackPoint,mode,condition)
+    }
+  }
+  /*==============================
+  ターンの切り替え
+  ------------------------------*/  
+  changeTurn(){
+    let ref = firebase.database().ref("/stage/" + global_roomID+"/turn/");
+    let turn = this.scene.StageManager.STATUS.TURN;
+    let _this = this;
+    ref.set(turn).then((snapshot) => {
+      // _this.scene.StageManager.STATUS.STAGE = 
+    });
+  }
+  /*==============================
+  同期してからの処理（攻撃）
+  ------------------------------*/  
+  syncTurn(){
 
   }
 }

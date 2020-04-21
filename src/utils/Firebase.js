@@ -107,13 +107,20 @@ export function setRoom(){
     ref.set({
       host: UID,
       guest: "",
-      turn: "",
+      turn: "player1",
       layout: 0,
-      attackPoint: 0,
-      syncChess: {
+      syncMoveChess: {
         groupIndex: "",
         nextPosX: 0,
-        nextPosY: 0
+        nextPosY: 0,
+        player: ""
+      },
+      syncAttackChess:{
+        groupIndex: "",
+        attackPoint: 0,
+        condition: "",
+        mode: "",
+        player: ""
       },
       player1:{
         group: [],

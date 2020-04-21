@@ -79,7 +79,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       hp: 5,
       maxHp: 5,
       power: 4,
-      difence: 1
+      difence: 1,
+      condition: ""
     }
     this.attribute = "";
     this.pos = {
@@ -94,12 +95,6 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       '0',
       10
     );
-    // this.damageText = this.scene.add.text(
-    //   this.x + this.width/2 - 10,
-    //   this.y + this.height/2 - 10,
-    //   '0',
-    //   { font: '15px Courier', fill: '#FF0000' }
-    // ); 
     this.damageText.depth = 300;
     this.damageText.setVisible(false);
     this.on('pointerdown', function (pointer) {
@@ -177,13 +172,26 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     }
     
     attackingTarget.status.hp -= damagePoint;
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.attackPoint = damagePoint;
+    }
+
+    console.log("attackingTarget.status.hp",attackingTarget.status.hp)
+    console.log("tilePropMap",this.scene.StageManager.tilePropMap)
 
     if(attackingTarget.status.hp <= 0){
       this.attackingTarget = attackingTarget;
+      this.attackingTarget.status.condition = "explode";
+      if(this.scene.registry.list.gameMode === "NET"){
+        this.scene.StageManager.Network.condition = 'explode';
+      }
       attackingTarget.damage(damagePoint,'ATTACK','explode');
     }else{
+      if(this.scene.registry.list.gameMode === "NET"){
+        this.scene.StageManager.Network.condition = '';
+      }      
       attackingTarget.damage(damagePoint,'ATTACK','');
-      this.attackingTarget = "";//爆発しなかったらリセット。
+      this.attackingTarget = "";//撃破しなかったらリセット。
     }
 
   }

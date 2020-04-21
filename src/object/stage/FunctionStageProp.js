@@ -90,6 +90,9 @@ export function updateStageProps(scene,chess){
   let selectedChess   = chess;
   let MoveArea        = StageManager.MoveArea;
 
+  console.log("beforePos",beforePos)
+  console.log("nextChessPos",nextChessPos)
+
   if(!nextChessPos.X && !nextChessPos.Y){
     nextPos = beforePos;
     return;

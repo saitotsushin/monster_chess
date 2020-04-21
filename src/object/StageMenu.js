@@ -32,7 +32,7 @@ export default class StageMenu {
       'spritesheet',
       'btn_item'
     );
-    this.btnItem.depth = 102
+    this.btnItem.depth = 5
     
     this.btnItem.setInteractive();
     this.btnItem.on('pointerdown', () => {
@@ -104,7 +104,7 @@ export default class StageMenu {
       if(this.scene.StageManager.STATUS.STAGE === 'LAYOUT'){
         return;
       }
-      if(this.scene.StageManager.STATUS.STAGE === "FIN"){
+      if(this.scene.StageManager.STATUS.MOVE === "FIN" || this.scene.StageManager.STATUS.ATTACK === "FIN"){
         this.scene.StageManager.turnFin();
       }
     },this);

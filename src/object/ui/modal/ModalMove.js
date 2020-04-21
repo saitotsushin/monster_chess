@@ -61,13 +61,12 @@ export default class ModalMove{
   ============*/
   setYes(){
 
-    console.log("setYes this.scene.PlayerManager.selectedChess",this.scene.PlayerManager.selectedChess)
     if(this.scene.registry.list.gameMode === "NET"){
       this.scene.StageManager.Network.setDBMoveChess();
     }else{
       this.scene.StageManager.finMove();
     }
-    
+    this.close();
 
   }
   setNo(){
