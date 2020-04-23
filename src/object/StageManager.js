@@ -118,7 +118,6 @@ export default class StageManager {
   touchedStage(pos){
 
     if(this.STATUS.MOVE === "FIN" && this.STATUS.ATTACK === "FIN"){
-      console.log("MOVE ATTACK 両方fin")
       return;
     }
     let X = pos.number.X;
@@ -139,6 +138,16 @@ export default class StageManager {
     }    
 
     if(tileProp){
+      if(this.STATUS.STAGE === 'ITEM'){
+        if(this.scene.PlayerManager.selectedTrap){
+          if(tileProp.object.playerType === "player1"){
+            this.nextChessPos.X = tileProp.nextPos.X;
+            this.nextChessPos.Y = tileProp.nextPos.Y;
+            this.scene.TrapManager.ModalItemSet.open();  
+          }
+        }
+        return;
+      }
 
       // if(this.STATUS.STAGE === ''){
 
@@ -148,27 +157,18 @@ export default class StageManager {
           }          
           this.scene.PlayerManager.targetChess = tileProp.object;
           modal.close();
-          console.log("ATTACK")
           modal.open(tileProp.MODE);
         }
         if(tileProp.MODE === 'MOVE'){
           if(this.STATUS.MOVE === "FIN"){
             return;
           }
-          console.log("MOVE")
           this.nextChessPos.X = tileProp.nextPos.X;
           this.nextChessPos.Y = tileProp.nextPos.Y;
           modal.open(tileProp.MODE);
         }
       // }
 
-      if(this.STATUS.STAGE === 'ITEM'){
-        if(this.scene.PlayerManager.selectedTrap){
-          this.nextChessPos.X = tileProp.nextPos.X;
-          this.nextChessPos.Y = tileProp.nextPos.Y;
-          this.scene.TrapManager.ModalItemSet.open();  
-        }
-      }
       if(tileProp.MODE === ""){
         modal.close();
       }
@@ -189,14 +189,14 @@ export default class StageManager {
       this.STATUS.TURN = 'player1';
     }
     if(this.scene.registry.list.gameMode === "NET"){
-      this.scene.StageManager.Network.attackFlg = false;
+      // this.scene.StageManager.Network.attackFlg = false;
       this.scene.StageManager.Network.changeTurn();
     }     
     this.STATUS.STAGE = "";
     this.STATUS.ATTACK = "";
     this.STATUS.MOVE = "";
     this.movedChess = "";
-    this.Network.attackFlg = false
+    // this.Network.attackFlg = false
   }
   removeChess(chess){
     let posInt = {
@@ -211,11 +211,13 @@ export default class StageManager {
 
     for(var i = 0; i < this.tilePropMap.length; i++){
       for(var k = 0; k < this.tilePropMap[i].length; k++){
-        if(this.tilePropMap[i][k].object.playerType === "player1"){
-          this.STATUS.PLAYER1.CHESS_COUNT++;
-        }
-        if(this.tilePropMap[i][k].object.playerType === "player2"){
-          this.STATUS.PLAYER2.CHESS_COUNT++;          
+        if(this.tilePropMap[i][k].object !== ""){
+          if(this.tilePropMap[i][k].object.playerType === "player1"){
+            this.STATUS.PLAYER1.CHESS_COUNT++;
+          }
+          if(this.tilePropMap[i][k].object.playerType === "player2"){
+            this.STATUS.PLAYER2.CHESS_COUNT++;          
+          }  
         }
       }
     }
@@ -306,14 +308,13 @@ export default class StageManager {
       nextPos
     );
 
-    this.checkTrap(chess,nextPos);
-
+    console.log("this.tilePropMap",this.tilePropMap)
     this.MoveArea.hide(chess);
    
     //ステージのプロパティと駒の移動エリアの更新
     Prop.updateStageProps(this.scene,chess);
-
-    console.log("更新後 tilePropMap",this.scene.StageManager.tilePropMap)
+    console.log("nextPos",nextPos)
+    this.checkTrap(chess,nextPos);
 
   }
   finMove(){
@@ -348,6 +349,8 @@ export default class StageManager {
     this.MoveArea.hide(enemyChess);
   }
   checkTrap(chess,nextPos){
+    console.log("checkTrap")
+    console.log("this.tilePropMap",this.tilePropMap)
     for(var i = 0; i < this.tilePropMap.length; i++){
       for(var k = 0; k < this.tilePropMap[i].length; k++){
         if(nextPos.X == k && nextPos.Y === i){

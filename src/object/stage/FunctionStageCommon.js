@@ -96,21 +96,21 @@ export function getCanAttackChess(chess,player1ChessArr,pos,moveArea){
 // }
 
 
-export function checkTrap(chess,tilePropMap,pos,scene){
+// export function checkTrap(chess,tilePropMap,pos,scene){
 
-  let trap = tilePropMap[pos.Y][pos.X].trap;
+//   let trap = tilePropMap[pos.Y][pos.X].trap;
 
-  let trapObject;
+//   let trapObject;
 
 
-  if(trap){
+//   if(trap){
 
-    trap.damage(chess,pos);
+//     trap.damage(chess,pos);
 
-    tilePropMap[pos.Y][pos.X].trap = "";
+//     tilePropMap[pos.Y][pos.X].trap = "";
 
-    trapObject = scene.trap.trapGroup.children.entries[trap.groupIndex];
-    trapObject.destroy();
-  }
+//     trapObject = scene.trap.trapGroup.children.entries[trap.groupIndex];
+//     trapObject.destroy();
+//   }
 
-}
+// }

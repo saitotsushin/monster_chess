@@ -33,7 +33,18 @@ export default class Portion extends Base {
     },this);  
   }
   firing(cureTarget){
+    // if(this.scene.StageManager.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
 
+    if(this.scene.registry.list.gameMode === "NET"){
+      console.log("cureTarget.groupIndex",cureTarget.groupIndex);
+      console.log("playerType",cureTarget.playerType)
+      console.log("cureTarget.pos",cureTarget.pos)
+      this.scene.StageManager.Network.firedTrap(
+        cureTarget.groupIndex,
+        cureTarget.playerType,
+        cureTarget.pos
+      );
+    }
     let curePoint = Math.floor(cureTarget.status.maxHp * 0.5);//切り捨て
     let nowHp = cureTarget.status.hp + curePoint;
     let maxHp = cureTarget.status.maxHp;

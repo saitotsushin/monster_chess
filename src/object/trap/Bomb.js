@@ -1,4 +1,5 @@
 import Base from './Base';
+import Network from '../stage/Network';
 export default class Bomb extends Base {
 
   constructor(config) {
@@ -36,6 +37,17 @@ export default class Bomb extends Base {
     },this);  
   }
   firing(attackingTarget){
+
+    console.log("firing")
+    console.log("trap",this)
+
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.firedTrap(
+        attackingTarget.groupIndex,
+        attackingTarget.playerType,
+        attackingTarget.pos
+      );
+    }
 
     let damagePoint = this.status.power - attackingTarget.status.difence;
 

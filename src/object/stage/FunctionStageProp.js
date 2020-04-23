@@ -90,8 +90,6 @@ export function updateStageProps(scene,chess){
   let selectedChess   = chess;
   let MoveArea        = StageManager.MoveArea;
 
-  console.log("beforePos",beforePos)
-  console.log("nextChessPos",nextChessPos)
 
   if(!nextChessPos.X && !nextChessPos.Y){
     nextPos = beforePos;
@@ -135,11 +133,15 @@ export function setPropTrap(config){
   let nextPos = config.nextPos;
   let pos = getTilePositionNumber(nextPos.X,nextPos.Y,scene);
   let trapGroup;
-  if(scene.StageManager.STATUS.TURN === 'player1'){
+  if(scene.registry.list.gameMode !== "NET"){
+    if(scene.StageManager.STATUS.TURN === 'player1'){
+      trapGroup = scene.TrapManager.trapPlayer1Group;
+    }
+    if(scene.StageManager.STATUS.TURN === 'player2'){
+      trapGroup = scene.TrapManager.trapPlayer2Group;
+    }
+  }else{
     trapGroup = scene.TrapManager.trapPlayer1Group;
-  }
-  if(scene.StageManager.STATUS.TURN === 'player2'){
-    trapGroup = scene.TrapManager.trapPlayer2Group;
   }
 
   /*トラップの設置後はタッチイベント削除*/
@@ -148,6 +150,8 @@ export function setPropTrap(config){
   /*トラップの位置をステージに配置*/
   trapGroup.children.entries[index].x = pos.world.x;
   trapGroup.children.entries[index].y = pos.world.y;
+  trapGroup.children.entries[index].pos.X = nextPos.X;
+  trapGroup.children.entries[index].pos.Y = nextPos.Y;
   scene.StageManager.tilePropMap[nextPos.Y][nextPos.X].trap = selectedTrap;
 
   /*プレイヤーマネージャーに保存していた選択中のトラップを初期化*/

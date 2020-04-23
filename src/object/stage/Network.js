@@ -20,6 +20,7 @@ export default class Network {
     this.pos;
     this.condition;//状態
     this.attackPoint;//
+    this.trapIndex;
     // this.damagePoint;
 
     if(this.scene.registry.list.gameMode === "NET"){
@@ -42,6 +43,8 @@ export default class Network {
       let DB_layout = firebase.database().ref("/stage/" + global_roomID + "/layout/");
       let DB_syncMoveChess = firebase.database().ref("/stage/" + global_roomID + "/syncMoveChess/");
       let DB_syncAttackChess = firebase.database().ref("/stage/" + global_roomID + "/syncAttackChess/");
+      let DB_syncTrap = firebase.database().ref("/stage/" + global_roomID + "/syncTrap/");
+      let DB_syncFiredTrap = firebase.database().ref("/stage/" + global_roomID + "/syncFiredTrap/");
 
       let DB_syncTurn = firebase.database().ref("/stage/" + global_roomID + "/turn/");
 
@@ -87,7 +90,7 @@ export default class Network {
       /*
         value: どんな更新であってもオブジェクトそのものを取得する
       */
-      this.attackFlg = false;
+      // this.attackFlg = false;
       DB_syncAttackChess.on('child_changed', function(data) {
 
         DB_syncAttackChess.on('value', function(data) {
@@ -97,7 +100,9 @@ export default class Network {
           let mode = data.val().mode;
           let condition = data.val().condition;
           if(_this.scene.StageManager.STATUS.TURN !== _this.scene.PlayerManager.PLAYER_NUMBER){
-            if(_this.attackFlg === false){
+            // if(_this.attackFlg === false){
+
+              
 
               _this.moveSyncAttackChess(
                 groupIndex,
@@ -106,11 +111,60 @@ export default class Network {
                 condition
               );
               
-            }
+            // }
           }
         });
       });
-      DB_syncTurn.on('value', function(data) {
+      /*------------------
+      通信対戦用：トラップの設置
+      ------------------*/
+      /*
+        value: どんな更新であってもオブジェクトそのものを取得する
+      */
+      DB_syncTrap.on('child_changed', function(data) {
+
+        DB_syncTrap.on('value', function(data) {
+
+         let groupIndex = data.val().trapIndex;
+         let nextPos = {
+           X: data.val().nextPosX,
+           Y: data.val().nextPosY
+         }
+         if(_this.scene.StageManager.STATUS.TURN !== _this.scene.PlayerManager.PLAYER_NUMBER){
+          //  if(_this.attackFlg === false){
+             _this.setSyncTrap(
+               groupIndex,
+               nextPos
+             );
+             
+          //  }
+         }
+       });
+     });
+      /*------------------
+      通信対戦用：トラップの発火
+      ------------------*/
+      /*
+        value: どんな更新であってもオブジェクトそのものを取得する
+      */
+      DB_syncFiredTrap.on('child_changed', function(data) {
+
+        DB_syncFiredTrap.on('value', function(data) {
+
+          let groupIndex = data.val().trapIndex;
+          let player = data.val().player;
+          let pos = {
+            X: data.val().posX,
+            Y: data.val().posY
+          };
+
+          console.log("通信対戦用：トラップの発火")
+
+          _this.setSyncFiredTrap(groupIndex,player,pos)
+
+        });
+      });
+     DB_syncTurn.on('value', function(data) {
         _this.scene.StageManager.STATUS.TURN = data.val();
         _this.syncTurn();
       });
@@ -267,7 +321,6 @@ export default class Network {
   ------------------------------*/  
   moveSyncMoveChess(_groupIndex,_nextPos){
     console.log("moveSyncMoveChess 移動の感知")
-    console.log("tilePropMap",this.scene.StageManager.tilePropMap)
     let chess;
     let nextPos = _nextPos;
     nextPos.X = 5 - nextPos.X;
@@ -282,8 +335,6 @@ export default class Network {
       beforePos.Y = chess.pos.Y;
       this.scene.StageManager.beforeChessPos = beforePos;
       this.scene.StageManager.nextChessPos   = nextPos;
-      console.log("moveSyncMoveChess beforeChessPos",this.scene.StageManager.beforeChessPos)
-      console.log("moveSyncMoveChess nextChessPos",this.scene.StageManager.nextChessPos)
       this.scene.StageManager.moveChess(chess,nextPos,chess.pos);
       /*リセット*/
       this.scene.StageManager.nextPos = {
@@ -296,6 +347,110 @@ export default class Network {
       };
     }
   }
+  setTrap(trapConfig){
+    let item = trapConfig.selectedTrap;
+    this.trapIndex = trapConfig.index;
+    let nextPos = trapConfig.nextPos;
+    // this.groupIndex = this.scene.PlayerManager.selectedChess.groupIndex;
+    // let attackPoint = this.scene.PlayerManager.selectedChess.status.p
+    // this.pos = this.scene.StageManager.nextChessPos;  
+    let _this = this;
+    var updates = {};
+    let setObject = {
+      trapIndex: this.trapIndex,
+      nextPosX: nextPos.X,
+      nextPosY: nextPos.Y,
+      player: this.scene.PlayerManager.PLAYER_NUMBER
+    }
+    updates["/stage/" + global_roomID + "/syncTrap/"] = setObject;
+    firebase.database().ref().update(updates).then((snapshot) => {
+      // _this.scene.StageManager.finAttack();
+    });
+  }
+  firedTrap(_trapIndex,_player,_pos){
+    console.log("firedTrap")
+    console.log("_trapIndex",_trapIndex)
+    console.log("_player",_player)
+    let setObject = {
+      trapIndex: _trapIndex,
+      player: _player,
+      posX: _pos.X,
+      posY: _pos.Y
+    }
+    var updates = {};
+    console.log("setObject",setObject)
+    updates["/stage/" + global_roomID + "/syncFiredTrap/"] = setObject;
+    firebase.database().ref().update(updates).then((snapshot) => {
+      // _this.scene.StageManager.finAttack();
+      console.log("あっぷでーと")
+    });
+
+  }
+  setSyncFiredTrap(_trapIndex,_player,_pos){
+    console.log("setSyncFiredTrap トラップ発火の感知");
+
+    if(this.scene.StageManager.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
+      let pos = {
+        X: 5 - _pos.X,
+        Y: 7 - _pos.Y
+      };
+      if(this.scene.StageManager.tilePropMap[pos.Y][pos.X].trap === ""){
+        return;
+      }      
+      console.log("tilePropMap",this.scene.StageManager.tilePropMap)
+      console.log("tilePropMap[}{}",this.scene.StageManager.tilePropMap[pos.Y][pos.X])
+      let chess = this.scene.StageManager.tilePropMap[pos.Y][pos.X].object;
+      let trap = this.scene.StageManager.tilePropMap[pos.Y][pos.X].trap;
+      console.log("trap",trap)
+      console.log("_pos",_pos)
+      console.log("pos",pos)
+      trap.firing(chess);
+      trap.removeTrap();
+      trap = "";
+    }
+
+  }
+  setSyncTrap(_trapIndex,_nextPos){   
+    console.log("setSyncTrap トラップ設置の感知")
+    console.log("this.scene.TrapManager.trapPlayer1Group",this.scene.TrapManager.trapPlayer1Group)
+    console.log("this.scene.TrapManager.trapPlayer2Group",this.scene.TrapManager.trapPlayer2Group)
+    let item;
+    let nextPos = {
+      X: _nextPos.X,
+      Y: _nextPos.Y
+    };
+    let selectedTrap
+    nextPos.X = 5 - nextPos.X;
+    nextPos.Y = 7 - nextPos.Y;
+    let trapConfig = {
+      scene: this.scene,
+      selectedTrap: this.scene.TrapManager.trapPlayer2Group.children.entries[_trapIndex],
+      index: _trapIndex,
+      nextPos: nextPos
+    }
+    Prop.setPropTrap(trapConfig);
+
+    console.log("tilePropMap",this.scene.StageManager.tilePropMap)
+
+    // if(this.scene.StageManager.STATUS.TURN !== this.scene.PlayerManager.PLAYER_NUMBER){
+    //   item = this.scene.TrapManager.player2ChessGroup.children.entries[_groupIndex - 1];
+    //   beforePos.X = chess.pos.X;
+    //   beforePos.Y = chess.pos.Y;
+    //   this.scene.StageManager.beforeChessPos = beforePos;
+    //   this.scene.StageManager.nextChessPos   = nextPos;
+    //   this.scene.StageManager.moveChess(chess,nextPos,chess.pos);
+    //   /*リセット*/
+    //   this.scene.StageManager.nextPos = {
+    //     X: 0,
+    //     Y: 0
+    //   };
+    //   this.scene.StageManager.beforeChessPos = {
+    //     X: 0,
+    //     Y: 0
+    //   };
+    // }
+  }
+  // }
   /*==============================
   同期してからの処理（攻撃）
   ------------------------------*/  

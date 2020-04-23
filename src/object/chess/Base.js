@@ -176,8 +176,6 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       this.scene.StageManager.Network.attackPoint = damagePoint;
     }
 
-    console.log("attackingTarget.status.hp",attackingTarget.status.hp)
-    console.log("tilePropMap",this.scene.StageManager.tilePropMap)
 
     if(attackingTarget.status.hp <= 0){
       this.attackingTarget = attackingTarget;

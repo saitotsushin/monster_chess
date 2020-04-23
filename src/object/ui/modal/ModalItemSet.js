@@ -78,6 +78,9 @@ export default class ModalItemSet{
         Y: this.scene.StageManager.nextChessPos.Y
       }
     }
+    if(this.scene.registry.list.gameMode === "NET"){
+      this.scene.StageManager.Network.setTrap(trapConfig);
+    }
     Prop.setPropTrap(trapConfig);
 
     /*フッターメニューボタンのアイテムボタンのリセット*/

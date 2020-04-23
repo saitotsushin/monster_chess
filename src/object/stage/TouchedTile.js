@@ -93,6 +93,7 @@ export default class TouchedTile {
       if(STATUS_STAGE === "ITEM"){
         checkObject.nextPos.X = X;
         checkObject.nextPos.Y = Y;
+        checkObject.object = tileObject;
         
         return checkObject;
       }
@@ -121,6 +122,7 @@ export default class TouchedTile {
       }
       this.scene.PlayerManager.selectedChess = tileObject;
       selectedChess = tileObject;
+      // checkObject.object = tileObject;
       // MoveArea.setArrPosition(X,Y,tileObject);
       MoveArea.show(selectedChess);
       /*選択時の位置を保存*/

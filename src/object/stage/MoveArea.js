@@ -129,13 +129,12 @@ export default class MoveArea{
         }
       }
     }
-    console.log("tilePropMap",tilePropMap)
+
     for(var Y = 0; Y < tilePropMap.length; Y++){
       for(var X = 0; X < tilePropMap[Y].length; X++){
         if(tilePropMap[Y][X].object.playerType !== "player1"){
           //敵だったら攻撃駒はそのまま
           if(moveArea[Y][X] === 3){
-            console.log("moveArea[Y][X]")
             // moveArea[Y][X] = 3;
           }
         }else{

@@ -122,8 +122,22 @@ export function setRoom(){
         mode: "",
         player: ""
       },
+      syncTrap:{
+        trapIndex: "",
+        nextPosX: 0,
+        nextPosY: 0,
+        player: "",
+        fired: ""
+      },
+      syncFiredTrap:{
+        trapIndex: "",
+        player: "",
+        posX: 0,
+        posY: 0
+      },
       player1:{
         group: [],
+        trapGroup: [],
         stage: {
           row1: [0,0,0,0,0,0],
           row2: [0,0,0,0,0,0],
@@ -132,6 +146,7 @@ export function setRoom(){
       },
       player2:{
         group: [],
+        trapGroup: [],
         stage: {
           row1: [0,0,0,0,0,0],
           row2: [0,0,0,0,0,0],

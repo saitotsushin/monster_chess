@@ -75,6 +75,10 @@ export default class TrapManager{
             sprite.removeInteractive();
             // sprite.alpha = 0;
           }
+          sprite.pos = {
+            X: 0,
+            Y: 0
+          }
           sprite.depth = 120;
           sprite.setted = false;
           trapGroup.add(sprite);
