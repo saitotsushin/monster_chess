@@ -60,16 +60,11 @@ export default class ModalMove{
   モーダル
   ============*/
   setYes(){
-
-    if(this.scene.registry.list.gameMode === "NET"){
-      this.scene.StageManager.Network.setDBMoveChess();
-    }else{
-      this.scene.StageManager.finMove();
-    }
+    this.scene.actionChess('MOVE','YES');
     this.close();
-
   }
   setNo(){
+    this.scene.actionChess('MOVE','NO');
     this.container.setVisible(false);
   }
   open(){

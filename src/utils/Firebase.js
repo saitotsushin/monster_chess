@@ -122,22 +122,22 @@ export function setRoom(){
         mode: "",
         player: ""
       },
-      syncTrap:{
-        trapIndex: "",
+      syncitem:{
+        itemIndex: "",
         nextPosX: 0,
         nextPosY: 0,
         player: "",
         fired: ""
       },
-      syncFiredTrap:{
-        trapIndex: "",
+      syncFireditem:{
+        itemIndex: "",
         player: "",
         posX: 0,
         posY: 0
       },
       player1:{
         group: [],
-        trapGroup: [],
+        itemGroup: [],
         stage: {
           row1: [0,0,0,0,0,0],
           row2: [0,0,0,0,0,0],
@@ -146,7 +146,7 @@ export function setRoom(){
       },
       player2:{
         group: [],
-        trapGroup: [],
+        itemGroup: [],
         stage: {
           row1: [0,0,0,0,0,0],
           row2: [0,0,0,0,0,0],
@@ -162,10 +162,6 @@ export function setRoom(){
       room.off();//リスナーのデタッチ、コールバックを削除
       scene.goGameScene();
     });
-    // ref.on('child_changed', function(data) {
-    //   console.info("guestが来ました。");
-    //   scene.goGameScene(ref);
-    // });
   }else{
     /*部屋があったらguestに自分のIDを設定*/
     ref = DB.ref("/stage/" + Object.keys(guestCheck)[0]+"/guest/");

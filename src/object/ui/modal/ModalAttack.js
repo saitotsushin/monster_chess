@@ -60,16 +60,11 @@ export default class ModalAttack{
   モーダル
   ============*/
   setYes(){
-    // if(this.scene.registry.list.gameMode === "NET"){
-    //   this.scene.StageManager.Network.setDBAttackChess('ATTACK');
-    // }else{
-    //   this.scene.StageManager.finAttack();
-    // }
-    this.scene.StageManager.finAttack();
-
+    this.scene.actionChess('ATTACK','YES');
     this.close();
   }
   setNo(){
+    this.scene.actionChess('ATTACK','NO');
     this.close();
   }
   open(){

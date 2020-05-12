@@ -1,4 +1,4 @@
-import * as Prop      from '../../stage/FunctionStageProp';
+
 
 export default class ModalItemSet{
   constructor(config) {
@@ -44,7 +44,7 @@ export default class ModalItemSet{
     
     this.btnNo.on('pointerdown', () => {
       this.setNo();
-    },this);
+    },this);    
     this.container.add(
     [
       this.Window,
@@ -53,64 +53,28 @@ export default class ModalItemSet{
     ]);
     this.container.x = 52;
     this.container.y = 186;
-    this.container.depth = 210;
-    this.Window.depth = 210;
-    this.btnYes.depth = 210;
-    this.btnNo.depth = 210;
+    this.container.depth = 300;
     this.container.setVisible(false);
+    this.close();
   }
   /*============
   モーダル
   ============*/
   setYes(){
-
-    /*設置されたアイテムを更新*/
-    this.scene.PlayerManager.selectedTrap.setted = true;
-    // this.scene.PlayerManager.selectedTrap.removeInteractive();
-    // this.scene.PlayerManager.player1ChessGroup.children.entries[this.scene.PlayerManager.selectedTrap.groupIndex].removeInteractive();
-
-    let trapConfig = {
-      scene: this.scene,
-      selectedTrap: this.scene.PlayerManager.selectedTrap,
-      index: this.scene.PlayerManager.selectedTrap.groupIndex,
-      nextPos: {
-        X: this.scene.StageManager.nextChessPos.X,
-        Y: this.scene.StageManager.nextChessPos.Y
-      }
-    }
-    if(this.scene.registry.list.gameMode === "NET"){
-      this.scene.StageManager.Network.setTrap(trapConfig);
-    }
-    Prop.setPropTrap(trapConfig);
-
-    /*フッターメニューボタンのアイテムボタンのリセット*/
-    this.scene.StageMenu.flgItem = false;
-    this.scene.StageMenu.btnItem.setTexture('spritesheet','btn_item');
-    this.scene.StageMenu.ModalItem.close();
-    /*トラップマネージャーのウインドウをリセット*/
-    this.scene.TrapManager.ModalItemSet.close();
-    this.scene.TrapManager.Cursor.setVisible(false);
-
-    this.scene.StageManager.STATUS.STAGE = "";
-    this.scene.PlayerManager.selectedTrap = "";
-
-    /*ウインドウのクローズ*/
+    this.scene.updateStageTrap('ADD');
+    this.scene.menuWindow("ITEM","CLOSE");
     this.close();
-
-    // this.scene.StageManager.moveChess(
-    //   this.scene.PlayerManager.selectedChess,
-    //   this.scene.StageManager.nextChessPos
-    // );
-    // this.close();
   }
   setNo(){
     this.container.setVisible(false);
   }
   open(){
     this.container.setVisible(true);
+
   }
   close(){
     this.container.setVisible(false);
+
   }
 }
   

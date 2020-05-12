@@ -1,102 +1,81 @@
-import ModalManager  from '../object/ui/ModalManager';
-import StageManager  from '../object/StageManager';
-import TrapManager   from '../object/TrapManager';
-import PlayerManager from '../object/PlayerManager';
-import ChessManager  from '../object/ChessManager';
-import ClearGame     from '../object/ui/ClearGame';
-import StageMenu     from '../object/StageMenu';
-
 class GameScene extends Phaser.Scene {
   constructor(test) {
     super({
       key: 'GameScene'
-    });
+    });   
   }
   create(){
 
-    this.ChessManager = new ChessManager({
-      scene: this
-    });
+    /*背景色*/
+    this.cameras.main.setBackgroundColor('#FFFFFF');
+
+    /*ページタイトル*/
+    this.title = this.add.bitmapText(
+      this.game.config.width/2,
+      16,
+      'bitmapFont',
+      'STAGE SELECT',
+      10
+    );
+    this.title.setOrigin(0.5,0.5);
+
+    /*メニューボタン：ステージ１*/
+    this.btnStage1 = this.add.sprite(
+      this.sys.game.config.width/2,
+      32,
+      'spritesheet',
+      'btn_stage1'
+    );
     
-    this.PlayerManager = new PlayerManager({
-      scene: this
-    });
-    this.PlayerManager.create();
-    this.registry.list.player1Auto_Arr = this.PlayerManager.player1Auto_Arr;
 
-    this.ModalManager = new ModalManager({
-      scene: this
-    });
-    this.StageManager = new StageManager({
-      scene: this
-    });
-    this.StageManager.create();
+    this.btnStage1.setInteractive();
+    this.btnStage1.on('pointerdown', () => {
+      this.scene.start('BattleScene');
+    },this);
+    this.btnStage1.setOrigin(0.5,0);
 
-    this.TrapManager = new TrapManager({
-      scene: this
-    });
-    this.StageMenu = new StageMenu({
-      scene: this
-    });
-    this.ClearGame = new ClearGame({
-      scene: this
-    });
+    /*ページタイトル　オンライン*/
+    this.titleOnline = this.add.bitmapText(
+      this.game.config.width/2,
+      102,
+      'bitmapFont',
+      'ONLINE',
+      10
+    );    
+    this.titleOnline.setOrigin(0.5,0.5);
 
-
-    /*==============================
-    デバッグ
-    ==============================*/
-    this.debugText = this.add.text(10, 10, '', { font: '8px Courier', fill: '#FFFFFF' });
-    this.debugText.depth = 100;
-    this.debugText.setScrollFactor(0,0);
-    this.debugText.alpha = 0.8;
-
-
-  }
-
-  update(time, delta) {
-    /*==============================
-    デバッグ START
-    ------------------------------*/    
-    this.debugText.setText(
-      [
-        'STATUS.STAGE :'+this.StageManager.STATUS.STAGE,
-        'STATUS.MOVE  :'+this.StageManager.STATUS.MOVE,
-        'STATUS.ATTACK:'+this.StageManager.STATUS.ATTACK,
-        'STATUS.TURN  :'+this.StageManager.STATUS.TURN,
-        'PLAYER_NUMBER:'+this.PlayerManager.PLAYER_NUMBER,
-        'ROOM ID      :'+global_roomID,
-        // 'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
-      ]
+    /*メニューボタン：オンライン*/
+    this.btnStage2 = this.add.sprite(
+      this.sys.game.config.width/2,
+      114,
+      'spritesheet',
+      'btn_start'
     );
+    
 
-    /*------------------------------
-    デバッグ END
-    ==============================*/
-  }
+    this.btnStage2.setInteractive();
+    this.btnStage2.on('pointerdown', () => {
+      this.scene.start('RoomScene');
+      this.registry.list.gameMode = "NET";
+    },this);
+    this.btnStage2.setOrigin(0.5,0);
   
-  /*==============================
-  表示・非表示
-  ------------------------------*/   
-  /*ストックの駒
-  ------------------------------*/
-  showChessInfoWindow(){
-    this.StageManager.ChessInfoWindow.ChessInfoContainer.setVisible(true);
-    this.StageManager.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(true);
-      }
+    /*メニューボタン：セッティング*/
+    this.btnSetting = this.add.sprite(
+      this.sys.game.config.width/2,
+      170,
+      'spritesheet',
+      'btn_setting'
     );
-  }
+    
+    this.btnSetting.setInteractive();
+    this.btnSetting.on('pointerdown', () => {
+      this.scene.start('SettingScene');
+    },this);
+    this.btnSetting.setOrigin(0.5,0);
 
-  hideChessInfoWindow(){
-    this.StageManager.ChessInfoWindow.ChessInfoContainer.setVisible(false);
-    this.StageManager.ChessInfoWindow.ChessInfoMoveGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(false);
-      }
-    );
-  }
+  }    
+
 }
 
 export default GameScene;

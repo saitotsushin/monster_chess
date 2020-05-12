@@ -36,12 +36,22 @@ class MenuScene extends Phaser.Scene {
     },this);
     this.btnStage1.setOrigin(0.5,0);
 
-    /*メニューボタン：ステージ2*/
+    /*ページタイトル　オンライン*/
+    this.titleOnline = this.add.bitmapText(
+      this.game.config.width/2,
+      102,
+      'bitmapFont',
+      'ONLINE',
+      10
+    );    
+    this.titleOnline.setOrigin(0.5,0.5);
+
+    /*メニューボタン：オンライン*/
     this.btnStage2 = this.add.sprite(
       this.sys.game.config.width/2,
-      92,
+      114,
       'spritesheet',
-      'btn_stage1'
+      'btn_start'
     );
     
 

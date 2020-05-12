@@ -97,10 +97,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     );
     this.damageText.depth = 300;
     this.damageText.setVisible(false);
-    this.on('pointerdown', function (pointer) {
-      this.scene.StageManager.selectedLayoutChess(this);
-      this.cursorShow(pointer);
-    });
+    // this.on('pointerdown', function (pointer) {
+    //   this.scene.StageManager.selectedLayoutChess(this);
+    //   this.cursorShow(pointer);
+    // });
 
 
     this.icon_enemy = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_enemy');

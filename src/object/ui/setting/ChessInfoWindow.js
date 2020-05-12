@@ -82,7 +82,7 @@ export default class ChessInfoWindow{
       ]
     );
     for(var i = 0; i < 8;i++){
-      for(var k = 0; k < 6; k++){
+      for(var k = 0; k < 7; k++){
 
         let sprite = this.scene.add.sprite(
           k * 5 + 91 + k,
@@ -120,19 +120,20 @@ export default class ChessInfoWindow{
       base = base1;
     }
     let moveArea = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0]
     ];
     let harfHeight = (base.length - 1) / 2;
-    let harfWidth = (base[0].length - 1) / 2;
+    let harfWidth = (base[0].length - 1) / 2 + 0.5;
+    // let harfWidth = 7;
     let baseY = harfHeight - Y;
-    let baseX = harfWidth - X;
+    let baseX = harfWidth - X - 0.5;
     let i2 = 0;
     let k2 = 0;
     let centePos = {

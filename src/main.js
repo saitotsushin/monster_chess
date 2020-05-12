@@ -3,15 +3,7 @@ import 'phaser';
 import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
-import MenuScene from './scenes/MenuScene';
-import MainScene from './scenes/MainScene';
-import StageClearScene from './scenes/StageClearScene';
-import SettingScene from './scenes/SettingScene';
-import SettingLayoutScene from './scenes/SettingLayoutScene';
-import RoomScene from './scenes/RoomScene';
-
-
-
+import BattleScene from './scenes/BattleScene';
 
 let BASE_WIDTH = 140;
 let BASE_HEIGHT = 200;
@@ -45,13 +37,8 @@ const config = {
   scene: [
     BootScene,
     TitleScene,
-    RoomScene,
-    MenuScene,
-    SettingLayoutScene,
-    SettingScene,
     GameScene,
-    StageClearScene,
-    MainScene
+    BattleScene
   ]
 };
 

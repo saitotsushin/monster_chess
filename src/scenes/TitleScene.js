@@ -1,14 +1,11 @@
-import PlayerData from '../object/PlayerData';
-
 class TitleScene extends Phaser.Scene {
   constructor(test) {
       super({
           key: 'TitleScene'
       });
   }
-  preload() {
-  }
   create() {
+    
     let config = {
       key: 'title',
       frames: [{
@@ -16,30 +13,42 @@ class TitleScene extends Phaser.Scene {
       }]
     };
 
-    this.title_start = this.add.text(
-      80,
-      120,
-      'START',
-      { font: '10px Courier', fill: '#CCC' }
+    /*タイトル*/
+    let title = this.add.sprite(
+      0,
+      0,
+      'spritesheet',
+      'title'
     );
-    this.title_start.depth = 100;
+    title.setOrigin(0,0);
 
-    this.title_start.setInteractive();
+    /*メニューボタン：スタート*/
+    this.btnMenu = this.add.sprite(
+      this.sys.game.config.width/2,
+      102,
+      'spritesheet',
+      'btn_start'
+    );
+    this.btnMenu.setInteractive();
+    this.btnMenu.on('pointerdown', () => {
+      this.scene.start('GameScene');
+    },this);
+    this.btnMenu.setOrigin(0.5,0);
 
-
-    this.title_start.on('pointerdown', () => {
-      const context = new AudioContext();      
-      this.scene.start('MainScene');
-    });
+    /*メニューボタン：HOW TO*/
+    this.btnHowTo = this.add.sprite(
+      this.sys.game.config.width/2,
+      130,
+      'spritesheet',
+      'btn_howto'
+    );
+    this.btnHowTo.setInteractive();
+    this.btnHowTo.on('pointerdown', () => {
+      this.scene.start('MenuScene');
+    },this);
+    this.btnHowTo.setOrigin(0.5,0);
+    
   }
-
-
-
-//   startGame() {
-//     this.scene.stop('GameScene');
-//     this.scene.start('GameScene');
-//   }
-
 
 }
 
