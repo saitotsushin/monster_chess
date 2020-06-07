@@ -1,67 +1,108 @@
-import GameManager     from '../object/battle/GameManager';
-import LoadGameData     from '../data/LoadGameData';
+import GameManager    from '../object/battle/GameManager';
+import GameAnimations from '../utils/GameAnimations';
+import ClearGame      from '../object/ui/ClearGame';
 
 class BattleScene extends Phaser.Scene {
   constructor(test) {
     super({
       key: 'BattleScene'
     });
+
+
+  
+    this.stageMap = "map1";//ステージマップの指定
+    this.STATUS = {
+      GAME_MODE: "",
+      STAGE_MODE: "",
+      WIN_PLAYER: "",
+      PLAYER1: {
+        CHESS_COUNT: 0,
+      },
+      PLAYER2: {
+        CHESS_COUNT: 0,
+      }
+    };
+    this.ClearGame;
+
+    this.chessMapData = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
+    this.chessMapData2 = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
+    this.itemMap = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
+    this.itemMap2 = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];     
+  }
+  create(){
+    /*背景色*/
+    this.cameras.main.setBackgroundColor('#FFFFFF');    
     this.GameManager = new GameManager({
       scene: this
     });
-    this.LoadGameData = new LoadGameData({
+    
+    /*=====================
+    registryデータの読み込み
+    =====================*/
+    for(var i = 0; i < this.registry.list.chessLayoutData.length; i++){
+      for(var k = 0; k < this.registry.list.chessLayoutData[i].length; k++){
+        if(this.registry.list.chessLayoutData[i][k] !== 0){
+          this.chessMapData[i][k] = this.registry.list.chessLayoutData[i][k];
+        }
+      }
+    }
+    /*=====================
+    相手のレイアウトは逆順にして配置
+    =====================*/
+    for(var i = 0; i < this.registry.list.chessLayoutData2.length; i++){
+      this.registry.list.chessLayoutData2[i].reverse();
+    }
+    this.registry.list.chessLayoutData2.reverse();
+
+    for(var i = 0; i < this.registry.list.chessLayoutData2.length; i++){
+      for(var k = 0; k < this.registry.list.chessLayoutData2[i].length; k++){
+        if(this.registry.list.chessLayoutData2[i][k] !== 0){
+          this.chessMapData2[i][k] = this.registry.list.chessLayoutData2[i][k];
+        }
+      }
+    }
+    this.registry.list.chessMapData2 = this.registry.list.chessLayoutData2;
+
+    this.ClearGame = new ClearGame({
       scene: this
     });
-    this.stageMap = "map1";//ステージマップの指定
-    // this.STATUS = {
-    //   STAGE: {
-    //     MODE: ""
-    //   }
-    // }
-  }
-  create(){
 
-    // this.STATUS = "";//play or menu
-    this.loadPlayerData();
+    this.STATUS.GAME_MODE = this.registry.list.gameMode;
     this.initScene();
 
-
-    /*==============================
-    デバッグ
-    ==============================*/
-    this.debugText = this.add.text(10, 10, '', { font: '8px Courier', fill: '#FFFFFF' });
-    this.debugText.depth = 100;
-    this.debugText.setScrollFactor(0,0);
-    this.debugText.alpha = 0.8;
+    /*==================
+    アニメーション
+    ==================*/
+    this.GameAnimations = new GameAnimations({
+      scene: this
+    }); 
 
   }
 
-  update(time, delta) {
-    /*==============================
-    デバッグ START
-    ------------------------------*/    
-    this.debugText.setText(
-      [
-        // 'gameMode: ' + this.scene.registry.list.gameMode
-        // 'STA.P1.CNT:'+this.StageManager.STATUS.PLAYER1.CHESS_COUNT+'|STA.P2.CNT:'+this.StageManager.STATUS.PLAYER2.CHESS_COUNT,
-      ]
-    );
-  }
-  /*==============================
-  プレイヤーデータロード
-  ------------------------------*/  
-  loadPlayerData(){
-    /*自分のデータ*/
-    this.registry.list.layoutData = this.LoadGameData.layoutData;
-    this.registry.list.chessData  = this.LoadGameData.chessData;
-    this.registry.list.itemData  = this.LoadGameData.itemData;
-    // this.registry.list.itemMap  = this.LoadGameData.itemMap;
-    /*相手のデータ*/
-    this.registry.list.layoutData2 = this.LoadGameData.layoutData2;
-    this.registry.list.chessData2  = this.LoadGameData.chessData2;    
-    this.registry.list.itemData2  = this.LoadGameData.itemData2;
-    // this.registry.list.itemMap2  = this.LoadGameData.itemMap2;
-  }
   /*==============================
   初期化
   ------------------------------*/
@@ -69,9 +110,12 @@ class BattleScene extends Phaser.Scene {
     this.GameManager.initScene({
       map: this.stageMap,
       chessData: this.registry.list.chessData,
-      layoutData: this.registry.list.layoutData
+      chessMapData: this.chessMapData
     });
   }
+  /*==============================
+  ステージのタッチ
+  ------------------------------*/    
   touchStage(pos){
     this.GameManager.touchStage(pos);
   }
@@ -79,16 +123,20 @@ class BattleScene extends Phaser.Scene {
   アイテム選択中
   ------------------------------*/   
   touchItem(pos,index){
-    console.log("touchItem pos="+pos+"/index="+index)
     this.GameManager.touchItem(pos,index);
   }
   /*==============================
   アイテム設置
   ------------------------------*/   
   touchCanPutTile(pos,index){
-    console.log("touchCanPutTile");
     this.GameManager.touchCanPutTile(pos,index);
-  }   
+  }
+  /*==============================
+  インフォタイルのタッチ
+  ------------------------------*/   
+  touchInfoTile(pos){
+    this.GameManager.touchInfoTile(pos);
+  }
   /*==============================
   レイアウト完了
   ------------------------------*/   
@@ -102,7 +150,13 @@ class BattleScene extends Phaser.Scene {
     this.GameManager.startGame();
   }
   /*==============================
-  攻撃完了
+  ゲームクリア
+  ------------------------------*/    
+  clearGame(){
+    this.ClearGame.open();
+  }  
+  /*==============================
+  移動・攻撃完了
   ------------------------------*/  
   actionChess(mode,status){
     if(mode === "MOVE"){
@@ -115,17 +169,35 @@ class BattleScene extends Phaser.Scene {
     }     
   }
   /*==============================
+  ステージのモード変更
+  ------------------------------*/   
+  chengeStageMode(mode){
+    this.STATUS.STAGE_MODE = "FIN";
+  }
+  /*==============================
   アイテム、インフォのウインドウ表示
   ------------------------------*/   
-  menuWindow(mode,status){
-    this.GameManager.menuWindow(mode,status);
-  } 
+  // menuWindow(mode,status){
+  //   this.GameManager.menuWindow(mode,status);
+  // } 
   /*==============================
-  アイテムをステージに配置する
+  アイテムウインドウ
   ------------------------------*/
-  updateStageTrap(mode){
-    this.GameManager.updateStageTrap(mode);
-  } 
+  itemWindow(mode,window,status){
+    /* 
+      mode: ADD / XX
+      window: ITEM / 
+      status: OPEN / CLOSE
+    */
+    if(mode === "YES"){
+      this.GameManager.updateStageTrap('ADD');
+    }
+    if(mode === "NO"){
+      this.GameManager.setItemCancel();
+    }
+    this.GameManager.menuWindow(window,status); 
+  }
+  /*==============================
 
   /*==============================
   自分のターン完了
@@ -133,6 +205,19 @@ class BattleScene extends Phaser.Scene {
   turnFin(){
     this.GameManager.turnFin();
   }
+  /*==============================
+  ターンチェンジ
+  ------------------------------*/    
+  turnChange(){
+    this.STATUS.STAGE_MODE = "";    
+    this.GameManager.turnChange();
+  }
+  /*==============================
+  チェスの削除
+  ------------------------------*/    
+  removeChess(chess){
+    this.GameManager.removeChess(chess);
+  }  
   /*==============================
   ゲームオーバー
   ------------------------------*/   

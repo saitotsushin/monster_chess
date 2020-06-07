@@ -18,7 +18,7 @@ export default class FooterMenu{
     );
     this.btnMenu1.setInteractive();
     this.btnMenu1.on('pointerdown', () => {
-      this.scene.scene.start('MenuScene');
+      this.scene.scene.start('GameScene');
     },this);
     this.btnMenu1.setOrigin(0,0);
 

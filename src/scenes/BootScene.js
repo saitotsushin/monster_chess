@@ -47,6 +47,7 @@ class BootScene extends Phaser.Scene {
     this.load.pack('Preload', 'assets/pack.json', 'Preload');
 
     this.load.bitmapFont('bitmapFont', 'assets/font/font.png', 'assets/font/font.xml');
+    this.load.bitmapFont('bitmapFontWhite', 'assets/font/font_white.png', 'assets/font/font.xml');
     this.load.bitmapFont('bitmapFontRed', 'assets/font/font_red.png', 'assets/font/font.xml');
     this.load.bitmapFont('bitmapFontBlue', 'assets/font/font_blue.png', 'assets/font/font.xml');
 
@@ -60,15 +61,20 @@ class BootScene extends Phaser.Scene {
     使用するデータ
     ------------------------------*/
     /*自分のデータ*/
-    this.registry.set('layoutData', []);
+    this.registry.set('chessLayoutData', []);
     this.registry.set('chessData', []);
     this.registry.set('itemData', []);
-    this.registry.set('itemMap', []);
+
+    this.registry.set('stockData', []);
+
     /*相手のデータ*/    
-    this.registry.set('layoutData2', []);
+    this.registry.set('chessLayoutData2', []);
     this.registry.set('chessData2', []);    
     this.registry.set('itemData2', []);
-    this.registry.set('itemMap2', []);
+
+    /*共通*/
+    this.registry.set('mapData', []);//マップのデータ
+    this.registry.set('gameMode', '');//NPC or NET
   }
 
 }

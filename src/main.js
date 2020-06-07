@@ -5,8 +5,8 @@ import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
 import BattleScene from './scenes/BattleScene';
 
-let BASE_WIDTH = 140;
-let BASE_HEIGHT = 200;
+let BASE_WIDTH = 160;
+let BASE_HEIGHT = 216;
 let DEVICE_WIDTH = window.innerWidth;
 let DEVICE_HEIGHT = window.innerHeight;
 let wd;

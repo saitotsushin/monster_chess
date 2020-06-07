@@ -21,8 +21,8 @@ export default class ModalAttack{
     ボタン：YES
     =====================*/
     this.btnYes = this.scene.add.sprite(
-      8,
-      -5,
+      22,
+      0,
       'spritesheet',
       'btn_yes'
     );
@@ -35,8 +35,8 @@ export default class ModalAttack{
     ボタン：NO
     =====================*/
     this.btnNo = this.scene.add.sprite(
-      40,
-      -5,
+      56,
+      0,
       'spritesheet',
       'btn_no'
     );
@@ -51,8 +51,8 @@ export default class ModalAttack{
       this.btnYes,
       this.btnNo
     ]);
-    this.container.x = 52;
-    this.container.y = 186;
+    this.container.x = this.scene.game.config.width/2;
+    this.container.y = 198;
     this.container.depth = 200;
     this.container.setVisible(false);
   }

@@ -16,7 +16,7 @@ export default class StockChess{
     /*タイトル：TEAM*/
     this.titleStockChess = this.scene.add.bitmapText(
       10,
-      55,
+      45,
       'bitmapFont',
       'STOCK CHESS',
       10
@@ -27,20 +27,20 @@ export default class StockChess{
       ]
     );
 
-    this.setStockChessGroup();
+    
 
   }
   /*==============================
   所有しているチェスたち
   ------------------------------*/   
-  setStockChessGroup(){
-    let chessDataList = this.scene.ChessManager.ChessData.chessList;
+  setStockChessGroup(setting){
+    let chessList = setting.chessList;
+    let stockData = setting.stockData;
+    let chessData = setting.chessData;
     let sprite;
-    let playerChessList = this.scene.registry.list.stockChesses;
-    let teamChessList = this.scene.registry.list.player1_ChessList;
     let group = this.playerStockChessGroup;
     /*レイアウトの設定周り START*/
-    let baseHeight = 82;
+    let baseHeight = 68;
     let addHeight = 20;
     let n = 0;
     let tileX = 0;
@@ -48,9 +48,9 @@ export default class StockChess{
     let panel = "";
     /*レイアウトの設定周り END*/
 
-    for(var i = 0; i < playerChessList.length; i++){
-      chessDataList.filter(function(item, index){
-        if(item.key === playerChessList[i]){
+    for(var i = 0; i < stockData.length; i++){
+      chessList.filter(function(item, index){
+        if(item.key === stockData[i]){
           /*レイアウトの設定周り START*/
           if(i % 6 === 0 && i !== 0){
             baseHeight += addHeight;
@@ -82,7 +82,7 @@ export default class StockChess{
           });
 
           /*すでにチームに設定されていたら押せない*/
-          if (teamChessList.indexOf(item.key) >= 0){
+          if (chessData.indexOf(item.key) >= 0){
             sprite.alpha = 0.4;
             sprite.isTeam = true;
           }

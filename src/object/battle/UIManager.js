@@ -1,9 +1,11 @@
 import Menu            from '../ui/battle/Menu';
+import Turn            from '../ui/battle/Turn';
 import CreateTouchTile from './stage/CreateTouchTile';
 import ModalAttack     from '../ui/modal/ModalAttack';
 import ModalMove       from '../ui/modal/ModalMove';
 import ModalItem       from '../ui/modal/ModalItem';
 import ModalItemSet    from '../ui/modal/ModalItemSet';
+import ChessInfoWindow from '../ui/setting/ChessInfoWindow';
 
 import ItemGroup from '../ui/battle/ItemGroup';
 import StageItemTile from '../ui/battle/StageItemTile';
@@ -18,6 +20,7 @@ export default class UIManager {
     this.Cursor;
     this.CursorItem;
     this.ItemGroup;
+    this.ItemGroup2;
     this.StageItemTile;
     this.selectedItem;
     this.selectedItemPos = {
@@ -45,7 +48,7 @@ export default class UIManager {
     this.Cursor.setVisible(false);
     this.Cursor.depth = 200;
 
-    /*カーソル*/
+    /*カーソル アイテム用*/
     this.CursorItem = this.scene.add.sprite(
       20,
       184,
@@ -68,13 +71,23 @@ export default class UIManager {
     this.ModalItemSet = new ModalItemSet({
       scene: this.scene
     });
-    /*トラップ*/
-    // this.CreateitemGroup = new CreateitemGroup({
-    //   scene: this.scene
-    // });    
-  }
+    /*ターン表示*/
+    this.Turn = new Turn({
+      scene: this.scene
+    });    
+    /*攻撃のsprite*/
+    this.AnimeAttack = this.scene.add.sprite(
+      20,
+      184,
+      'spritesheet',
+      'chess_shadow'//ダミー//cursor_item
+    );
+    this.AnimeAttack.depth = 200;
+  }      
+  
   startGame(){
     this.createTouchTile();
+    this.createChessInfoWindow();
     this.Menu.show();
   }
   /*==============================
@@ -100,7 +113,10 @@ export default class UIManager {
   アイテムタッチ時
   ------------------------------*/
   showCusorItem(pos){
-    this.CursorItem.x = pos.x + 4;
+    if(this.selectedItem.isStage){
+      return false;
+    }
+    this.CursorItem.x = pos.x;
     this.CursorItem.y = pos.y;
     this.CursorItem.setVisible(true);
   }  
@@ -115,37 +131,80 @@ export default class UIManager {
       this.ModalAttack.open();      
     }    
   } 
+  closeWindow(mode){
+    if(mode === "MOVE"){
+      this.ModalMove.close();
+    }
+    if(mode === "ATTACK"){
+      this.ModalAttack.close();      
+    }    
+  }   
   /*==============================
   自分のターン完了
   ------------------------------*/   
   turnFin(){
     this.Cursor.setVisible(false);
-    this.Menu.btnChangeStatus('TURN_FIN');   
+    this.Menu.btnChangeStatus('TURN_FIN');
+    this.Turn.changeHead('player2');
   }
   /*==============================
   アイテムのウインドウ表示
   ------------------------------*/   
   menuItemOpen(){
-    console.log("menuItemOpen")
     this.ModalItem.open();
     this.ItemGroup.show();
+  }
+  menuItemClose(){
+    // this.ModalItem.close();
+    // this.Menu.itemClose();
+  }
+  /*==============================
+  アイテムの選択：キャンセル
+  ------------------------------*/   
+  setItemCancel(){
+    this.ItemGroup.setItemCancel();
   }
   /*==============================
   インフォのウインドウ表示
   ------------------------------*/   
   menuInfoOpen(){
+    this.Menu.infoOpen();
+    this.ChessInfoWindow.showTile();
+    this.ChessInfoWindow.showCanPutTile({
+      
+    });    
+    // this.ChessInfoWindow.show();
   }
+  menuInfoClose(){
+    // this.ChessInfoWindow.showTile();
+    // this.ChessInfoWindow.showWindow();
+    // this.Menu.infoClose();
+    // this.ChessInfoWindow.hide();
+  }
+
+  /*==============================
+  インフォのウインドウ表示
+  ------------------------------*/   
+  infoWindowOpen(chess){
+    // this.Menu.infoOpen();
+    // this.ChessInfoWindow.setChessInfo(chess);
+    // this.ChessInfoWindow.showWindow();
+  }  
   /*==============================
   アイテム、インフォのウインドウ非表示
   ------------------------------*/   
   menuClose(){
     /*アイテムのクローズ*/
-    this.ModalItem.close();
-    this.ItemGroup.hide(); 
+    // this.ModalItem.close();
+    // this.ItemGroup.hide(); 
+    this.Menu.infoClose(); 
+    // this.Menu.itemClose();
     this.StageItemTile.hide();
     this.CursorItem.setVisible(false);
     this.selectedItem = "";
-    this.Menu.close();
+    // this.ChessInfoWindow.hide();
+    // this.Menu.ModalWindow.setVisible(false);
+    // this.Menu.close();
   }   
   /*==============================
   ウィンドウの表示
@@ -160,15 +219,35 @@ export default class UIManager {
     this.Menu.btnChangeStatus('FIN');   
   }
   /*==============================
+  インフォグループの生成
+  ------------------------------*/
+  createChessInfoWindow(setting){
+    this.ChessInfoWindow = new ChessInfoWindow({
+      scene   : this.scene,
+      mapData : this.scene.GameManager.StageManager.CreateStage.mapData,
+      mapTile : this.scene.GameManager.StageManager.CreateStage.mapTile,
+      layer   : this.scene.GameManager.StageManager.CreateStage.layer
+    });      
+  }  
+  /*==============================
   アイテムグループの生成
   ------------------------------*/
   createItemGroup(setting){
-    this.ItemGroup = new ItemGroup({
-      scene: this.scene,
-      addGroup: setting.addGroup,//追加するグループ
-      itemData: setting.itemData,//アイテムデータ
-      playerType: setting.playerType
-    });      
+    if(setting.playerType === "player1"){
+      this.ItemGroup = new ItemGroup({
+        scene: this.scene,
+        addGroup: setting.addGroup,//追加するグループ
+        itemData: setting.itemData,//アイテムデータ
+        playerType: setting.playerType
+      });  
+    }else{
+      this.ItemGroup2 = new ItemGroup({
+        scene: this.scene,
+        addGroup: setting.addGroup,//追加するグループ
+        itemData: setting.itemData,//アイテムデータ
+        playerType: setting.playerType
+      });  
+    }
   }
   /*==============================
   アイテムを配置できるステージの生成
@@ -194,7 +273,8 @@ export default class UIManager {
     this.StageItemTile.show();
 
     this.StageItemTile.showCanPutTile({
-      map: this.scene.registry.list.layoutData
+      map: this.scene.chessMapData,
+      itemMap: this.scene.itemMap
     });
 
   }

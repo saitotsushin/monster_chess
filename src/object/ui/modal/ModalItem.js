@@ -12,19 +12,20 @@ export default class ModalItem{
     window
     =====================*/
     this.Window = this.scene.add.sprite(
-      0,
+      this.scene.game.config.width/2,
       0,
       'spritesheet',
-      'window_blank'
+      'window_item'
     );
+    this.Window.setVisible(false)
     this.container.add(
     [
       this.Window,
     ]);
-    this.container.x = 52;
-    this.container.y = 186;
-    this.container.depth = 100;
-    this.container.setVisible(false);
+    this.container.x = this.scene.game.config.width/2;
+    this.container.y = 198;
+    this.container.depth = 200;
+    // this.container.setVisible(false);
     this.close();
   }
   /*============
@@ -41,39 +42,12 @@ export default class ModalItem{
     this.container.setVisible(false);
   }
   open(){
-    console.log("modal item open")
     this.container.setVisible(true);
-    // this.scene.itemManager.itemPlayer1Group.children.entries.forEach(
-    //   (sprite) => {
-    //     /*ステージに設置されていたら何もしない*/
-    //     if(sprite.setted === false){
-    //       sprite.setVisible(true);
-    //     }
-    //   }
-    // );
-    // this.scene.itemManager.itemBaseGroup.children.entries.forEach(
-    //   (sprite) => {
-    //     sprite.setVisible(true);
-    //   }
-    // );
+
   }
   close(){
     this.container.setVisible(false);
 
-    // this.container.setVisible(false);
-    // this.scene.itemManager.itemPlayer1Group.children.entries.forEach(
-    //   (sprite) => {
-    //     /*ステージに設置されていたら何もしない*/
-    //     if(sprite.setted === false){
-    //       sprite.setVisible(false);
-    //     }
-    //   }
-    // );
-    // this.scene.itemManager.itemBaseGroup.children.entries.forEach(
-    //   (sprite) => {
-    //     sprite.setVisible(false);
-    //   }
-    // );
   }
 }
   

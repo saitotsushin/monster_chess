@@ -1,80 +1,59 @@
-import * as Func from '../../utils/Func';
 export default class Base extends Phaser.Physics.Arcade.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, config.key,config.frame,config.playerType);
     config.scene.physics.world.enable(this);
     config.scene.add.existing(this);
     this.playerType = config.playerType;
+
     /*==============================
     モンスターの移動エリアの表示
     ==============================*/    
     this.moveAreaMapBase = 
     [
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,1,1,1,0,0,0,0],
-      [0,0,0,0,1,9,1,0,0,0,0],
-      [0,0,0,0,1,1,1,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0]
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,9,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0]
     ];
     this.attackAreaMapBase = 
     [
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,2,2,2,0,0,0,0],
-      [0,0,0,0,0,2,0,0,0,0,0],
-      [0,0,0,0,0,9,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0]
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,9,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0]
     ];
     this.areaMapBase = 
     [
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,9,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0]
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,9,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0]
     ];
 
     this.areaMap = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],      
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]      
+      [0,0,0,0,0],
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0,]      
     ];
 
-    this.name = config.key;
+    this.name = config.frame;
     this.status = {
       hp: 5,
       maxHp: 5,
@@ -83,7 +62,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       condition: ""
     }
     this.attribute = "";
-    this.pos = {
+    this.tilePos = {
       X: 0,
       Y: 0
     }
@@ -97,16 +76,45 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     );
     this.damageText.depth = 300;
     this.damageText.setVisible(false);
-    // this.on('pointerdown', function (pointer) {
-    //   this.scene.StageManager.selectedLayoutChess(this);
-    //   this.cursorShow(pointer);
-    // });
 
 
     this.icon_enemy = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_enemy');
     this.icon_enemy.setVisible(false);
     this.icon_enemy.depth = 20;
     this.attackingTarget;
+
+    this.chessStatus = this.scene.add.sprite(
+      0,
+      0,
+      'spritesheet',
+      'chess_status'
+    );
+    this.chessStatus.depth = 11;
+    this.chessStatus.setVisible(false);
+
+    this.AT_text = this.scene.add.bitmapText(
+      0,
+      0,
+      'bitmapFontWhite',
+      0,
+      10
+    );
+    this.AT_text.setLetterSpacing(-6);
+    this.AT_text.depth = 12;
+    this.AT_text.setVisible(false);
+
+    this.HP_text = this.scene.add.bitmapText(
+      0,
+      0,
+      'bitmapFontWhite',
+      0,
+      10
+    ); 
+    this.HP_text.setLetterSpacing(-6);
+    this.HP_text.depth = 13;
+    this.HP_text.setVisible(false);
+
+    this.setVisible(false);
     // /*アニメコンプリート->爆発を消す*/
     this.on('animationcomplete', function(){this.explodeComplete(this)}, this);
   }
@@ -130,8 +138,17 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
   move(position,int){
     this.x = position.x;
     this.y = position.y;
-    this.pos.X = int.X;
-    this.pos.Y = int.Y;
+    this.tilePos.X = int.X;
+    this.tilePos.Y = int.Y;
+
+    this.chessStatus.x = position.x;
+    this.chessStatus.y = position.y;
+
+    this.AT_text.x = position.x - 11;
+    this.AT_text.y = position.y + 6;
+    this.HP_text.x = position.x + 2;
+    this.HP_text.y = position.y + 6;
+        
     if(this.playerType === 'player2'){
       this.icon_enemy.x = position.x;
       this.icon_enemy.y = position.y;
@@ -139,7 +156,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
   }
   attack(attackingTarget){
 
-    let groundType = Number(this.scene.StageManager.tilePropMap[this.pos.Y][this.pos.X].groundType);
+    let groundType = this.scene.registry.list.mapData[attackingTarget.tilePos.Y][attackingTarget.tilePos.X];
     let power = 0;
     let myAttribute = Number(this.attribute);
     let enemyAttribute = Number(attackingTarget.attribute);
@@ -165,34 +182,37 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
-    let damagePoint = power - attackingTarget.status.difence;
-
-    if(damagePoint <= 0){
-      damagePoint = Func.getRandomInt(0,1);
-    }
+    // let damagePoint = power - attackingTarget.status.difence;
     
-    attackingTarget.status.hp -= damagePoint;
-    if(this.scene.registry.list.gameMode === "NET"){
-      this.scene.StageManager.Network.attackPoint = damagePoint;
-    }
+    attackingTarget.status.hp -= Number(power);
+    // if(this.scene.registry.list.gameMode === "NET"){
+    //   this.scene.StageManager.Network.attackPoint = damagePoint;
+    // }
 
 
     if(attackingTarget.status.hp <= 0){
+      attackingTarget.status.hp = 0;
       this.attackingTarget = attackingTarget;
       this.attackingTarget.status.condition = "explode";
-      if(this.scene.registry.list.gameMode === "NET"){
-        this.scene.StageManager.Network.condition = 'explode';
-      }
-      attackingTarget.damage(damagePoint,'ATTACK','explode');
+      // if(this.scene.registry.list.gameMode === "NET"){
+      //   this.scene.StageManager.Network.condition = 'explode';
+      // }
+      attackingTarget.damage(Number(power),'ATTACK','explode');
     }else{
-      if(this.scene.registry.list.gameMode === "NET"){
-        this.scene.StageManager.Network.condition = '';
-      }      
-      attackingTarget.damage(damagePoint,'ATTACK','');
+      // if(this.scene.registry.list.gameMode === "NET"){
+      //   this.scene.StageManager.Network.condition = '';
+      // }      
+      attackingTarget.damage(Number(power),'ATTACK','');
       this.attackingTarget = "";//撃破しなかったらリセット。
     }
 
   }
+  setStatus(setting){
+    let _power = setting.power;
+    let _hp = setting.hp;
+    this.AT_text.setText(_power);
+    this.HP_text.setText(_hp);
+  }  
   damage(damagePoint,mode,status){
     if(mode === "ATTACK"){
       this.damageText.setTexture('bitmapFontRed');
@@ -203,10 +223,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.damageText.y = this.y - 5;
 
     /*攻撃アニメーションの追加*/
-    this.scene.StageManager.AnimeAttack.anims.play('anime_attack');
-    this.scene.StageManager.AnimeAttack.x = this.x;
-    this.scene.StageManager.AnimeAttack.y = this.y;
-    this.scene.StageManager.AnimeAttack.setVisible(true)
+    this.scene.GameManager.UIManager.AnimeAttack.anims.play('anime_attack');
+    this.scene.GameManager.UIManager.AnimeAttack.x = this.x;
+    this.scene.GameManager.UIManager.AnimeAttack.y = this.y;
+    this.scene.GameManager.UIManager.AnimeAttack.setVisible(true)
 
     let afterY = this.damageText.y + 5;
 
@@ -226,6 +246,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       completeDelay: 600,
       onComplete: function () {
         this.damageText.setVisible(false);
+        this.HP_text.setText(this.status.hp);
         if(status === "explode"){
           this.anims.play('anime_explode');
           this.icon_enemy.setVisible(false);  
@@ -236,7 +257,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     
   }
   explodeComplete(_this){
-    this.scene.StageManager.removeChess(_this);
+    this.scene.removeChess(_this);
   }
 
 }

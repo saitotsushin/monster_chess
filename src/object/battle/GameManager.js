@@ -1,6 +1,7 @@
-import UIManager     from './UIManager';
-import StageManager     from './StageManager';
-import Layout     from './stage/Layout';
+import UIManager    from './UIManager';
+import StageManager from './StageManager';
+import Layout       from './stage/Layout';
+import NPC          from './player/NPC';
 
 export default class GameManager {
   constructor(gameScene) {
@@ -13,26 +14,20 @@ export default class GameManager {
     this.playerItemGroup;
     this.playerItemGroup2;
 
-    this.itemMap = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
-    ];
-
     this.selectedChess;
+    this.attackedChess;
+
     this.beforePos = {
       X: 0,
       Y: 0
     };
     this.STATUS = {
+      MODE   : "",
       MOVE   : "",
       ATTACK : ""
     };
+    
+  
     this.create();
   }
   create(){
@@ -46,7 +41,11 @@ export default class GameManager {
     this.Layout = new Layout({
       scene: this.scene
     });
+
     
+    this.NPC = new NPC({
+      scene: this.scene
+    });
   }
   /*==============================
   初期化
@@ -56,18 +55,20 @@ export default class GameManager {
     this.StageManager.initScene({
       map: setting.map,
       chessData: setting.chessData,
-      layoutData: setting.layoutData
+      chessMapData: setting.chessMapData
     });
     this.Layout.initScene();
+
 
     /*相手のチェスを生成*/
     this.playerChessGroup2 = this.scene.add.group();
     let setting2 = {
       addGroup: this.playerChessGroup2,//追加するグループ
       chessData: this.scene.registry.list.chessData2,//チェスデータ
-      layoutData: this.scene.registry.list.layoutData2,//レイアウトデータ
+      chessMapData: this.scene.chessMapData2,//レイアウトデータ
       playerType: 'player2'
-    }    
+    };
+
     this.StageManager.createEnemyGroup(setting2);
 
     /*トラップを生成*/
@@ -81,10 +82,10 @@ export default class GameManager {
 
     this.UIManager.createItemGroup(setting_item);
 
-    this.playeritemGroup2 = this.scene.add.group();
+    this.playerItemGroup2 = this.scene.add.group();
 
     let setting_item2 = {
-      addGroup: this.playeritemGroup2,//追加するグループ
+      addGroup: this.playerItemGroup2,//追加するグループ
       itemData: this.scene.registry.list.itemData2,//チェスデータ
       playerType: 'player2'
     }    
@@ -103,45 +104,141 @@ export default class GameManager {
     let setting = {
       addGroup: this.playerChessGroup,//追加するグループ
       chessData: this.scene.registry.list.chessData,//チェスデータ
-      layoutData: this.scene.registry.list.layoutData,//レイアウトデータ
+      chessMapData: this.scene.chessMapData,//レイアウトデータ
       playerType: 'player1'
     }
     this.StageManager.createChessGroup(setting);
+    this.UIManager.menuItemOpen();
+
+    this.Layout.hideAll();
+
+    /*チェスグループの表示*/
+    this.StageManager.showChessGroup(this.playerChessGroup);
+    this.StageManager.showChessGroup(this.playerChessGroup2);
+
     this.scene.startGame();
   }
   /*==============================
   ゲームスタート
   ------------------------------*/      
   startGame(){
+    /*プレイヤー２のレイアウト設定*/
+    // let setting = {
+    //   chessLayoutData: this.scene.registry.list.chessLayoutData2,
+    //   group: this.playerChessGroup2.children.entries
+    // }
+    // this.StageManager.layoutEnemyGroup(setting);
+
     this.updateStage();
     this.UIManager.startGame();
-  }   
+  } 
+  /*==============================
+  ターンチェンジ
+  ------------------------------*/    
+  turnChange(){
+    this.STATUS.MOVE = "";
+    this.STATUS.ATTACK = "";
+  }
+  /*==============================
+  チェスの削除
+  ------------------------------*/    
+  removeChess(chess){
+    let playerType = chess.playerType;
+    let posInt = {
+      X: chess.tilePos.X,
+      Y: chess.tilePos.Y
+    }
+    chess.icon_enemy.destroy();
+    chess.chessStatus.destroy();
+    chess.AT_text.destroy();
+    chess.HP_text.destroy();
+    chess.damageText.destroy();
+    chess.destroy();
+    // chess.setVisible(false);
+    
+    this.scene.STATUS.PLAYER1.CHESS_COUNT = 0;
+    this.scene.STATUS.PLAYER2.CHESS_COUNT = 0;
+
+    if(playerType === "player1"){
+      this.scene.chessMapData[posInt.Y][posInt.X] = 0;
+    }
+    for(var i = 0; i < this.scene.chessMapData.length; i++){
+      for(var k = 0; k < this.scene.chessMapData[i].length; k++){
+        if(this.scene.chessMapData[i][k] !== 0){
+          this.scene.STATUS.PLAYER1.CHESS_COUNT++;
+        }
+      }
+    }
+
+    if(playerType === "player2"){
+      this.scene.chessMapData2[posInt.Y][posInt.X] = 0;
+    }
+    for(var i = 0; i < this.scene.chessMapData2.length; i++){
+      for(var k = 0; k < this.scene.chessMapData2[i].length; k++){
+        if(this.scene.chessMapData2[i][k] !== 0){
+          this.scene.STATUS.PLAYER2.CHESS_COUNT++;
+        }
+      }
+    }
+    if(this.scene.STATUS.PLAYER1.CHESS_COUNT === 0){
+      this.scene.STATUS.STAGE = "GAMEOVER";
+      console.info("player1 LOSE");
+      this.scene.STATUS.WIN_PLAYER = "player2";
+      this.scene.clearGame();
+    }
+
+    if(this.scene.STATUS.PLAYER2.CHESS_COUNT === 0){
+      this.STATUS.STAGE = "GAMEOVER";
+      console.info("player2 LOSE");
+      this.scene.STATUS.WIN_PLAYER = "player1";
+      this.scene.clearGame();
+    }
+  }
+  /*==============================
+  移動後のステージ上のアイテムチェック
+  ------------------------------*/    
+  checkStageItem(posInt,chess){
+    let itemIndex;
+    let item;
+    if(this.scene.itemMap[posInt.Y][posInt.X] !== 0){
+      itemIndex = this.scene.itemMap[posInt.Y][posInt.X];
+      item = this.playerItemGroup.children.entries[itemIndex-1];
+      this.playerItemGroup.children.entries[itemIndex-1] = 0;
+    }
+    if(this.scene.itemMap2[posInt.Y][posInt.X] !== 0){
+      itemIndex = this.scene.itemMap2[posInt.Y][posInt.X];
+      item = this.playerItemGroup2.children.entries[itemIndex-1];
+      this.playerItemGroup2.children.entries[itemIndex-1] = 0;
+    }
+    if(item){
+      item.firing(chess);
+    }
+  }
   /*==============================
   ステージの更新
   ------------------------------*/      
   updateStage(){
-    let layoutData = this.scene.registry.list.layoutData;
-    let layoutData2 = this.scene.registry.list.layoutData2;
+    let chessMapData = this.scene.chessMapData;
+    let chessMapData2 = this.scene.chessMapData2;
     this.stageMapAll = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
     ];
-    for(var i = 0; i < layoutData.length; i++){
-      for(var k = 0; k < layoutData[i].length; k++){
-        if(layoutData[i][k] !== 0){
-          this.stageMapAll[i][k] = layoutData[i][k];
+    for(var i = 0; i < chessMapData.length; i++){
+      for(var k = 0; k < chessMapData[i].length; k++){
+        if(chessMapData[i][k] !== 0){
+          this.stageMapAll[i][k] = chessMapData[i][k];
         }
-        if(layoutData2[i][k] !== 0){
-          this.stageMapAll[i][k] = layoutData2[i][k];
+        if(chessMapData2[i][k] !== 0){
+          this.stageMapAll[i][k] = chessMapData2[i][k];
         }
       }
     }
+    console.log("stageMapAll",this.stageMapAll);
+
   }
   /*==============================
   アイテムの更新
@@ -150,21 +247,14 @@ export default class GameManager {
     let selectedItem = this.UIManager.selectedItem;
     let itemIndex    = selectedItem.itemIndex;
     let pos          = this.UIManager.selectedItemPos.intPos;
-    // let itemMap     = this.scene.registry.list.itemMap;
-    console.log("itemIndex",itemIndex)
-    console.log("pos",pos)
 
     if(mode === "ADD"){
-      this.itemMap[pos.Y][pos.X] = itemIndex + 1;
+      this.scene.itemMap[pos.Y][pos.X] = itemIndex + 1;
     }
     if(mode === "DEL"){
-      this.itemMap[pos.Y][pos.X] = 0;
+      this.scene.itemMap[pos.Y][pos.X] = 0;
     }
 
-
-    /*アイテムデータの更新*/
-    this.scene.registry.list.itemMap = this.itemMap;
-    console.log("this.scene.registry.list.itemMap",this.scene.registry.list.itemMap)
     /*表示の更新*/
     this.UIManager.updateStageTrap(mode);
   }
@@ -178,9 +268,14 @@ export default class GameManager {
   ステージタッチ時
   ------------------------------*/
   touchStage(pos){
+    console.log("this.selectedChess",this.selectedChess);
+    console.log("pos",pos)
+    if(this.scene.STATUS.STAGE_MODE === "FIN"){
+      return false;
+    }
     let worldPos = this.getWorldPos(pos);
     this.UIManager.showCusor(worldPos);
-    
+
     /*チェス選択時*/
     if(this.selectedChess){
       /*攻撃可能*/
@@ -192,6 +287,22 @@ export default class GameManager {
         }
       }
       /*移動可能*/
+      if(this.selectedChess.areaMap[pos.Y][pos.X] === 0){
+        if(pos.X === this.beforePos.X && pos.Y === this.beforePos.Y){
+          if(this.STATUS.MOVE === "FIN"){
+            return;
+          }
+          /*選択していたチェスの位置をリセット*/
+          this.selectedChess.move(
+            this.getWorldPos(this.beforePos),
+            this.beforePos
+          );
+          // this.selectedChess = "";
+          this.UIManager.closeWindow('MOVE');
+          this.STATUS.MOVE = "";
+          return;     
+        }
+      }
       if(this.selectedChess.areaMap[pos.Y][pos.X] === 3 || this.selectedChess.areaMap[pos.Y][pos.X] === 1 ){
         if(this.STATUS.MOVE === "FIN"){
           return;
@@ -205,6 +316,10 @@ export default class GameManager {
     /*チェス未選択時　チェスを保存*/
     if(this.getChessFromPos(pos)){
       if(this.STATUS.MOVE === "FIN" || this.STATUS.ATTACK === "FIN"){
+        return;
+      }
+      /*相手の駒は選べない*/
+      if(this.scene.chessMapData2[pos.Y][pos.X] !== 0){
         return;
       }
       if(this.selectedChess){
@@ -223,19 +338,19 @@ export default class GameManager {
         pos   : pos,
         chess : this.selectedChess,
         mapAll: this.stageMapAll,
-        map   : this.scene.registry.list.layoutData,
-        map2  : this.scene.registry.list.layoutData2
+        map   : this.scene.chessMapData,
+        map2  : this.scene.chessMapData2
       });
     }
   }
   /*==============================
-  移動完了
+  移動・攻撃完了
   ------------------------------*/
   actionChessMove(status){
     let beforeMovePos;
-    let NextMovePos = this.selectedChess.pos;
+    let NextMovePos = this.selectedChess.tilePos;
     let chessIndex;
-    let map  = this.scene.registry.list.layoutData;
+    let map  = this.scene.chessMapData;
     if(status === "YES"){
       /*チェスデータの更新*/
       chessIndex = this.selectedChess.groupIndex;
@@ -247,14 +362,17 @@ export default class GameManager {
         }
       }
       map[NextMovePos.Y][NextMovePos.X] = chessIndex;
-      this.scene.registry.list.layoutData = map;
+      this.scene.chessMapData = map;
+      /*アイテムのチェック*/
+      this.checkStageItem(NextMovePos,this.selectedChess);
+      /*ステージのアップデート*/
       this.updateStage();
       this.StageManager.showMoveArea({
         pos   : NextMovePos,
         chess : this.selectedChess,
         mapAll: this.stageMapAll,
-        map   : this.scene.registry.list.layoutData,
-        map2  : this.scene.registry.list.layoutData2
+        map   : this.scene.chessMapData,
+        map2  : this.scene.chessMapData2
       });
       this.UIManager.fin('MOVE');   
     }
@@ -262,6 +380,7 @@ export default class GameManager {
       beforeMovePos = this.getWorldPos(this.beforePos);
       this.selectedChess.x = beforeMovePos.x;
       this.selectedChess.y = beforeMovePos.y;
+      this.STATUS.MOVE = "";
     }
   }
   /*==============================
@@ -271,6 +390,8 @@ export default class GameManager {
     if(status === "YES"){
       this.UIManager.fin('ATTACK'); 
       this.StageManager.hideMoveArea();
+      this.selectedChess.attack(this.attackedChess);
+      this.scene.chengeStageMode('FIN');
     }    
     if(status === "NO"){
     }
@@ -279,8 +400,14 @@ export default class GameManager {
   自分のターン完了
   ------------------------------*/   
   turnFin(){
+    this.selectedChess = "";
+    this.beforePos = {
+      X: 0,
+      Y: 0
+    }
     this.UIManager.turnFin();
     this.StageManager.turnFin();
+    this.NPC.myTurn();
   }
   /*==============================
   アイテム選択中
@@ -297,17 +424,36 @@ export default class GameManager {
       intPos: pos,
       worldPos: this.getWorldPos(pos)
     };
+    this.playerItemGroup.children.entries[index].x = setPos.worldPos.x;
+    this.playerItemGroup.children.entries[index].y = setPos.worldPos.y;
+    this.playerItemGroup.children.entries[index].depth = 400;
     this.UIManager.touchCanPutTile(setPos,index);
-  }  
+  }
+  /*==============================
+  アイテムのキャンセル
+  ------------------------------*/    
+  setItemCancel(){
+    this.UIManager.setItemCancel();
+  }
+  /*==============================
+  インフォタイルのタッチ
+  ------------------------------*/   
+  touchInfoTile(pos){
+    let infoChess = this.getChessFromPos(pos);
+    if(infoChess){
+      this.UIManager.infoWindowOpen(infoChess);
+    }
+  }
   /*==============================
   アイテム、インフォのウインドウ表示
   ------------------------------*/   
   menuWindow(mode,status){
-    this.StageManager.hideMoveArea();
-
+    // this.StageManager.hideMoveArea();
+    // this.UIManager.menuClose();
     if(mode === "ITEM"){
       if(status === "OPEN"){
         this.UIManager.menuItemOpen();
+        this.UIManager.menuInfoClose();
       }else{
         this.UIManager.menuClose();
       }
@@ -315,6 +461,7 @@ export default class GameManager {
     if(mode === "INFO"){
       if(status === "OPEN"){
         this.UIManager.menuInfoOpen();
+        this.UIManager.menuItemClose();
       }else{
         this.UIManager.menuClose();
       }
@@ -327,8 +474,8 @@ export default class GameManager {
   getIntPos(pos){
     let createStage = this.StageManager.CreateStage;
     let setIntPos = {
-      X: (pos.x - createStage.layer.x) * createStage.tileWidth,
-      Y: (pos.x - createStage.layer.y) * createStage.tileHeight
+      X: (pos.x - createStage.layer.x - 16) / createStage.tileWidth,
+      Y: (pos.y - createStage.layer.y - 16) / createStage.tileHeight
     }
     return setIntPos;
   }
@@ -338,8 +485,8 @@ export default class GameManager {
   getWorldPos(pos){
     let createStage = this.StageManager.CreateStage;
     let setWorldPos = {
-      x: pos.X * createStage.tileWidth + createStage.layer.x + 10,
-      y: pos.Y * createStage.tileHeight + createStage.layer.y + 10
+      x: pos.X * createStage.tileWidth + createStage.layer.x + 16,
+      y: pos.Y * createStage.tileHeight + createStage.layer.y + 16
     }
     return setWorldPos;
   }
@@ -348,19 +495,33 @@ export default class GameManager {
   ------------------------------*/
   getChessFromPos(pos){
 
-    let map  = this.scene.registry.list.layoutData;
-    let map2 = this.scene.registry.list.layoutData2;
+    let map  = this.scene.chessMapData;
+    let map2 = this.scene.chessMapData2;
     let chessGroupIndex;
     let chess;
 
     /*検索*/
     if(map[pos.Y][pos.X] !== 0){
       chessGroupIndex = Number(map[pos.Y][pos.X]);
-      chess = this.playerChessGroup.children.entries[chessGroupIndex - 1];
+      console.log("chessGroupIndex",chessGroupIndex);
+      console.log("this.playerChessGroup.children.entries",this.playerChessGroup.children.entries)
+      this.playerChessGroup.children.entries.forEach(
+        (sprite,index) => {
+          if(sprite.groupIndex === chessGroupIndex){
+            chess = sprite;
+          }
+        }
+      );      
     }
     if(map2[pos.Y][pos.X] !== 0){
       chessGroupIndex = Number(map2[pos.Y][pos.X]);
-      chess = this.playerChessGroup2.children.entries[chessGroupIndex - 1];
+      this.playerChessGroup2.children.entries.forEach(
+        (sprite,index) => {
+          if(sprite.groupIndex === chessGroupIndex){
+            chess = sprite;
+          }
+        }
+      ); 
     }
 
 

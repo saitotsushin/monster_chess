@@ -12,7 +12,7 @@ export default class ModalItemSet{
     window
     =====================*/
     this.Window = this.scene.add.sprite(
-      0,
+      2,
       0,
       'spritesheet',
       'window_item_set'
@@ -21,8 +21,8 @@ export default class ModalItemSet{
     ボタン：YES
     =====================*/
     this.btnYes = this.scene.add.sprite(
-      8,
-      -5,
+      22,
+      0,
       'spritesheet',
       'btn_yes'
     );
@@ -35,8 +35,8 @@ export default class ModalItemSet{
     ボタン：NO
     =====================*/
     this.btnNo = this.scene.add.sprite(
-      40,
-      -5,
+      56,
+      0,
       'spritesheet',
       'btn_no'
     );
@@ -51,22 +51,24 @@ export default class ModalItemSet{
       this.btnYes,
       this.btnNo
     ]);
-    this.container.x = 52;
-    this.container.y = 186;
-    this.container.depth = 300;
-    this.container.setVisible(false);
+    this.container.x = this.scene.game.config.width/2;
+    this.container.y = 198;
+    this.container.depth = 200;
+    // this.container.setVisible(false);
     this.close();
   }
   /*============
   モーダル
   ============*/
   setYes(){
-    this.scene.updateStageTrap('ADD');
-    this.scene.menuWindow("ITEM","CLOSE");
+    this.scene.itemWindow('YES',"ITEM","CLOSE");
+    // this.scene.updateStageTrap('ADD');
+    // this.scene.menuWindow("ITEM","CLOSE");
     this.close();
   }
   setNo(){
-    this.container.setVisible(false);
+    this.scene.itemWindow('NO','ITEM','CLOSE');
+    this.close();
   }
   open(){
     this.container.setVisible(true);

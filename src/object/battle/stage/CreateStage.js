@@ -7,8 +7,8 @@ export default class CreateStage {
     this.mapTile;
     this.layer;
     /*タイルの大きさを指定*/
-    this.tileWidth = 20;
-    this.tileHeight = 20;    
+    this.tileWidth = 32;
+    this.tileHeight = 32;    
 
     this.create();
   }
@@ -23,7 +23,7 @@ export default class CreateStage {
     let tiles = this.mapTile.addTilesetImage('tiles');
     this.layer = this.mapTile.createStaticLayer(0, tiles, 0, 0);
     this.layer.x = (this.scene.game.config.width - this.layer.width) /2;
-    this.layer.y = 10;
+    this.layer.y = 20;
     this.layer.depth = 1;
 
     let area;

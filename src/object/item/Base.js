@@ -14,8 +14,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     this.groupIndex = config.groupIndex;
 
-    this.configured = false;
-    this.configuredPlayer = '';
+    this.setted = false;
 
     config.scene.physics.world.enable(this);
     config.scene.add.existing(this);

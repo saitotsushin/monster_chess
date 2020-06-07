@@ -11,7 +11,7 @@ export default class Team{
     /*タイトル：TEAM*/
     this.titleTeam = this.scene.add.bitmapText(
       10,
-      12,
+      5,
       'bitmapFont',
       'TEAM',
       10
@@ -19,7 +19,7 @@ export default class Team{
     /*テキスト：コスト*/
     this.costNow = this.scene.add.bitmapText(
       110,
-      32,
+      22,
       'bitmapFont',
       this.scene.registry.list.chessCost,
       10
@@ -27,7 +27,7 @@ export default class Team{
     /*テキスト：コスト*/
     this.costSlash = this.scene.add.bitmapText(
       113,
-      38,
+      28,
       'bitmapFont',
       '/',
       10
@@ -35,7 +35,7 @@ export default class Team{
     /*テキスト：コスト*/
     this.costMax = this.scene.add.bitmapText(
       118,
-      39,
+      29,
       'bitmapFont',
       '8',
       10
@@ -44,7 +44,7 @@ export default class Team{
 
     this.cosePanel = this.scene.add.sprite(
       120,
-      36,
+      26,
       'spritesheet',
       'cost_panel'
     );
@@ -53,7 +53,7 @@ export default class Team{
     ------------------------------*/        
     this.btnTeamEdit = this.scene.add.sprite(
       54,
-      11,
+      5,
       'spritesheet',
       'btn_edit'
     );
@@ -63,7 +63,7 @@ export default class Team{
     this.btnTeamEdit.on('pointerdown', () => {
 
       if(this.scene.MODE === "FIN"){
-        this.registry.list.player1Auto_Arr = this.scene.teamGroup;
+        this.registry.list.chessMap = this.scene.teamGroup;
         this.scene.MODE = "";
         return;
       }
@@ -94,28 +94,28 @@ export default class Team{
       }
     },this); 
 
-    this.setTeamChessGroup();
+    // this.setTeamChessGroup();
 
   }
   /*==============================
   チームに設定されているチェスたち
   ------------------------------*/   
-  setTeamChessGroup(){
-    let chessDataList = this.scene.ChessManager.ChessData.chessList;
+  setTeamChessGroup(setting){
+    let chessList = setting.chessList;
     let playerChessList;
     let group;
     let sprite;
-    playerChessList = this.scene.PlayerData.player1_ChessList;
+    playerChessList = setting.chessData;
     group = this.playerTeamChessGroup;
 
     for(var i = 0; i < playerChessList.length; i++){
-      chessDataList.filter(function(item, index){
+      chessList.filter(function(item, index){
         if(item.key === playerChessList[i]){
           
           sprite = new Chess({
             scene: this.scene,
             x: i * 20 + 20,
-            y: 40,
+            y: 30,
             frame: item.key,
             key: 'spritesheet'
           });
@@ -135,10 +135,7 @@ export default class Team{
 
           sprite.name = item.key;
 
-          // sprite.setted = false;
-
           this.scene.setCost += sprite.cost;
-          // this.scene.registry.list.chessCost = this.setCost;
 
           this.costNow.setText(this.scene.setCost);
 
@@ -146,7 +143,7 @@ export default class Team{
           group.add(sprite);
           let base = this.scene.add.sprite(
             i * 20 + 20,
-            40,
+            30,
             'spritesheet',
             'panel_add_team_1'
           );

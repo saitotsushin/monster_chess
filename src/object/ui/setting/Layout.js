@@ -47,7 +47,7 @@ export default class Layout{
     );
 
     this.setLayoutGroup();
-    this.setLayoutChessToStage(); 
+    // this.setLayoutChessToStage(); 
     this.scene.ChessInfoWindow.btnChessInfoWindowClose.setVisible(false)
   }
   setLayoutGroup(){
@@ -101,10 +101,10 @@ export default class Layout{
     }
 
   }
-  setLayoutChessToStage(){
+  setLayoutChessToStage(setting){
     let getKey = "";
-    let layoutedChesses = this.scene.teamGroup;
-    let chessDataList = this.scene.ChessManager.ChessData.chessList;
+    let layoutedChesses = setting.chessData;
+    let chessDataList = setting.chessDataList;
     for(var i = 0; i < layoutedChesses.length;i++){
       chessDataList.filter(function(item, index){
         if(item.key === layoutedChesses[i]){

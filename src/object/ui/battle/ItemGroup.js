@@ -9,10 +9,20 @@ export default class ItemGroup {
     this.playerItemData = config.itemData;
     this.playerType = config.playerType;
     this.itemBaseGroup;
+    this.beforePos = {
+      x: 0,
+      y: 0
+    };
     this.create();
   }
   create(mode){
-    
+    /*カーソル*/
+    this.title = this.scene.add.sprite(
+      14,
+      194,
+      'spritesheet',
+      'text_item'
+    );    
     this.ItemData = new ItemData();
 
     // let playeritemList;
@@ -22,7 +32,7 @@ export default class ItemGroup {
     let sprite;
     let _this = this;
     
-    bombHeight = 182;
+    bombHeight = 194;
     itemGroup = this.addGroup;
 
     /*================
@@ -35,7 +45,7 @@ export default class ItemGroup {
         if(item.key === this.playerItemData[i]){
           sprite = new item.className({
             scene: this.scene,
-            x: i * 20 + 40,
+            x: i * 32 + 32 + 16,
             y: bombHeight,
             key: 'spritesheet',
             frame: item.key,
@@ -51,11 +61,15 @@ export default class ItemGroup {
           }
           sprite.depth = 120;
           sprite.setted = false;
+          sprite.isStage = false;
           sprite.itemIndex = i;
           sprite.setVisible(false);
           sprite.setInteractive();
           sprite.on('pointerdown', function (pointer) {
             if(!this.setted){
+              _this.beforePos.x = this.x;
+              _this.beforePos.y = this.y;
+              _this.itemIndex = this.itemIndex;
               _this.scene.touchItem(this.pos,this.itemIndex);
             }
             // return this.pos;
@@ -74,7 +88,7 @@ export default class ItemGroup {
       /*ベース */
       for(var i = 0; i < 3;i++){
         let sprite = this.scene.add.sprite(
-          i * 20 + 40,
+          i * 32 + 32 + 16,
           bombHeight,
           'spritesheet',
           'panel_item'
@@ -103,7 +117,14 @@ export default class ItemGroup {
         sprite.setVisible(true);
       }
     );  
-  }  
+  }
+  setItemCancel(){
+    let item = this.addGroup.children.entries[this.itemIndex];
+    item.x = this.beforePos.x;
+    item.y = this.beforePos.y;
+    item.isStage = false;
+    item.depth = 120;
+  }
   hide(){
     this.addGroup.children.entries.forEach(
       (sprite) => {

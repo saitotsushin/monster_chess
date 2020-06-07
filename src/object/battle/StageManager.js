@@ -11,6 +11,7 @@ export default class StageManager {
     this.LoadGameData = new LoadGameData();
     this.CreateStage;
     this.CreateChessGroup;
+    this.CreateChessGroup2;
   }
   initScene(setting){
     
@@ -25,6 +26,9 @@ export default class StageManager {
       tileWidth : this.CreateStage.tileWidth,
       tileHeight: this.CreateStage.tileHeight
     });
+    //レジストリにマップデータを保存
+    this.scene.registry.list.mapData = this.LoadGameData.mapData[setting.map];//レジストリに保存
+
   }
   /*==============================
   チェスグループの生成
@@ -35,7 +39,7 @@ export default class StageManager {
       scene: this.scene,
       addGroup: setting.addGroup,//追加するグループ
       chessData: setting.chessData,//チェスデータ
-      layoutData: setting.layoutData,//レイアウトデータ
+      chessMapData: setting.chessMapData,//レイアウトデータ
       playerType: setting.playerType
     });    
   }
@@ -43,17 +47,25 @@ export default class StageManager {
   相手のチェスグループの生成
   ------------------------------*/
   createEnemyGroup(setting){
-    let layoutData2 = setting.layoutData;
+    let chessMapData2 = setting.chessMapData;
     let updateSetting = setting;
-    for(var i = 0; i < layoutData2.length; i++){
-      layoutData2[i].reverse();
-    }
-    layoutData2.reverse();
-    updateSetting.layoutData = layoutData2;
+    updateSetting.chessMapData = chessMapData2;
     /*チェスグループの生成*/
-    this.createChessGroup(updateSetting);
+    this.CreateChessGroup2 = new CreateChessGroup({
+      scene: this.scene,
+      addGroup: updateSetting.addGroup,//追加するグループ
+      chessData: updateSetting.chessData,//チェスデータ
+      chessMapData: updateSetting.chessMapData,//レイアウトデータ
+      playerType: updateSetting.playerType
+    });
   }
-
+  /*==============================
+  相手のチェスグループの配置
+  ------------------------------*/
+  // layoutEnemyGroup(setting){
+    // let chessMapData2 = setting.chessMapData;
+    // let group = setting.group;
+  // }
   /*==============================
   移動エリアの表示
   ------------------------------*/
@@ -63,6 +75,19 @@ export default class StageManager {
     chess.areaMap = this.MoveArea.getAreaMap(setting);
     this.MoveArea.show(chess)
   }
+  /*==============================
+  チェスの表示
+  ------------------------------*/
+  showChessGroup(group){
+    group.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(true);
+        sprite.AT_text.setVisible(true);
+        sprite.HP_text.setVisible(true);
+        sprite.chessStatus.setVisible(true);
+      }
+    );
+  }  
   /*==============================
   移動エリアの非表示
   ------------------------------*/

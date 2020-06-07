@@ -2,6 +2,13 @@ export default class ChessInfoWindow{
   constructor(config) {
 
     this.scene = config.scene;
+    this.mapData = config.mapData ? config.mapData : "";
+    this.mapTile = config.mapTile;
+    this.layer = config.layer;
+    this.itemTouchTileGroup;
+    this.ChessInfoContainer;
+    // this.selecteditem;    
+    // this.create();
   }
   create(){
     this.ChessInfoContainer = this.scene.add.container(0, 0);
@@ -11,60 +18,63 @@ export default class ChessInfoWindow{
     -------------------*/
     /*チェスのウィンドウ
     -------------------*/
-    this.ChessInfoWindow = this.scene.add.sprite(
-      10,
-      90,
+    let baseTop = 100;
+    let baseLeft = 9;
+    this.ChessTextWindow = this.scene.add.sprite(
+      baseLeft,
+      baseTop,
       'spritesheet',
       'window_info_L'
     );
-    this.ChessInfoWindow.setOrigin(0,0);
+    this.ChessTextWindow.setOrigin(0,0);
     /* チェスのウィンドウクローズ
     -------------------*/
-    this.btnChessInfoWindowClose = this.scene.add.sprite(
-      102,
-      94,
-      'spritesheet',
-      'btn_close'
-    );
-    this.btnChessInfoWindowClose.setInteractive();
-    this.btnChessInfoWindowClose.on('pointerdown', () => {
-      this.scene.hideChessInfoWindow();
-    }); 
+    // this.btnChessInfoWindowClose = this.scene.add.sprite(
+    //   102,
+    //   94,
+    //   'spritesheet',
+    //   'btn_close'
+    // );
+    // this.btnChessInfoWindowClose.setInteractive();
+    // this.btnChessInfoWindowClose.on('pointerdown', () => {
+    //   this.hideWindow();
+    // }); 
     this.chessInfoImage = this.scene.add.sprite(
-      55,
-      111,
+      baseLeft + 42,
+      baseTop + 20,
       'spritesheet',
       'chess_1'
     );
     this.chessInfoImage.scaleX = 2;
     this.chessInfoImage.scaleY = 2;
+
     this.chessInfoNumb = this.scene.add.bitmapText(
-      14,
-      113,
+      baseLeft + 3,
+      baseTop + 23,
       'bitmapFont',
       '00',
       10
     );
     this.chessInfoNumb.setLetterSpacing = 2;
     this.chessInfoHp = this.scene.add.bitmapText(
-      70,
-      139,
+      baseLeft + 59,
+      baseTop + 49,
       'bitmapFont',
       '00',
       10
     );
     this.chessInfoHp.setOrigin(1).setRightAlign();
     this.chessInfoAttack = this.scene.add.bitmapText(
-      70,
-      151,
+      baseLeft + 59,
+      baseTop + 61,
       'bitmapFont',
       '000',
       10
     );
     this.chessInfoAttack.setOrigin(1).setRightAlign();
     this.chessInfoDifence = this.scene.add.bitmapText(
-      70,
-      163,
+      baseLeft + 59,
+      baseTop + 73,
       'bitmapFont',
       '000',
       10
@@ -72,8 +82,8 @@ export default class ChessInfoWindow{
     this.chessInfoDifence.setOrigin(1).setRightAlign();
     this.ChessInfoContainer.add(
       [
-        this.ChessInfoWindow,
-        this.btnChessInfoWindowClose,
+        this.ChessTextWindow,
+        // this.btnChessInfoWindowClose,
         this.chessInfoNumb,
         this.chessInfoHp,
         this.chessInfoAttack,
@@ -85,8 +95,8 @@ export default class ChessInfoWindow{
       for(var k = 0; k < 7; k++){
 
         let sprite = this.scene.add.sprite(
-          k * 5 + 91 + k,
-          i * 5 + 118 + i,
+          k * 5 + baseLeft + 81 + k,
+          i * 5 + baseTop + 28 + i,
           'spritesheet',
           'movearea_s_default'
         );
@@ -99,6 +109,39 @@ export default class ChessInfoWindow{
     
 
     this.ChessInfoContainer.depth = 400;
+    /*=================
+    タッチエリア
+    -------------------*/
+    let area;
+    this.infoTouchTileGroup = this.scene.add.group();
+    let _this = this;
+    if(!this.mapData){
+      return;
+    }
+    for(var i = 0; i < this.mapData.length; i++){
+      for(var k = 0; k < this.mapData[i].length; k++){
+        area = this.scene.add.sprite(0,0,'spritesheet',"panel_add_team");
+        area.x = k * this.mapTile.tileWidth + this.mapTile.tileWidth/2 + this.layer.x;
+        area.y = i * this.mapTile.tileHeight + this.mapTile.tileHeight/2 + this.layer.y;
+        area.pos = {
+          X: k,
+          Y: i
+        }
+        area.setInteractive();
+        // area.setVisible(false);
+        area.depth = 200;
+        this.infoTouchTileGroup.add(area);
+        area.on('pointerdown', function (pointer) {
+          // _this.scene.touchInfoTile(this.pos);
+          // return this.pos;
+        }); 
+      }
+    }    
+    /*=================
+    スタート
+    -------------------*/
+    // this.hideTile();
+    // this.hideWindow();
 
   }
   setChessInfo(chess){
@@ -172,5 +215,97 @@ export default class ChessInfoWindow{
       i2++;
     }
     
+  }
+  /*==============================
+  表示・非表示
+  ------------------------------*/   
+  /*ストックの駒
+  ------------------------------*/
+  showWindow(){
+    this.ChessInfoContainer.setVisible(true);
+    this.ChessInfoMoveGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(true);
+      }
+    );
+  }
+  showTile(){
+    this.infoTouchTileGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(true);
+      }
+    );    
+  }
+  showCanPutTile(){
+    let map = this.scene.registry.list.chessMapData;
+    let map2 = this.scene.registry.list.chessMapData2;
+    let margeMap = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]
+    ];
+    for(var i = 0; i < margeMap.length; i++){
+      for(var k = 0; k < margeMap[i].length; k++){
+        if(map[i][k] !== 0){
+          margeMap[i][k] = map[i][k];
+        }
+        if(map2[i][k] !== 0){
+          margeMap[i][k] = map2[i][k];
+        }
+      }
+    }
+    let row = 0;
+    let COL_MAX = 6;
+
+    let infoTouchTileGroup = this.infoTouchTileGroup.children.entries;
+    let _this = this;
+    for(var i = 0; i < margeMap.length; i++){
+      for(var k = 0; k < margeMap[i].length; k++){
+        let tile = infoTouchTileGroup[k + row * COL_MAX];
+        if(margeMap[i][k] !== 0){
+          tile.setTexture('spritesheet','panel_add_team');
+          tile.on('pointerdown', function (pointer) {
+            // if(!this.scene.GameManager.UIManager.selectedItem){
+            //   alert("トラップが選択されていません。")
+            // }else{
+            // }
+            // let itemIndex = this.scene.GameManager.UIManager.selectedItem.itemIndex; 
+            _this.scene.touchInfoTile(this.pos);  
+          console.log("配置可能");
+          }); 
+        }else{
+          tile.setTexture('spritesheet','chess_shadow');
+          tile.on('pointerdown', function (pointer) {
+            console.log("配置不可");
+          }); 
+        }
+      }
+      row++;
+    }
+
+  }  
+  hide(){
+    this.hideWindow();
+    this.hideTile();    
+  }
+  hideWindow(){
+    this.ChessInfoContainer.setVisible(false)
+    this.ChessInfoMoveGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(false);
+      }
+    );
+  }
+  hideTile(){
+    this.infoTouchTileGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.setVisible(false);
+      }
+    );    
   }
 }

@@ -27,13 +27,5 @@ export default class GameAnimations{
       repeat: 0,
       hideOnComplete: true
     }); 
-    /*攻撃のsprite*/
-    this.scene.StageManager.AnimeAttack = this.scene.add.sprite(
-      20,
-      184,
-      'spritesheet',
-      'chess_shadow'//ダミー//cursor_item
-    );
-    this.scene.StageManager.AnimeAttack.depth = 200;
   }
 }

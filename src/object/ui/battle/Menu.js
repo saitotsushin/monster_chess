@@ -1,6 +1,5 @@
 // import ModalItem from './modal/ModalItem';
 import BtnItem from './BtnItem';
-import BtnInfo from './BtnInfo';
 import BtnFin from './BtnFin';
 
 export default class Menu {
@@ -19,43 +18,22 @@ export default class Menu {
     /*==================
     モーダル
     ==================*/
-    this.ModalWindow = this.scene.add.sprite(
-      76,
-      184,
-      'spritesheet',
-      'window_info'
-    );
-    this.ModalWindow.setVisible(false);
+    // this.ModalWindow = this.scene.add.sprite(
+    //   76,
+    //   184,
+    //   'spritesheet',
+    //   'window_info'
+    // );
+    // this.ModalWindow.setVisible(false);
 
-    /*==================
-    ボタン：アイテム
-    ==================*/
-    this.BtnItem = new BtnItem({
-      scene: this.scene,
-      x: 20,
-      y: 184,
-      key: 'spritesheet',
-      frame: 'btn_item'
-    }); 
-
-    /*==================
-    ボタン：インフォ
-    ==================*/
-    this.BtnInfo = new BtnInfo({
-      scene: this.scene,
-      x: 41,
-      y: 184,
-      key: 'spritesheet',
-      frame: 'btn_info2'
-    }); 
 
     /*==================
     ボタン：完了
     ==================*/
     this.BtnFin = new BtnFin({
       scene: this.scene,
-      x: 116,
-      y: 184,
+      x: 145,
+      y: 194,
       key: 'spritesheet',
       frame: 'btn_fin'
     });   
@@ -69,19 +47,17 @@ export default class Menu {
   ボタンイベント：アイテム
   ==================*/  
   itemOpen(){
-    console.log("itemOpen");
   }
   itemClose(){
-    console.log("itemClose");
-  }  
+  } 
   /*==================
   ボタンイベント：インフォ
   ==================*/   
   infoOpen(){
-    console.log("infoOpen");
+    // this.ModalWindow.setVisible(true);
   }
   infoClose(){
-    console.log("infoClose");
+    // this.ModalWindow.setVisible(false);
   }  
   /*==================
   ボタンステータス：完了
@@ -100,30 +76,22 @@ export default class Menu {
   ボタンイベント：完了
   ==================*/   
   finOpen(){
-    console.log("finOpen");
   }
   /*==================
   クローズイベント
   ==================*/     
   close(){
-    this.BtnItem.resetStatus();
-    this.BtnInfo.resetStatus();
-    console.log("resetOpen");
   }
   /*==================
   表示
   ==================*/    
   show(){
-    this.BtnItem.setVisible(true);
-    this.BtnInfo.setVisible(true);
     this.BtnFin.setVisible(true);
   }
   /*==================
   非表示
   ==================*/    
   hide(){
-    this.BtnItem.setVisible(false);
-    this.BtnInfo.setVisible(false);
     this.BtnFin.setVisible(false);    
   }
    

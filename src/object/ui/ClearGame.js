@@ -8,7 +8,6 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     this.visible = false;
 
     this.container = this.scene.add.container(0, 0);
-    this.container.depth = 100;
     this.container.setScrollFactor(0);
 
     this.overlapArea = this.scene.add.graphics(
@@ -46,13 +45,6 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     ); 
     this.titleResultLose.setOrigin(0.5,0.5);
 
-
-    /*=================
-    チェスグループの表示
-    -------------------*/
-    this.chessGroup = this.scene.add.group();
-    this.createPlayerGroup();
-
     /*=================
     タイトル：ゲットチェス
     -------------------*/
@@ -64,33 +56,31 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     ); 
     this.titleGetChess.setOrigin(0.5,0.5);
 
-
-
     /*=================
-    ボタン：メニュー画面に戻る
+    ボタン：YES
     -------------------*/
-    this.btnMenu = config.scene.add.sprite(
-      config.scene.game.config.width/2,
-      150,
+    this.btnMenuBack = this.scene.add.sprite(
+      this.scene.game.config.width/2,
+      120,
       'spritesheet',
-      'btn_menu_L'
-    ); 
-    this.btnMenu.setOrigin(0.5,0.5);
-    this.btnMenu.setInteractive();
-    this.btnMenu.on('pointerdown', () => {
-      this.scene.scene.start('MenuScene');
-    });  
+      'btn_menu_back'
+    );
+    this.btnMenuBack.setInteractive();
+    this.btnMenuBack.on('pointerdown', function (pointer) {
+      this.scene.scene.start('GameScene');
+    },this);
+
     /*=================
     コンテナー
     -------------------*/
     this.container.add([
       this.overlapArea,
+      this.btnMenuBack,
       this.titleResultWin,
       this.titleResultLose,
-      this.titleGetChess,
-      this.btnMenu
+      this.titleGetChess
     ]);
-    this.container.depth = 300;
+    this.container.depth = 500;
 
     /*=================
     初期化
@@ -108,7 +98,8 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
   open(){
     this.show();
     this.container.setVisible(true)
-    if(this.scene.StageManager.STATUS.WIN_PLAYER === "player1"){
+
+    if(this.scene.STATUS.WIN_PLAYER === "player1"){
       this.titleResultWin.setVisible(true)
       this.titleResultLose.setVisible(false)
       /*=================
@@ -116,61 +107,11 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       -------------------*/    
       this.getRandomChess();
     }
-    if(this.scene.StageManager.STATUS.WIN_PLAYER === "player2"){
+    if(this.scene.STATUS.WIN_PLAYER === "player2"){
       this.titleResultWin.setVisible(false)
       this.titleResultLose.setVisible(true)
       this.titleGetChess.setVisible(false)
     }
-  }
-  createPlayerGroup(){
-    let chessDataList = this.scene.ChessManager.ChessData.chessList;
-    let playerChessList = this.scene.PlayerManager.player1_ChessList;
-    let group = this.chessGroup;
-    let sprite;
-
-    for(var i = 0; i < playerChessList.length; i++){
-      chessDataList.filter(function(item, index){
-        if(item.key === playerChessList[i]){
-          sprite = this.scene.ChessManager.createChess(
-            item.className,
-            item.key
-          );
-          sprite.x = i * 20 + 20 + 10;
-          sprite.y = 54;
-          sprite.depth = 310;
-          group.add(sprite);
-        }
-      },this);
-
-    }
-
-  }
-  getRandomChess(){
-    let chessDataList = this.scene.ChessManager.ChessData.chessList;
-    let getPlayerChessList = this.scene.PlayerManager.player2_ChessList;
-    let sprite;
-
-    let randomChess = getPlayerChessList[Math.floor(Math.random() * getPlayerChessList.length)];
-    let playerChessList = [randomChess];
-
-    for(var i = 0; i < playerChessList.length; i++){
-      chessDataList.filter(function(item, index){
-        if(item.key === playerChessList[i]){
-          sprite = this.scene.ChessManager.createChess(
-            item.className,
-            item.key
-          );
-          sprite.x = 70;
-          sprite.y = 106;
-          sprite.depth = 310;
-          // group.add(sprite);
-        }
-      },this);
-
-    }
-    this.scene.registry.list.stockChesses.push(randomChess);
-
-
   }
   /*==============================
   表示・非表示
@@ -178,17 +119,17 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
   /*ストックの駒
   ------------------------------*/
   show(){
-    this.chessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(true);
-      }
-    );
+    // this.chessGroup.children.entries.forEach(
+    //   (sprite) => {
+    //     sprite.setVisible(true);
+    //   }
+    // );
   }
   hide(){
-    this.chessGroup.children.entries.forEach(
-      (sprite) => {
-        sprite.setVisible(false);
-      }
-    );
+    // this.chessGroup.children.entries.forEach(
+    //   (sprite) => {
+    //     sprite.setVisible(false);
+    //   }
+    // );
   }
 }

@@ -4,24 +4,29 @@ import ChessData     from '../../../data/ChessData';
 export default class Layout{
   constructor(config) {
     this.scene = config.scene;
-    this.stageCanSetArr = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [1,1,1,1,1,1],
-      [1,1,1,1,1,1],
-      [1,1,1,1,1,1]
-    ];
+    this.chessMapData = [];
+    this.CreateChessInfo;
+
+    this.chessMoveArea;
+
   }
   initScene(){
+
     /*レイアウトデータの読み込み*/
-    this.layoutData = this.scene.registry.list.layoutData;
+    this.chessLayoutData = this.scene.chessLayoutData;
+    this.chessMapData = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
+
+    this.scene.chessMapData = this.chessMapData;
+
     this.chessData = this.scene.registry.list.chessData;
 
     this.ChessData = new ChessData();
-
 
     this.StageLayoutChessGroup = this.scene.add.group();
     this.StageLayoutTileGroup = this.scene.add.group();
@@ -43,11 +48,11 @@ export default class Layout{
  
     this.container = this.scene.add.container();
     this.container.x = 0;
-    this.container.y = 80;
+    this.container.y = 40;
     this.container.depth = 100; 
 
     /*=================
-    レイアウトのウィンドウ
+    レイアウトのウィンドウ：説明
     -------------------*/
     this.ModalWindow = this.scene.add.sprite(
       this.scene.game.config.width/2,
@@ -55,13 +60,23 @@ export default class Layout{
       'spritesheet',
       'window_layout'
     );
+    /*=================
+    レイアウトのウィンドウ：完了
+    -------------------*/
+    this.ModalWindowFin = this.scene.add.sprite(
+      this.scene.game.config.width/2,
+      160,
+      'spritesheet',
+      'window_layout_fin'
+    );
+    this.ModalWindowFin.setVisible(false);
     this.setCompleteFlg = false;
     /*=================
     ボタン：YES
     -------------------*/
     this.btnYes = this.scene.add.sprite(
-      78,
-      0,
+      136,
+      159,
       'spritesheet',
       'btn_yes'
     );
@@ -69,16 +84,55 @@ export default class Layout{
     this.btnYes.on('pointerdown', function (pointer) {
       this.setYes();
     },this);
+    this.btnYes.setVisible(false);
+
+    /*=================
+    ボタン：オートレイアウト
+    -------------------*/
+    this.btnOutLayout = this.scene.add.sprite(
+      140,
+      0,
+      'spritesheet',
+      'btn_auto_layout'
+    );
+    this.btnOutLayout.setInteractive();
+    this.btnOutLayout.on('pointerdown', function (pointer) {
+      let setting = {
+        chessLayoutData: this.scene.registry.list.chessLayoutData,
+        group: this.StageLayoutChessGroup.children.entries
+      }
+      this.autoLayout(setting);
+      /*データを代入*/
+      this.scene.chessMapData = this.scene.registry.list.chessLayoutData;
+      /*チェスを全て置いたかのチェック*/
+      this.checkLayoutIsAll();
+
+    },this);
+    // this.btnOutLayout.setVisible(false);
 
     this.container.add(
       [
         this.ModalWindow,
-        this.btnYes
+        this.ModalWindowFin,
+        this.btnYes,
+        this.btnOutLayout
       ]
     );
 
+    /*=================
+    UIまわりの基準
+    -------------------*/
+    this.chessBaseHeight = 70;
+
+    this.baseHeight = 132;
+    this.addHeight = 32;
+
     this.setLayoutChessToStage();
-    this.setLayoutGroup();
+    this.setLayoutPanelGroup();
+    //レイアウトデータから再配置
+    // this.setLayoutChessPos();
+    //チェスじょうほうエリア
+    this.createChessInfo();
 
   }
   touchLayoutChess(layoutChess){
@@ -89,56 +143,34 @@ export default class Layout{
 
     this.selectedLayoutChess = layoutChess;
 
+    this.setChessInfo(this.selectedLayoutChess);
+
   }
-  touchLayoutTile(layoutTile){
-    if(this.selectedLayoutChess){
-      /*レイアウトの配列の更新 */
-      /*削除*/
-      this.layoutData[this.selectedLayoutChess.tilePos.Y][this.selectedLayoutChess.tilePos.X] = 0;
-      /*更新*/
-      this.layoutData[layoutTile.tilePos.Y][layoutTile.tilePos.X] = this.selectedLayoutChess.layoutIndex;
-
-      /*選択したチェスの更新 */
-      this.selectedLayoutChess.x = layoutTile.x;
-      this.selectedLayoutChess.y = layoutTile.y;
-      this.selectedLayoutChess.tilePos = layoutTile.tilePos;
-
-      /*カーソルの更新 */
-      this.Cursor.setVisible(true);
-      this.Cursor.x = layoutTile.x;
-      this.Cursor.y = layoutTile.y;
-
-      /*移動ごとに保存*/
-      this.scene.registry.list.layoutData = this.layoutData;
-      console.log("this.scene.registry.list.layoutData",this.scene.registry.list.layoutData)
-
-    }
-  }
-  setLayoutGroup(){
-    let baseHeight = 120;
-    let addHeight = 20;
+  setLayoutPanelGroup(){
+    let baseHeight = this.baseHeight;
+    let addHeight = this.addHeight;
     let n = 0;
     let tileX = 0;
     let tileY = 0;
 
-    for(var i = 0; i < 18; i++){
-      if(i % 6 === 0 && i !== 0){
+    for(var i = 0; i < 6; i++){
+      if(i % 3 === 0 && i !== 0){
         baseHeight += addHeight;
         tileX = 0;
         tileY++;
       }
       let sprite = this.scene.add.sprite(
-        tileX * addHeight + 20,
+        tileX * addHeight + addHeight/2,
         baseHeight,
         'spritesheet',
-        'panel_add_team_1'
+        'panel_add_layout'
       );
       sprite.setInteractive();
       sprite.depth = 10;
       sprite.tileIndex = i;
       sprite.tilePos = {
         X: tileX,
-        Y: tileY + 5
+        Y: tileY + 3
       }
       tileX++;
       let _this = this;
@@ -149,22 +181,76 @@ export default class Layout{
     }
 
   }
+  touchLayoutTile(panel){
+    if(this.selectedLayoutChess){
+      /*レイアウトの配列の更新 */
+      if(this.selectedLayoutChess.tilePos.X !== 0 && this.selectedLayoutChess.tilePos.Y !== 0){
+        /*削除*/
+        this.scene.chessMapData[this.selectedLayoutChess.tilePos.Y][this.selectedLayoutChess.tilePos.X] = 0;
+        /*更新*/
+        this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
+      }else{
+        /*更新*/
+        this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
+      }
+      /*チェスを全て置いたかのチェック*/
+      this.checkLayoutIsAll();
+
+      let worldPos = {
+        x: panel.x,
+        y: panel.y
+      }
+      this.selectedLayoutChess.move(worldPos);
+      this.selectedLayoutChess.tilePos.X = panel.tilePos.X;
+      this.selectedLayoutChess.tilePos.Y = panel.tilePos.Y;
+      this.Cursor.x = panel.x;
+      this.Cursor.y = panel.y;
+      this.setChessInfo(this.selectedLayoutChess);
+    }  
+  }
+  autoLayout(setting){
+    let chessLayoutData = setting.chessLayoutData;
+    let group = setting.group;
+
+    for(var i = 0; i < chessLayoutData.length; i++){
+      for(var k = 0; k < chessLayoutData[i].length; k++){
+        if(chessLayoutData[i][k] !== 0){
+          let _index = chessLayoutData[i][k];
+          group.forEach(
+            (sprite,index) => {
+              if(sprite.groupIndex === _index){
+                let settingPos = {
+                  x: k * 32 + 16,
+                  y: i * 32 + 16 + 20,
+                }
+                sprite.move(settingPos);                
+              }
+            }
+          );          
+        }
+      }  
+    }
+  }
+
   setLayoutChessToStage(){
     /*----------------------
     レイアウトデータをレジストリに保存
     ----------------------*/
-    this.scene.registry.list.layoutData = this.layoutData;
+    // this.scene.registry.list.chessMapData = this.chessLayoutData;
 
     let playerChessList = this.chessData;
     let chessDataList = this.ChessData.chessList;
-    
+
+    let baseHeight = this.chessBaseHeight;
+    let addHeight = this.addHeight;
+
     for(var i = 0; i < playerChessList.length;i++){
       chessDataList.filter(function(item, index){
         if(item.key === playerChessList[i]){
           let sprite = new Chess({
             scene: this.scene,
-            x: i * 20 + 20,
-            y: 80,
+            x: i * addHeight + addHeight/2,
+            y: baseHeight,
             frame: item.key,
             key: 'spritesheet'
           });
@@ -179,39 +265,158 @@ export default class Layout{
             sprite.attackAreaMapBase,
             sprite.areaMapBase
           );
-          sprite.cost = item.cost;
-          sprite.no = item.no;
-          sprite.name = item.key;
           sprite.depth = 12;
+          sprite.groupIndex = i + 1;
+          let settingStatus = {
+            power: item.status.power,
+            hp: item.status.maxHp
+          }
+          sprite.setStatus(settingStatus);
+
+          let settingPos = {
+            x: i * addHeight + addHeight/2,
+            y: baseHeight,
+          }
+          sprite.move(settingPos);
 
           sprite.on('pointerdown', () => {
             this.touchLayoutChess(sprite);
-          }); 
-          this.StageLayoutChessGroup.add(sprite)
+          });
+          this.StageLayoutChessGroup.add(sprite);
+
         }
       },this);
     }
-    this.setLayoutChessPos();
+    
+  }
+  checkLayoutIsAll(){
+    let count = 0;
+    for(var i = 0; i < this.scene.chessMapData.length; i++){
+      for(var k = 0; k < this.scene.chessMapData[i].length; k++){
+        if(i >= 3 && k <= 2){
+          if(this.scene.chessMapData[i][k] !== 0){
+            count++;
+          }          
+        }
+      }
+    }
+    if(count >= this.chessData.length){
+      this.ModalWindowFin.setVisible(true);
+      this.btnYes.setVisible(true);
+    }
   }
   setLayoutChessPos(){
-    let baseLeft = 20;
+    let baseLeft = 0;
     let baseHeight = 20;
 
-    let layoutedChesses = this.layoutData;
+    let layoutedChesses = this.chessMapData;
     let StageLayoutChessGroup = this.StageLayoutChessGroup.children.entries;
     for(var i = 0; i < layoutedChesses.length; i++){
       for(var k = 0; k < layoutedChesses[i].length; k++){
         if(layoutedChesses[i][k] !== 0){
           let count = Number(layoutedChesses[i][k]);
           let chess = StageLayoutChessGroup[count-1];
-          chess.x = k * 20 + baseLeft;
-          chess.y = i * 20 + baseHeight;
+          chess.x = k * 32 + baseLeft;
+          chess.y = i * 32 + baseHeight;
           chess.tilePos = {
             X: k,
             Y: i
           };
-          chess.layoutIndex = count;
+          chess.groupIndex = count;
         }
+      }
+    }
+  }
+  /*==================
+  チェスのじょうほう
+  ==================*/
+  createChessInfo(){
+    this.chessMoveArea = this.scene.add.group();
+    let map = [
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,9,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0]
+    ];
+    let baseLeft = 114;
+    let baseHeight = 130;
+    for(var i = 0; i < map.length;i++){
+      for(var k = 0; k < map[i].length;k++){
+        let mapTile = this.scene.add.sprite(
+          k * 6 + baseLeft,
+          i * 6 + baseHeight,
+          'spritesheet',
+          'movearea_s_default'
+        );
+        mapTile.depth = 20;
+        if( i < 2 || 6 < i){
+          mapTile.setVisible(false);
+        }
+        if( k < 2 || 6 < k){
+          mapTile.setVisible(false);
+        }
+        this.chessMoveArea.add(mapTile)
+      }
+    }
+    
+    this.chessDisp = this.scene.add.sprite(
+      baseLeft + 16,
+      baseHeight - 5,
+      'spritesheet',
+      'chess_shadow'
+    ); 
+    this.chessDisp.depth = 12;
+    this.chessDisp.scaleX = 2;
+    this.chessDisp.scaleY = 2;
+    
+    this.move_icons = this.scene.add.sprite(
+      baseLeft - 3,
+      baseHeight + 22,
+      'spritesheet',
+      'move_icons'
+    );  
+    this.move_icons.depth = 12;   
+
+    this.overlapArea = this.scene.add.graphics(
+      {
+        fillStyle: { color: 0x000000 }
+      }
+    );    
+    this.rect = new Phaser.Geom.Rectangle(baseLeft + 8, baseHeight + 8, 31, 31);
+    this.overlapArea.fillRectShape(this.rect);
+    this.overlapArea.depth = 10;
+  }
+  setChessInfo(sprite){
+
+    let row = sprite.areaMapBase.length;
+
+    this.chessDisp.setTexture('spritesheet',sprite.frame.name);
+
+
+    for(var i = 0; i < sprite.areaMapBase.length; i++){
+      for(var k = 0; k < sprite.areaMapBase[i].length; k++){
+        let movearea;
+        if(sprite.areaMapBase[i][k] === 1){//移動
+          movearea = "movearea_s_move";
+        }
+        if(sprite.areaMapBase[i][k] === 2){//攻撃
+          movearea = "movearea_s_attack";
+        }
+        if(sprite.areaMapBase[i][k] === 3){//移動＆攻撃
+          movearea = "movearea_s_move_attack";
+        }
+        if(sprite.areaMapBase[i][k] === 9){//移動
+          movearea = "movearea_s_chess";
+        }
+        if(sprite.areaMapBase[i][k] === 0){//なし
+          movearea = "movearea_s_default";
+        }
+        this.chessMoveArea.children.entries[i * row + k].setTexture('spritesheet',movearea);
       }
     }
   }
@@ -222,9 +427,20 @@ export default class Layout{
   hideAll(){
     this.Cursor.setVisible(false);
     this.container.setVisible(false);
+    this.chessMoveArea.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(false);
+      }
+    );
+    this.chessDisp.setVisible(false);
+    this.move_icons.setVisible(false);
+    this.overlapArea.setVisible(false);
     this.StageLayoutChessGroup.children.entries.forEach(
       (sprite,index) => {
         sprite.setVisible(false);
+        sprite.AT_text.setVisible(false);
+        sprite.HP_text.setVisible(false);
+        sprite.chessStatus.setVisible(false);
       }
     );   
     this.StageLayoutTileGroup.children.entries.forEach(

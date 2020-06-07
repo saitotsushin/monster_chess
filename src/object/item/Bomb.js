@@ -8,6 +8,7 @@ export default class Bomb extends Base {
 
     this.scene = config.scene;
 
+
     this.depth = 5;
 
     this.x = config.x;
@@ -42,14 +43,20 @@ export default class Bomb extends Base {
     //     attackingTarget.pos
     //   );
     // }
+    let damagePoint = this.status.power;
 
-    // let damagePoint = this.status.power - attackingTarget.status.difence;
+    attackingTarget.damage(damagePoint,'ATTACK');
+    this.destroy()
+    attackingTarget.status.hp -= damagePoint;
 
-    // attackingTarget.damage(damagePoint,'ATTACK');
-    // attackingTarget.status.hp -= damagePoint;
+    let _scene = attackingTarget.scene;
 
-    // if(attackingTarget.status.hp <= 0){
-    //   this.scene.StageManager.removeChess(attackingTarget);
-    // } 
+    if(attackingTarget.status.hp <= 0){
+      let queRemove = setTimeout(function(){
+        _scene.GameManager.removeChess(attackingTarget);
+        clearTimeout(queRemove);
+      }, 2500);
+      attackingTarget.status.hp = 0;
+    } 
   }  
 }

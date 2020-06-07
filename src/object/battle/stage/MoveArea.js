@@ -31,7 +31,7 @@ export default class MoveArea{
     let _Y = setting.pos.Y;
     let target = setting.chess;
     let mapAll = setting.mapAll;
-    let map = setting.map;//自分のチェスマップ
+    let map  = setting.map;//自分のチェスマップ
     let map2 = setting.map2;//相手のチェスマップ
     let base1 = target.areaMapBase;
     let base = [];
@@ -41,14 +41,11 @@ export default class MoveArea{
       base = base1;
     }
     let moveArea = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0]
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
     ];
     let harfHeight = (base.length - 1) / 2;
     let harfWidth = (base[0].length - 1) / 2;
@@ -167,8 +164,8 @@ export default class MoveArea{
   }
   setAreaPanel(group,key){
     let area;
-    let col = 6;
-    let row = 8;
+    let col = 5;
+    let row = 5;
     for(var i = 0; i < row; i++){
       for(var k = 0; k < col; k++){
         area = this.scene.add.sprite(0,0,'spritesheet',key);

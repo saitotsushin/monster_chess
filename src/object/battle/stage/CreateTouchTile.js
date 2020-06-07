@@ -19,6 +19,7 @@ export default class CreateTouchTile {
           X: k,
           Y: i
         }
+        // area.groundType = this.mapData[i][k];
         area.setInteractive();
         let _this = this;
         area.on('pointerdown', function (pointer) {
