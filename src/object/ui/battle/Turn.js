@@ -38,7 +38,6 @@ export default class Turn{
       this.StageHead.setTexture('spritesheet','stage_head_player1');
     }
     if(mode === 'player2'){
-      console.log("mode",mode)
       this.StageHead.setTexture('spritesheet','stage_head_player2');
     }
   }

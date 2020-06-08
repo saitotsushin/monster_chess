@@ -51,12 +51,17 @@ export default class GameManager {
   初期化
   ------------------------------*/
   initScene(setting){
+    this.STATUS.MODE = "";
+    this.STATUS.MOVE = "";
+    this.STATUS.ATTACK = "";
+    
     this.UIManager.initScene();
     this.StageManager.initScene({
       map: setting.map,
       chessData: setting.chessData,
       chessMapData: setting.chessMapData
     });
+    console.log("this. gamemanager ",this.scene.chessMapData)
     this.Layout.initScene();
 
 
@@ -123,11 +128,6 @@ export default class GameManager {
   ------------------------------*/      
   startGame(){
     /*プレイヤー２のレイアウト設定*/
-    // let setting = {
-    //   chessLayoutData: this.scene.registry.list.chessLayoutData2,
-    //   group: this.playerChessGroup2.children.entries
-    // }
-    // this.StageManager.layoutEnemyGroup(setting);
 
     this.updateStage();
     this.UIManager.startGame();
@@ -237,7 +237,6 @@ export default class GameManager {
         }
       }
     }
-    console.log("stageMapAll",this.stageMapAll);
 
   }
   /*==============================
@@ -268,8 +267,6 @@ export default class GameManager {
   ステージタッチ時
   ------------------------------*/
   touchStage(pos){
-    console.log("this.selectedChess",this.selectedChess);
-    console.log("pos",pos)
     if(this.scene.STATUS.STAGE_MODE === "FIN"){
       return false;
     }
@@ -503,8 +500,6 @@ export default class GameManager {
     /*検索*/
     if(map[pos.Y][pos.X] !== 0){
       chessGroupIndex = Number(map[pos.Y][pos.X]);
-      console.log("chessGroupIndex",chessGroupIndex);
-      console.log("this.playerChessGroup.children.entries",this.playerChessGroup.children.entries)
       this.playerChessGroup.children.entries.forEach(
         (sprite,index) => {
           if(sprite.groupIndex === chessGroupIndex){

@@ -31,6 +31,13 @@ class BattleScene extends Phaser.Scene {
       [0,0,0,0,0],
       [0,0,0,0,0]
     ];
+    this.chessAutoLayoutMapData = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];    
     this.chessMapData2 = [
       [0,0,0,0,0],
       [0,0,0,0,0],
@@ -56,27 +63,27 @@ class BattleScene extends Phaser.Scene {
   create(){
     /*背景色*/
     this.cameras.main.setBackgroundColor('#FFFFFF');    
-    this.GameManager = new GameManager({
-      scene: this
-    });
-    
+
+    this.STATUS.GAME_MODE = "";
+    this.STATUS.STAGE_MODE = "";
+    this.STATUS.WIN_PLAYER = "";
+    this.STATUS.PLAYER1.CHESS_COUNT = 0;
+    this.STATUS.PLAYER2.CHESS_COUNT = 0;
+
     /*=====================
     registryデータの読み込み
     =====================*/
     for(var i = 0; i < this.registry.list.chessLayoutData.length; i++){
       for(var k = 0; k < this.registry.list.chessLayoutData[i].length; k++){
         if(this.registry.list.chessLayoutData[i][k] !== 0){
-          this.chessMapData[i][k] = this.registry.list.chessLayoutData[i][k];
+          this.chessAutoLayoutMapData[i][k] = this.registry.list.chessLayoutData[i][k];
         }
       }
     }
+    // console.log(" this.chessMapData__", this.chessMapData)
     /*=====================
     相手のレイアウトは逆順にして配置
     =====================*/
-    for(var i = 0; i < this.registry.list.chessLayoutData2.length; i++){
-      this.registry.list.chessLayoutData2[i].reverse();
-    }
-    this.registry.list.chessLayoutData2.reverse();
 
     for(var i = 0; i < this.registry.list.chessLayoutData2.length; i++){
       for(var k = 0; k < this.registry.list.chessLayoutData2[i].length; k++){
@@ -85,7 +92,16 @@ class BattleScene extends Phaser.Scene {
         }
       }
     }
-    this.registry.list.chessMapData2 = this.registry.list.chessLayoutData2;
+    for(var i = 0; i < this.chessMapData2.length; i++){
+      this.chessMapData2[i].reverse();
+    }
+    this.chessMapData2.reverse();
+
+    this.GameManager = new GameManager({
+      scene: this
+    });
+
+
 
     this.ClearGame = new ClearGame({
       scene: this

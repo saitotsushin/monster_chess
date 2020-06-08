@@ -22,7 +22,7 @@ export default class Layout{
       [0,0,0,0,0]
     ];
 
-    this.scene.chessMapData = this.chessMapData;
+    // this.scene.chessMapData = this.chessMapData;
 
     this.chessData = this.scene.registry.list.chessData;
 
@@ -82,6 +82,7 @@ export default class Layout{
     );
     this.btnYes.setInteractive();
     this.btnYes.on('pointerdown', function (pointer) {
+      console.log("はい　オートレイアウト")
       this.setYes();
     },this);
     this.btnYes.setVisible(false);
@@ -96,14 +97,17 @@ export default class Layout{
       'btn_auto_layout'
     );
     this.btnOutLayout.setInteractive();
+    console.log("this.scene",this.scene)
+    console.log("this.chessMapData",this.scene.chessMapData);
+    console.log("this.chessMapData2",this.scene.chessMapData2);
     this.btnOutLayout.on('pointerdown', function (pointer) {
       let setting = {
-        chessLayoutData: this.scene.registry.list.chessLayoutData,
+        chessLayoutData: this.scene.chessAutoLayoutMapData,
         group: this.StageLayoutChessGroup.children.entries
       }
       this.autoLayout(setting);
       /*データを代入*/
-      this.scene.chessMapData = this.scene.registry.list.chessLayoutData;
+      this.scene.chessMapData = this.scene.chessAutoLayoutMapData;
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
 

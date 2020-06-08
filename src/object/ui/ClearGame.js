@@ -105,7 +105,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       /*=================
       ランダムで相手のチェスが手に入る
       -------------------*/    
-      this.getRandomChess();
+      // this.getRandomChess();
     }
     if(this.scene.STATUS.WIN_PLAYER === "player2"){
       this.titleResultWin.setVisible(false)

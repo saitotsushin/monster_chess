@@ -143,8 +143,8 @@ export default class MoveArea{
     }
     for(var Y = 0; Y < map2.length; Y++){
       for(var X = 0; X < map2[Y].length; X++){
-        if(map[Y][X] !== 0){
-          if(moveArea[Y][X] !== 3){
+        if(map2[Y][X] !== 0){
+          if(moveArea[Y][X] === 1){
             moveArea[Y][X] = 0;
           }
         }
