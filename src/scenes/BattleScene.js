@@ -61,6 +61,8 @@ class BattleScene extends Phaser.Scene {
     ];     
   }
   create(){
+
+    console.log("this.registry.list.chessLayoutData",this.registry.list.chessLayoutData)
     /*背景色*/
     this.cameras.main.setBackgroundColor('#FFFFFF');    
 
@@ -71,6 +73,18 @@ class BattleScene extends Phaser.Scene {
     this.STATUS.PLAYER2.CHESS_COUNT = 0;
 
     /*=====================
+    配列のリセット
+    =====================*/
+    for(var i = 0; i < this.chessMapData.length; i++){
+      for(var k = 0; k < this.chessMapData[i].length; k++){
+        this.chessMapData[i][k] = 0;
+        this.chessAutoLayoutMapData[i][k] = 0;
+        this.chessMapData2[i][k] = 0;
+        this.itemMap[i][k] = 0;
+        this.itemMap2[i][k] = 0;
+      }
+    }    
+    /*=====================
     registryデータの読み込み
     =====================*/
     for(var i = 0; i < this.registry.list.chessLayoutData.length; i++){
@@ -80,7 +94,7 @@ class BattleScene extends Phaser.Scene {
         }
       }
     }
-    // console.log(" this.chessMapData__", this.chessMapData)
+
     /*=====================
     相手のレイアウトは逆順にして配置
     =====================*/

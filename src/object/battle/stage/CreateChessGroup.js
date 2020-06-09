@@ -56,7 +56,6 @@ export default class CreateChessGroup {
   チェスグループのレイアウト
   ------------------------------*/  
   layoutChess(){
-    // this.chessMapData = this.chessMapData;
     let baseLeft = 0;
     let baseHeight = 20; 
     let chessWidth = 32;   

@@ -22,7 +22,6 @@ export default class Layout{
       [0,0,0,0,0]
     ];
 
-    // this.scene.chessMapData = this.chessMapData;
 
     this.chessData = this.scene.registry.list.chessData;
 
@@ -82,7 +81,7 @@ export default class Layout{
     );
     this.btnYes.setInteractive();
     this.btnYes.on('pointerdown', function (pointer) {
-      console.log("はい　オートレイアウト")
+      console.log("はい　オートレイアウト");
       this.setYes();
     },this);
     this.btnYes.setVisible(false);
@@ -96,6 +95,8 @@ export default class Layout{
       'spritesheet',
       'btn_auto_layout'
     );
+    this.btnOutLayout.isToucked = false;
+    this.btnOutLayout.alpha = 1;
     this.btnOutLayout.setInteractive();
     console.log("this.scene",this.scene)
     console.log("this.chessMapData",this.scene.chessMapData);
@@ -105,11 +106,17 @@ export default class Layout{
         chessLayoutData: this.scene.chessAutoLayoutMapData,
         group: this.StageLayoutChessGroup.children.entries
       }
+      this.btnOutLayout.alpha = 0.2;
+      if(this.btnOutLayout.isToucked){
+        return false;
+      }
+
       this.autoLayout(setting);
       /*データを代入*/
       this.scene.chessMapData = this.scene.chessAutoLayoutMapData;
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
+      this.btnOutLayout.isToucked = true;
 
     },this);
     // this.btnOutLayout.setVisible(false);
@@ -187,6 +194,7 @@ export default class Layout{
   }
   touchLayoutTile(panel){
     if(this.selectedLayoutChess){
+      console.log("selectedLayoutChess",this.selectedLayoutChess.tilePos)
       /*レイアウトの配列の更新 */
       if(this.selectedLayoutChess.tilePos.X !== 0 && this.selectedLayoutChess.tilePos.Y !== 0){
         /*削除*/
@@ -197,6 +205,7 @@ export default class Layout{
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }
+      console.log("this.scene.chessMapData",this.scene.chessMapData)
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
 
@@ -227,6 +236,8 @@ export default class Layout{
                   x: k * 32 + 16,
                   y: i * 32 + 16 + 20,
                 }
+                sprite.tilePos.X = k;
+                sprite.tilePos.Y = i;
                 sprite.move(settingPos);                
               }
             }
@@ -237,10 +248,6 @@ export default class Layout{
   }
 
   setLayoutChessToStage(){
-    /*----------------------
-    レイアウトデータをレジストリに保存
-    ----------------------*/
-    // this.scene.registry.list.chessMapData = this.chessLayoutData;
 
     let playerChessList = this.chessData;
     let chessDataList = this.ChessData.chessList;
