@@ -62,7 +62,6 @@ export default class StageManager {
   setKingToChessCPU(group,chessMapData){
     let get_index = 0;
     let back_index = 0;
-    console.log("chessMapData",chessMapData)
     /*一番奥の駒を取得する*/
     for(var i = 0; i < chessMapData.length; i++){
       for(var k = 0; k < chessMapData[i].length; k++){

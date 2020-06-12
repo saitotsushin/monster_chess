@@ -40,7 +40,8 @@ export default class Portion extends Base {
     //     cureTarget.pos
     //   );
     // }
-    // let curePoint = Math.floor(cureTarget.status.maxHp * 0.5);//切り捨て
+    let curePoint = cureTarget.status.maxHp - cureTarget.status.hp;
+    cureTarget.status.hp = cureTarget.status.maxHp;
     // let nowHp = cureTarget.status.hp + curePoint;
     // let maxHp = cureTarget.status.maxHp;
     // if(nowHp > maxHp){
@@ -48,6 +49,6 @@ export default class Portion extends Base {
     // }else{
     //   cureTarget.status.hp += curePoint;
     // }
-    // cureTarget.damage(curePoint,'CURE');
+    cureTarget.damage(curePoint,'CURE');
   }  
 }

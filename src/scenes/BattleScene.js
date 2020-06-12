@@ -185,7 +185,6 @@ class BattleScene extends Phaser.Scene {
   ゲームクリア
   ------------------------------*/    
   clearGame(){
-    console.log("clearGame")
     if(this.STATUS.STAGE !== 'GAMEOVER'){
       return;
     }
@@ -251,7 +250,6 @@ class BattleScene extends Phaser.Scene {
   チェスの削除
   ------------------------------*/    
   removeChess(chess){
-    console.log("removeChess")
     this.GameManager.removeChess(chess);
   }  
   /*==============================

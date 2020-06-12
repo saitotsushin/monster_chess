@@ -120,8 +120,8 @@ export default class ChessData {
         no: '03',
         className: Chess3,
         status: {
-          hp: 5,
-          maxHp: 5,
+          hp: 10,
+          maxHp: 10,
           power: 5
         },
         cost: 3,

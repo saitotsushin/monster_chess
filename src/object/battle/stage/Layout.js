@@ -264,14 +264,13 @@ export default class Layout{
   }
   touchLayoutTile(panel){
     if(this.selectedLayoutChess){
-
       /*レイアウトの配列の更新 */
-      if(this.selectedLayoutChess.tilePos.X !== 0 && this.selectedLayoutChess.tilePos.Y !== 0){
-        /*削除*/
-        this.scene.chessMapData[this.selectedLayoutChess.tilePos.Y][this.selectedLayoutChess.tilePos.X] = 0;
+      if(this.selectedLayoutChess.tilePos.X === 0 && this.selectedLayoutChess.tilePos.Y === 0){
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }else{
+        /*削除*/
+        this.scene.chessMapData[this.selectedLayoutChess.tilePos.Y][this.selectedLayoutChess.tilePos.X] = 0;
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }
@@ -505,7 +504,6 @@ export default class Layout{
   ================================*/
   setKingToChess(){
     let chessKingGroupIndex = this.chessKingGroupIndex;
-    console.log("this.scene.GameManager",this.scene.GameManager)
     this.scene.GameManager.playerChessGroup.children.entries.forEach(
       (sprite,index) => {
         if(sprite.groupIndex === chessKingGroupIndex){
@@ -544,7 +542,6 @@ export default class Layout{
           Y: sprite.tilePos.Y
         }
         panel.on('pointerdown', () => {
-          console.log("panel,groupIndex",panel.groupIndex)
           _this.iconKing.x = panel.x;
           _this.iconKing.y = panel.y;
           _this.iconKing.groupIndex = panel.groupIndex;

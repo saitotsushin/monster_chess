@@ -67,13 +67,10 @@ export default class ItemGroup {
           sprite.setInteractive();
           sprite.setVisible(false);
           sprite.on('pointerdown', function (pointer) {           
-            if(!this.setted){
-              _this.beforePos.x = this.x;
-              _this.beforePos.y = this.y;
-              _this.itemIndex = this.itemIndex;
-              _this.scene.touchItem(this.pos,this.itemIndex);
-            }
-            // return this.pos;
+            _this.beforePos.x = this.x;
+            _this.beforePos.y = this.y;
+            _this.itemIndex = this.itemIndex;
+            _this.scene.touchItem(this.pos,this.itemIndex);
           });          
           itemGroup.add(sprite);
 
@@ -147,10 +144,8 @@ export default class ItemGroup {
     );
   } 
   addGroupInteractive(){
-    console.log("addGroupInteractive")
     this.addGroup.children.entries.forEach(
       (sprite) => {
-        console.log("ii")
         sprite.setInteractive();
       }
     );

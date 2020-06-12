@@ -117,6 +117,9 @@ export default class GameManager {
 
     this.Layout.hideAll();
 
+    /*相手のチェスがNPCだったらアイテム設置*/
+    this.NPC.setItemByRandom();
+
     /*チェスグループの表示*/
     this.StageManager.showChessGroup(this.playerChessGroup);
     this.StageManager.showChessGroup(this.playerChessGroup2);
@@ -200,6 +203,7 @@ export default class GameManager {
   checkStageItem(posInt,chess){
     let itemIndex;
     let item;
+    console.log("this.scene.itemMap",this.scene.itemMap)
     if(this.scene.itemMap[posInt.Y][posInt.X] !== 0){
       itemIndex = this.scene.itemMap[posInt.Y][posInt.X];
       item = this.playerItemGroup.children.entries[itemIndex-1];

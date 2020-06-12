@@ -286,7 +286,7 @@ export default class UIManager {
       if(mode === "ADD"){
         this.selectedItem.x = this.selectedItemPos.worldPos.x;
         this.selectedItem.y = this.selectedItemPos.worldPos.y;
-        this.selectedItem.setted = true;
+        // this.selectedItem.setted = true;
         this.selectedItem.removeInteractive();
       }
 
