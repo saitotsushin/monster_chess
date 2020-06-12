@@ -54,14 +54,12 @@ export default class GameManager {
     this.STATUS.MODE = "";
     this.STATUS.MOVE = "";
     this.STATUS.ATTACK = "";
-    
     this.UIManager.initScene();
     this.StageManager.initScene({
       map: setting.map,
       chessData: setting.chessData,
       chessMapData: setting.chessMapData
     });
-    console.log("this. gamemanager ",this.scene.chessMapData)
     this.Layout.initScene();
 
 
@@ -75,6 +73,7 @@ export default class GameManager {
     };
 
     this.StageManager.createEnemyGroup(setting2);
+    this.StageManager.setKingToChessCPU(this.playerChessGroup2,this.scene.chessMapData2);
 
     /*トラップを生成*/
     this.playerItemGroup = this.scene.add.group();
@@ -86,6 +85,7 @@ export default class GameManager {
     }
 
     this.UIManager.createItemGroup(setting_item);
+    this.UIManager.menuItemOpen();
 
     this.playerItemGroup2 = this.scene.add.group();
 

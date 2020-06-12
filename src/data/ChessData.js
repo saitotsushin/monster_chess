@@ -13,9 +13,9 @@ export default class ChessData {
         no: '--',
         className: Chess,
         status: {
-          hp: 35,
-          maxHp: 35,
-          power: 10
+          hp: 5,
+          maxHp: 5,
+          power: 5
         },
         cost: 1,
         moveAreaMapBase: 
@@ -48,9 +48,9 @@ export default class ChessData {
         no: '01',
         className: Chess1,
         status: {
-          hp: 35,
-          maxHp: 35,
-          power: 10
+          hp: 5,
+          maxHp: 5,
+          power: 5
         },
         cost: 1,
         attribute: 1,
@@ -84,9 +84,9 @@ export default class ChessData {
         no: '02',
         className: Chess2,
         status: {
-          hp: 25,
-          maxHp: 25,
-          power: 6
+          hp: 5,
+          maxHp: 5,
+          power: 5
         },
         cost: 2,
         attribute: 2,

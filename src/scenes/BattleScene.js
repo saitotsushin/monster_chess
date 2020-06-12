@@ -62,7 +62,6 @@ class BattleScene extends Phaser.Scene {
   }
   create(){
 
-    console.log("this.registry.list.chessLayoutData",this.registry.list.chessLayoutData)
     /*背景色*/
     this.cameras.main.setBackgroundColor('#FFFFFF');    
 
@@ -71,6 +70,7 @@ class BattleScene extends Phaser.Scene {
     this.STATUS.WIN_PLAYER = "";
     this.STATUS.PLAYER1.CHESS_COUNT = 0;
     this.STATUS.PLAYER2.CHESS_COUNT = 0;
+
 
     /*=====================
     配列のリセット
@@ -84,13 +84,15 @@ class BattleScene extends Phaser.Scene {
         this.itemMap2[i][k] = 0;
       }
     }    
+
     /*=====================
     registryデータの読み込み
     =====================*/
-    for(var i = 0; i < this.registry.list.chessLayoutData.length; i++){
-      for(var k = 0; k < this.registry.list.chessLayoutData[i].length; k++){
-        if(this.registry.list.chessLayoutData[i][k] !== 0){
-          this.chessAutoLayoutMapData[i][k] = this.registry.list.chessLayoutData[i][k];
+    let chessLayoutData = this.registry.list.chessLayoutData;
+    for(var i = 0; i < chessLayoutData.length; i++){
+      for(var k = 0; k < chessLayoutData[i].length; k++){
+        if(chessLayoutData[i][k] !== 0){
+          this.chessAutoLayoutMapData[i][k] = chessLayoutData[i][k];
         }
       }
     }
@@ -98,11 +100,11 @@ class BattleScene extends Phaser.Scene {
     /*=====================
     相手のレイアウトは逆順にして配置
     =====================*/
-
-    for(var i = 0; i < this.registry.list.chessLayoutData2.length; i++){
-      for(var k = 0; k < this.registry.list.chessLayoutData2[i].length; k++){
-        if(this.registry.list.chessLayoutData2[i][k] !== 0){
-          this.chessMapData2[i][k] = this.registry.list.chessLayoutData2[i][k];
+    let chessLayoutData2 = this.registry.list.chessLayoutData2;
+    for(var i = 0; i < chessLayoutData2.length; i++){
+      for(var k = 0; k < chessLayoutData2.length; k++){
+        if(chessLayoutData2[i][k] !== 0){
+          this.chessMapData2[i][k] = chessLayoutData2[i][k];
         }
       }
     }
@@ -183,6 +185,10 @@ class BattleScene extends Phaser.Scene {
   ゲームクリア
   ------------------------------*/    
   clearGame(){
+    console.log("clearGame")
+    if(this.STATUS.STAGE !== 'GAMEOVER'){
+      return;
+    }
     this.ClearGame.open();
   }  
   /*==============================
@@ -205,12 +211,6 @@ class BattleScene extends Phaser.Scene {
     this.STATUS.STAGE_MODE = "FIN";
   }
   /*==============================
-  アイテム、インフォのウインドウ表示
-  ------------------------------*/   
-  // menuWindow(mode,status){
-  //   this.GameManager.menuWindow(mode,status);
-  // } 
-  /*==============================
   アイテムウインドウ
   ------------------------------*/
   itemWindow(mode,window,status){
@@ -228,6 +228,11 @@ class BattleScene extends Phaser.Scene {
     this.GameManager.menuWindow(window,status); 
   }
   /*==============================
+  アイテムのキャンセル
+  ------------------------------*/   
+  setItemCancel(){
+    this.GameManager.setItemCancel();
+  }
 
   /*==============================
   自分のターン完了
@@ -246,6 +251,7 @@ class BattleScene extends Phaser.Scene {
   チェスの削除
   ------------------------------*/    
   removeChess(chess){
+    console.log("removeChess")
     this.GameManager.removeChess(chess);
   }  
   /*==============================

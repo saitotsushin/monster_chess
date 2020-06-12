@@ -13,6 +13,7 @@ export default class ItemGroup {
       x: 0,
       y: 0
     };
+    this.itemIndex = 0;
     this.create();
   }
   create(mode){
@@ -63,9 +64,9 @@ export default class ItemGroup {
           sprite.setted = false;
           sprite.isStage = false;
           sprite.itemIndex = i;
-          sprite.setVisible(false);
           sprite.setInteractive();
-          sprite.on('pointerdown', function (pointer) {
+          sprite.setVisible(false);
+          sprite.on('pointerdown', function (pointer) {           
             if(!this.setted){
               _this.beforePos.x = this.x;
               _this.beforePos.y = this.y;
@@ -94,7 +95,6 @@ export default class ItemGroup {
           'panel_item'
         );
         sprite.depth = 110;
-        sprite.setVisible(false);
 
         this.itemBaseGroup.add(sprite)
     
@@ -138,5 +138,21 @@ export default class ItemGroup {
         sprite.setVisible(false);
       }
     );  
-  }  
+  }
+  removeGroupInteractive(){
+    this.addGroup.children.entries.forEach(
+      (sprite) => {
+        sprite.removeInteractive();
+      }
+    );
+  } 
+  addGroupInteractive(){
+    console.log("addGroupInteractive")
+    this.addGroup.children.entries.forEach(
+      (sprite) => {
+        console.log("ii")
+        sprite.setInteractive();
+      }
+    );
+  }   
 }

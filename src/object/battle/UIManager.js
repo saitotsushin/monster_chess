@@ -158,12 +158,7 @@ export default class UIManager {
     // this.ModalItem.close();
     // this.Menu.itemClose();
   }
-  /*==============================
-  アイテムの選択：キャンセル
-  ------------------------------*/   
-  setItemCancel(){
-    this.ItemGroup.setItemCancel();
-  }
+
   /*==============================
   インフォのウインドウ表示
   ------------------------------*/   
@@ -173,38 +168,24 @@ export default class UIManager {
     this.ChessInfoWindow.showCanPutTile({
       
     });    
-    // this.ChessInfoWindow.show();
   }
   menuInfoClose(){
-    // this.ChessInfoWindow.showTile();
-    // this.ChessInfoWindow.showWindow();
-    // this.Menu.infoClose();
-    // this.ChessInfoWindow.hide();
   }
 
   /*==============================
   インフォのウインドウ表示
   ------------------------------*/   
   infoWindowOpen(chess){
-    // this.Menu.infoOpen();
-    // this.ChessInfoWindow.setChessInfo(chess);
-    // this.ChessInfoWindow.showWindow();
   }  
   /*==============================
   アイテム、インフォのウインドウ非表示
   ------------------------------*/   
   menuClose(){
     /*アイテムのクローズ*/
-    // this.ModalItem.close();
-    // this.ItemGroup.hide(); 
-    this.Menu.infoClose(); 
-    // this.Menu.itemClose();
+    this.Menu.BtnItem.hide();
     this.StageItemTile.hide();
     this.CursorItem.setVisible(false);
     this.selectedItem = "";
-    // this.ChessInfoWindow.hide();
-    // this.Menu.ModalWindow.setVisible(false);
-    // this.Menu.close();
   }   
   /*==============================
   ウィンドウの表示
@@ -276,8 +257,18 @@ export default class UIManager {
       map: this.scene.chessMapData,
       itemMap: this.scene.itemMap
     });
+    this.Menu.touchItem();
 
   }
+  /*==============================
+  アイテムの選択：キャンセル
+  ------------------------------*/   
+  setItemCancel(){
+    this.selectedItem = "";
+    this.CursorItem.setVisible(false);
+    this.StageItemTile.hide();
+    this.ItemGroup.setItemCancel();
+  }  
   /*==============================
   アイテムの設置
   ------------------------------*/   

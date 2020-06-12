@@ -7,7 +7,11 @@ export default class Layout{
     this.chessMapData = [];
     this.CreateChessInfo;
 
+    this.iconKing;
+
     this.chessMoveArea;
+
+    this.chessKingGroupIndex;
 
   }
   initScene(){
@@ -22,13 +26,13 @@ export default class Layout{
       [0,0,0,0,0]
     ];
 
-
     this.chessData = this.scene.registry.list.chessData;
 
     this.ChessData = new ChessData();
 
     this.StageLayoutChessGroup = this.scene.add.group();
     this.StageLayoutTileGroup = this.scene.add.group();
+    this.StageKingTileGroup = this.scene.add.group();
     
     this.selectedLayoutChess = "";
 
@@ -44,7 +48,9 @@ export default class Layout{
     this.Cursor.setVisible(false);
     this.Cursor.depth = 100;
 
- 
+    /*=================
+    レイアウトのコンテナ
+    -------------------*/ 
     this.container = this.scene.add.container();
     this.container.x = 0;
     this.container.y = 40;
@@ -64,27 +70,26 @@ export default class Layout{
     -------------------*/
     this.ModalWindowFin = this.scene.add.sprite(
       this.scene.game.config.width/2,
-      160,
+      30,
       'spritesheet',
       'window_layout_fin'
     );
     this.ModalWindowFin.setVisible(false);
     this.setCompleteFlg = false;
     /*=================
-    ボタン：YES
+    ボタン：レイアウトYES
     -------------------*/
-    this.btnYes = this.scene.add.sprite(
+    this.btnLayoutYes = this.scene.add.sprite(
       136,
-      159,
+      31,
       'spritesheet',
       'btn_yes'
     );
-    this.btnYes.setInteractive();
-    this.btnYes.on('pointerdown', function (pointer) {
-      console.log("はい　オートレイアウト");
-      this.setYes();
+    this.btnLayoutYes.setInteractive();
+    this.btnLayoutYes.on('pointerdown', function (pointer) {
+      this.setKing();
     },this);
-    this.btnYes.setVisible(false);
+    this.btnLayoutYes.setVisible(false);
 
     /*=================
     ボタン：オートレイアウト
@@ -98,9 +103,6 @@ export default class Layout{
     this.btnOutLayout.isToucked = false;
     this.btnOutLayout.alpha = 1;
     this.btnOutLayout.setInteractive();
-    console.log("this.scene",this.scene)
-    console.log("this.chessMapData",this.scene.chessMapData);
-    console.log("this.chessMapData2",this.scene.chessMapData2);
     this.btnOutLayout.on('pointerdown', function (pointer) {
       let setting = {
         chessLayoutData: this.scene.chessAutoLayoutMapData,
@@ -112,23 +114,92 @@ export default class Layout{
       }
 
       this.autoLayout(setting);
-      /*データを代入*/
-      this.scene.chessMapData = this.scene.chessAutoLayoutMapData;
+
+      /*=====================
+      データを代入
+      =====================*/
+      for(var i = 0; i < this.scene.chessMapData.length; i++){
+        for(var k = 0; k < this.scene.chessMapData[i].length; k++){
+          this.scene.chessMapData[i][k] = this.scene.chessAutoLayoutMapData[i][k];
+        }
+      }
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
       this.btnOutLayout.isToucked = true;
 
     },this);
-    // this.btnOutLayout.setVisible(false);
 
     this.container.add(
       [
         this.ModalWindow,
         this.ModalWindowFin,
-        this.btnYes,
+        this.btnLayoutYes,
         this.btnOutLayout
       ]
     );
+    /*=================
+    王（キング）設置のウィンドウ：説明
+    -------------------*/
+    this.ModalWindowKing = this.scene.add.sprite(
+      this.scene.game.config.width/2,
+      0,
+      'spritesheet',
+      'window_king'
+    );
+    
+    /*=================
+    王（キング）のアイコン
+    -------------------*/
+    this.iconKing = this.scene.add.sprite(
+      this.scene.game.config.width,
+      0,
+      'spritesheet',
+      'icon_king'
+    );
+    this.iconKing.setVisible(false);
+    
+    this.iconKing.depth = 402;
+       
+    
+    /*=================
+    王（キング）設置のコンテナ
+    -------------------*/ 
+    this.kingContainer = this.scene.add.container();
+    this.kingContainer.x = 0;
+    this.kingContainer.y = 40;
+    this.kingContainer.depth = 100; 
+    this.kingContainer.add(
+      [
+        this.ModalWindowKing,
+      ]
+    );
+    this.kingContainer.setVisible(false);
+    /*=================
+    ゲームスタートのウィンドウ：完了
+    -------------------*/
+    this.ModalGameStart = this.scene.add.sprite(
+      this.scene.game.config.width/2,
+      198,
+      'spritesheet',
+      'window_gamestart'
+    );
+    this.ModalGameStart.setVisible(false);
+    this.ModalGameStart.depth = 400;
+    /*=================
+    ボタン：ゲームスタートYES
+    -------------------*/
+    this.btnGameStartYes = this.scene.add.sprite(
+      136,
+      198,
+      'spritesheet',
+      'btn_yes'
+    );
+    this.btnGameStartYes.setInteractive();
+    this.btnGameStartYes.on('pointerdown', function (pointer) {
+      this.setYes();
+    },this);
+    this.btnGameStartYes.setVisible(false);
+    this.btnGameStartYes.depth = 401;
 
     /*=================
     UIまわりの基準
@@ -190,11 +261,10 @@ export default class Layout{
       });
       this.StageLayoutTileGroup.add(sprite);
     }
-
   }
   touchLayoutTile(panel){
     if(this.selectedLayoutChess){
-      console.log("selectedLayoutChess",this.selectedLayoutChess.tilePos)
+
       /*レイアウトの配列の更新 */
       if(this.selectedLayoutChess.tilePos.X !== 0 && this.selectedLayoutChess.tilePos.Y !== 0){
         /*削除*/
@@ -205,7 +275,6 @@ export default class Layout{
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }
-      console.log("this.scene.chessMapData",this.scene.chessMapData)
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
 
@@ -265,7 +334,6 @@ export default class Layout{
             frame: item.key,
             key: 'spritesheet'
           });
-          sprite.depth = 20;
           sprite.setInteractive();
 
           sprite.status = item.status;
@@ -313,7 +381,7 @@ export default class Layout{
     }
     if(count >= this.chessData.length){
       this.ModalWindowFin.setVisible(true);
-      this.btnYes.setVisible(true);
+      this.btnLayoutYes.setVisible(true);
     }
   }
   setLayoutChessPos(){
@@ -338,6 +406,7 @@ export default class Layout{
       }
     }
   }
+
   /*==================
   チェスのじょうほう
   ==================*/
@@ -431,11 +500,96 @@ export default class Layout{
       }
     }
   }
+  /*================================
+  王の決定＆駒にセット
+  ================================*/
+  setKingToChess(){
+    let chessKingGroupIndex = this.chessKingGroupIndex;
+    console.log("this.scene.GameManager",this.scene.GameManager)
+    this.scene.GameManager.playerChessGroup.children.entries.forEach(
+      (sprite,index) => {
+        if(sprite.groupIndex === chessKingGroupIndex){
+          sprite.icon_king.setVisible(true);
+          sprite.isKing = true;
+        }
+      }
+    );
+  }
+  /*================================
+  王の設定
+  ================================*/  
+  setKing(){
+    this.kingContainer.setVisible(true);
+    this.scene.GameManager.UIManager.ItemGroup.removeGroupInteractive();
+    this.hideLayoutUI();
+    this.setLayoutKingGroup();
+  }
+  setLayoutKingGroup(){
+
+    let _this = this;
+    
+    this.StageLayoutChessGroup.children.entries.forEach(
+      (sprite,index) => {
+        let panel = this.scene.add.sprite(
+          sprite.x,
+          sprite.y,
+          'spritesheet',
+          'panel_add_layout'
+        );
+        panel.setInteractive();
+        panel.depth = 100;
+        panel.groupIndex = sprite.groupIndex;
+        panel.tilePos = {
+          X: sprite.tilePos.X,
+          Y: sprite.tilePos.Y
+        }
+        panel.on('pointerdown', () => {
+          console.log("panel,groupIndex",panel.groupIndex)
+          _this.iconKing.x = panel.x;
+          _this.iconKing.y = panel.y;
+          _this.iconKing.groupIndex = panel.groupIndex;
+          _this.btnGameStartYes.setVisible(true);
+          _this.ModalGameStart.setVisible(true);
+          _this.iconKing.setVisible(true);
+          _this.chessKingGroupIndex = _this.iconKing.groupIndex;
+          // this.touchLayoutTile(sprite);
+        });
+        this.StageKingTileGroup.add(panel);
+      },this
+    );     
+
+  }  
   setYes(){
     this.hideAll();
+    this.scene.GameManager.UIManager.ItemGroup.addGroupInteractive();
     this.scene.layoutFin();
+    this.setKingToChess();
+  }
+  hideLayoutUI(){
+    this.Cursor.setVisible(false);
+    this.container.setVisible(false);
+    this.chessMoveArea.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(false);
+      }
+    );
+    this.chessDisp.setVisible(false);
+    this.move_icons.setVisible(false);
+    this.overlapArea.setVisible(false);
+    this.StageLayoutTileGroup.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(false);
+      }
+    );   
+
   }
   hideAll(){
+    /*王*/
+    this.iconKing.setVisible(false);
+    this.btnGameStartYes.setVisible(false);
+    this.ModalGameStart.setVisible(false);
+    this.kingContainer.setVisible(false);
+    /*デフォルト*/
     this.Cursor.setVisible(false);
     this.container.setVisible(false);
     this.chessMoveArea.children.entries.forEach(
@@ -458,6 +612,11 @@ export default class Layout{
       (sprite,index) => {
         sprite.setVisible(false);
       }
-    );   
+    );  
+    this.StageKingTileGroup.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(false);
+      }
+    );      
   }
 }

@@ -59,6 +59,30 @@ export default class StageManager {
       playerType: updateSetting.playerType
     });
   }
+  setKingToChessCPU(group,chessMapData){
+    let get_index = 0;
+    let back_index = 0;
+    console.log("chessMapData",chessMapData)
+    /*一番奥の駒を取得する*/
+    for(var i = 0; i < chessMapData.length; i++){
+      for(var k = 0; k < chessMapData[i].length; k++){
+        /*逆順（右端から）で検索*/
+        back_index = chessMapData[i].length - k - 1;
+        if(chessMapData[i][back_index] !== 0 && get_index === 0){
+          get_index = chessMapData[i][back_index];
+          // break;
+        }
+      }
+    }
+    group.children.entries.forEach(
+      (sprite,index) => {
+        if(sprite.groupIndex === get_index){
+          // sprite.icon_king.setVisible(true);
+          sprite.isKing = true;
+        }
+      }
+    );
+  }  
   /*==============================
   相手のチェスグループの配置
   ------------------------------*/

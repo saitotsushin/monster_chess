@@ -47,12 +47,12 @@ export default class LoadGameData {
       [0,0,0,0,0],
       [0,0,0,0,0],
       [0,0,0,0,0],
-      [0,0,1,0,0],
+      [0,2,1,0,0],
       [0,0,0,0,0]      
     ];
     this.chessData2 = [
       'chess_3',
-      // 'chess_1',
+      'chess_1',
       // 'chess_2',
       // 'chess_3',
       // 'chess_4',

@@ -5,6 +5,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     config.scene.add.existing(this);
     this.playerType = config.playerType;
 
+    this.isKing = false;
+
     /*==============================
     モンスターの移動エリアの表示
     ==============================*/    
@@ -77,10 +79,16 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.damageText.depth = 300;
     this.damageText.setVisible(false);
 
-
+    /*敵のアイコン*/
     this.icon_enemy = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_enemy');
     this.icon_enemy.setVisible(false);
     this.icon_enemy.depth = 20;
+    /*王のアイコン*/
+    this.icon_king = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_king');
+    this.icon_king.setVisible(false);
+    this.icon_king.depth = 20;
+
+
     this.attackingTarget;
 
     this.chessStatus = this.scene.add.sprite(
@@ -148,7 +156,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.AT_text.y = position.y + 6;
     this.HP_text.x = position.x + 2;
     this.HP_text.y = position.y + 6;
-        
+
+    this.icon_king.x = position.x - 9;
+    this.icon_king.y = position.y - 10;        
+
     if(this.playerType === 'player2'){
       this.icon_enemy.x = position.x;
       this.icon_enemy.y = position.y;
@@ -194,6 +205,18 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       attackingTarget.status.hp = 0;
       this.attackingTarget = attackingTarget;
       this.attackingTarget.status.condition = "explode";
+      if(this.attackingTarget.isKing){
+        console.info("王を撃破しました")
+        this.scene.STATUS.STAGE = "GAMEOVER";
+        if(this.attackingTarget.playerType === "player1"){
+          console.info("player1 LOSE");
+          this.scene.STATUS.WIN_PLAYER = "player2";
+        }
+        if(this.attackingTarget.playerType === "player2"){
+          console.info("player2 LOSE");
+          this.scene.STATUS.WIN_PLAYER = "player1";      
+        }
+      }
       // if(this.scene.registry.list.gameMode === "NET"){
       //   this.scene.StageManager.Network.condition = 'explode';
       // }
@@ -249,7 +272,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
         this.HP_text.setText(this.status.hp);
         if(status === "explode"){
           this.anims.play('anime_explode');
-          this.icon_enemy.setVisible(false);  
+          this.icon_enemy.setVisible(false); 
+          this.icon_king.setVisible(false);  
         }
       },
       callbackScope: this
@@ -257,6 +281,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     
   }
   explodeComplete(_this){
+    this.scene.clearGame();
     this.scene.removeChess(_this);
   }
 

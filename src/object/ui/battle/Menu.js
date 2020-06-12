@@ -5,10 +5,12 @@ import BtnFin from './BtnFin';
 export default class Menu {
   constructor(config) {
     this.scene = config.scene;
+    this.BtnItem;
   }
   initScene(){
     this.flgItem = false;
     this.flgInfo = false;
+    
     // /*==================
     // アイテムウインドウ
     // ==================*/    
@@ -26,7 +28,17 @@ export default class Menu {
     // );
     // this.ModalWindow.setVisible(false);
 
-
+    /*==================
+    ボタン：アイテム
+    ==================*/
+    this.BtnItem = new BtnItem({
+      scene: this.scene,
+      x: 15,
+      y: 194,
+      key: 'spritesheet',
+      frame: 'btn_return'
+    });
+    this.BtnItem.setVisible(false)
     /*==================
     ボタン：完了
     ==================*/
@@ -48,17 +60,12 @@ export default class Menu {
   ==================*/  
   itemOpen(){
   }
-  itemClose(){
-  } 
   /*==================
   ボタンイベント：インフォ
   ==================*/   
   infoOpen(){
     // this.ModalWindow.setVisible(true);
   }
-  infoClose(){
-    // this.ModalWindow.setVisible(false);
-  }  
   /*==================
   ボタンステータス：完了
   ==================*/   
@@ -93,6 +100,12 @@ export default class Menu {
   ==================*/    
   hide(){
     this.BtnFin.setVisible(false);    
+  }
+  /*==============================
+  アイテム選択中
+  ------------------------------*/   
+  touchItem(){
+    this.BtnItem.show();
   }
    
 }
