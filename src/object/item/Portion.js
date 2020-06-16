@@ -14,23 +14,10 @@ export default class Portion extends Base {
     this.y = config.y;
 
     this.itemTYPE = 'CURE';
+    this.fireType = 'STEP_ON';
 
     this.isSet = false;
 
-    this.setInteractive();
-    ``
-    this.on('pointerdown', () => {
-
-      // this.scene.itemManager.Cursor.setVisible(true);
-      
-      // this.scene.itemManager.Cursor.x = this.x + 5;
-      // this.scene.itemManager.Cursor.y = this.y;
-      
-      // // this.scene.StageManager.STATUS.STAGE = "SELECTED_item"
-      // this.scene.PlayerManager.selecteditem = this;
-      // this.scene.StageManager.MoveArea.hide(this.scene.StageManager.selectedChess);
-      // // this.scene.ModalManager.open();
-    },this);  
   }
   firing(cureTarget){
     // if(this.scene.registry.list.gameMode === "NET"){
@@ -50,5 +37,6 @@ export default class Portion extends Base {
     //   cureTarget.status.hp += curePoint;
     // }
     cureTarget.damage(curePoint,'CURE');
+    this.setVisible(false);
   }  
 }

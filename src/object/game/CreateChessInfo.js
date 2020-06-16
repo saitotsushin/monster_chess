@@ -48,7 +48,6 @@ export default class CreateChessInfo {
             key: 'spritesheet'
           });
           sprite.depth = 20;
-          // sprite.setInteractive();
           sprite.status = item.status;
           sprite.cost = item.cost;
           sprite.no = item.no;

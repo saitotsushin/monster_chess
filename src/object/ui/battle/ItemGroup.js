@@ -14,6 +14,7 @@ export default class ItemGroup {
       y: 0
     };
     this.itemIndex = 0;
+    this.setted = false;
     this.create();
   }
   create(mode){
@@ -50,7 +51,7 @@ export default class ItemGroup {
             y: bombHeight,
             key: 'spritesheet',
             frame: item.key,
-            groupIndex: i
+            groupIndex: i + 1
           });
           // if(mode === "player2"){
           //   sprite.removeInteractive();
@@ -64,9 +65,8 @@ export default class ItemGroup {
           sprite.setted = false;
           sprite.isStage = false;
           sprite.itemIndex = i;
-          sprite.setInteractive();
           sprite.setVisible(false);
-          sprite.on('pointerdown', function (pointer) {           
+          sprite.on('pointerdown', function (pointer) {
             _this.beforePos.x = this.x;
             _this.beforePos.y = this.y;
             _this.itemIndex = this.itemIndex;
@@ -146,7 +146,9 @@ export default class ItemGroup {
   addGroupInteractive(){
     this.addGroup.children.entries.forEach(
       (sprite) => {
-        sprite.setInteractive();
+        if(!sprite.setted){
+          sprite.setInteractive();
+        } 
       }
     );
   }   

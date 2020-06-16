@@ -1,13 +1,11 @@
 import Base from './Base';
-// import Network from '../stage/Network';
-export default class Bomb extends Base {
+export default class Reflect extends Base {
 
   constructor(config) {
 
     super(config);
 
     this.scene = config.scene;
-
 
     this.depth = 5;
 
@@ -17,20 +15,12 @@ export default class Bomb extends Base {
 
     this.itemTYPE = 'ATTACK';
 
-    this.fireType = 'STEP_ON';
+    this.fireType = 'ATTACKED';
 
     this.isSet = false;
-
+ 
   }
   firing(attackingTarget){
-
-    // if(this.scene.registry.list.gameMode === "NET"){
-    //   this.scene.StageManager.Network.fireditem(
-    //     attackingTarget.groupIndex,
-    //     attackingTarget.playerType,
-    //     attackingTarget.pos
-    //   );
-    // }
     let damagePoint = this.status.power;
 
     attackingTarget.damage(damagePoint,'ATTACK');

@@ -25,7 +25,7 @@ export default class LoadGameData {
     ];
     this.itemData = [
       "item_bomb",
-      "item_bomb",
+      "item_reflect",
       "item_portion"
     ];
     this.stockData = [
@@ -59,9 +59,9 @@ export default class LoadGameData {
       'chess_5'
     ];
     this.itemData2 = [
-      "item_bomb",
-      "item_bomb",
-      "item_portion"
+      "item_reflect",
+      "item_reflect",
+      "item_reflect"
     ];
     /*======================
     ステージデータ

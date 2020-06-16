@@ -62,6 +62,8 @@ class BattleScene extends Phaser.Scene {
   }
   create(){
 
+    console.log("scen create")
+
     /*背景色*/
     this.cameras.main.setBackgroundColor('#FFFFFF');    
 
@@ -139,6 +141,7 @@ class BattleScene extends Phaser.Scene {
   初期化
   ------------------------------*/
   initScene(){
+    console.log("initScene")
     this.GameManager.initScene({
       map: this.stageMap,
       chessData: this.registry.list.chessData,
@@ -180,6 +183,7 @@ class BattleScene extends Phaser.Scene {
   ------------------------------*/  
   startGame(){
     this.GameManager.startGame();
+    
   }
   /*==============================
   ゲームクリア

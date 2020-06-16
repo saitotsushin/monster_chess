@@ -13,10 +13,12 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.scene = config.scene;
 
     this.groupIndex = config.groupIndex;
+    this.setInteractive();
 
     this.setted = false;
+    // this.setInteractive();
 
-    config.scene.physics.world.enable(this);
+    // config.scene.physics.world.enable(this);
     config.scene.add.existing(this);
     this.status = {
       power: 100

@@ -60,8 +60,6 @@ export default class GameManager {
       chessData: setting.chessData,
       chessMapData: setting.chessMapData
     });
-    this.Layout.initScene();
-
 
     /*相手のチェスを生成*/
     this.playerChessGroup2 = this.scene.add.group();
@@ -96,8 +94,10 @@ export default class GameManager {
     }    
     this.UIManager.createItemGroup(setting_item2);
 
+
     /*ステージ配置用のトラップタイルを生成*/
     this.UIManager.createItemStage();
+    this.Layout.initScene();
 
   }
   /*==============================
@@ -200,22 +200,31 @@ export default class GameManager {
   /*==============================
   移動後のステージ上のアイテムチェック
   ------------------------------*/    
-  checkStageItem(posInt,chess){
+  checkStageItem(posInt,chess,mode){
     let itemIndex;
     let item;
-    console.log("this.scene.itemMap",this.scene.itemMap)
     if(this.scene.itemMap[posInt.Y][posInt.X] !== 0){
       itemIndex = this.scene.itemMap[posInt.Y][posInt.X];
       item = this.playerItemGroup.children.entries[itemIndex-1];
-      this.playerItemGroup.children.entries[itemIndex-1] = 0;
+      if(item){
+        if(item.fireType === mode){
+          item.firing(chess);
+          this.playerItemGroup.children.entries[itemIndex-1] = 0;
+          return true;  
+        }
+      }  
     }
     if(this.scene.itemMap2[posInt.Y][posInt.X] !== 0){
       itemIndex = this.scene.itemMap2[posInt.Y][posInt.X];
       item = this.playerItemGroup2.children.entries[itemIndex-1];
-      this.playerItemGroup2.children.entries[itemIndex-1] = 0;
-    }
-    if(item){
-      item.firing(chess);
+      if(item){
+        console.log("item",item)
+        if(item.fireType === mode){
+          item.firing(chess);
+          this.playerItemGroup2.children.entries[itemIndex-1] = 0;
+          return true;  
+        }
+      }  
     }
   }
   /*==============================
@@ -365,7 +374,7 @@ export default class GameManager {
       map[NextMovePos.Y][NextMovePos.X] = chessIndex;
       this.scene.chessMapData = map;
       /*アイテムのチェック*/
-      this.checkStageItem(NextMovePos,this.selectedChess);
+      this.checkStageItem(NextMovePos,this.selectedChess,'STEP_ON');
       /*ステージのアップデート*/
       this.updateStage();
       this.StageManager.showMoveArea({
@@ -388,10 +397,21 @@ export default class GameManager {
   攻撃完了
   ------------------------------*/
   actionChessAction(status){
+
+    console.log("actionChessAction")
+
     if(status === "YES"){
+      let attackPos = this.attackedChess.tilePos;
       this.UIManager.fin('ATTACK'); 
       this.StageManager.hideMoveArea();
-      this.selectedChess.attack(this.attackedChess);
+      /*アイテムのチェック*/
+      let isItemFired = this.checkStageItem(attackPos,this.selectedChess,'ATTACKED');
+      if(isItemFired){
+        this.scene.itemMap[attackPos.Y][attackPos.X] = 0;
+        this.scene.itemMap2[attackPos.Y][attackPos.X] = 0;        
+      }else{
+        this.selectedChess.attack(this.attackedChess);
+      }
       this.scene.chengeStageMode('FIN');
     }    
     if(status === "NO"){

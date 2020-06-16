@@ -34,7 +34,6 @@ export default class CreateChessGroup {
             key: 'spritesheet'
           });
           sprite.depth = 20;
-          // sprite.setInteractive();
           sprite.status = item.status;
           sprite.playerType = playerType;
           sprite.moveAreaMapBase = item.moveAreaMapBase;
