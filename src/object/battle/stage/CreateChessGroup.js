@@ -74,6 +74,7 @@ export default class CreateChessGroup {
             Y: i
           }
           chess.move(position,int);
+          chess.icon_levelup.setVisible(false);
 
           let settingStatus = {
             power: chess.status.power,

@@ -102,12 +102,22 @@ export default class StageManager {
   チェスの表示
   ------------------------------*/
   showChessGroup(group){
+    let _this = this;
     group.children.entries.forEach(
       (sprite,index) => {
         sprite.setVisible(true);
         sprite.AT_text.setVisible(true);
         sprite.HP_text.setVisible(true);
         sprite.chessStatus.setVisible(true);
+        sprite.setVisible(true);
+        //地形の力
+        let myAttribute = Number(sprite.attribute);
+        let groundType = _this.scene.registry.list.mapData[sprite.tilePos.Y][sprite.tilePos.X];
+        if(myAttribute === groundType){
+          sprite.icon_levelup.setVisible(true);
+        }else{
+          sprite.icon_levelup.setVisible(false);
+        }        
       }
     );
   }  

@@ -20,6 +20,8 @@ export default class Portion extends Base {
 
   }
   firing(cureTarget){
+    alert('アイテム：ポーション発動')
+
     // if(this.scene.registry.list.gameMode === "NET"){
     //   this.scene.StageManager.Network.fireditem(
     //     cureTarget.groupIndex,

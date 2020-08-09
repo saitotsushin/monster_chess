@@ -23,6 +23,7 @@ export default class Bomb extends Base {
 
   }
   firing(attackingTarget){
+    alert('トラップ：ボム発動')
 
     // if(this.scene.registry.list.gameMode === "NET"){
     //   this.scene.StageManager.Network.fireditem(

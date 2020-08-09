@@ -88,6 +88,10 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.icon_king.setVisible(false);
     this.icon_king.depth = 20;
 
+    /*レベルアップのアイコン（地形）*/
+    this.icon_levelup = this.scene.add.sprite(this.x,this.y,'spritesheet','icon_level_up');
+    this.icon_levelup.setVisible(false);
+    this.icon_levelup.depth = 20;
 
     this.attackingTarget;
 
@@ -159,14 +163,24 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     this.icon_king.x = position.x - 9;
     this.icon_king.y = position.y - 10;        
+    
+    this.icon_levelup.x = position.x + 9;
+    this.icon_levelup.y = position.y - 10;   
 
     if(this.playerType === 'player2'){
       this.icon_enemy.x = position.x;
       this.icon_enemy.y = position.y;
     }
+    //地形の力
+    let myAttribute = Number(this.attribute);
+    let groundType = this.scene.registry.list.mapData[this.tilePos.Y][this.tilePos.X];
+    if(myAttribute === groundType){
+      this.icon_levelup.setVisible(true);
+    }else{
+      this.icon_levelup.setVisible(false);
+    }
   }
   attack(attackingTarget){
-
     let groundType = this.scene.registry.list.mapData[attackingTarget.tilePos.Y][attackingTarget.tilePos.X];
     let power = 0;
     let myAttribute = Number(this.attribute);
@@ -175,23 +189,23 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     //地形の力
     if(myAttribute === groundType){
 
-      power = this.status.power * 100;
+      power = this.status.power * 2;
 
     }else{
       power = this.status.power;
     }
     //属性の優劣
-    if(myAttribute !== enemyAttribute){
-      if(myAttribute === 1 && enemyAttribute === 2){
-        power = this.status.power * 100;
-      }
-      if(myAttribute === 2 && enemyAttribute === 3){
-        power = this.status.power * 100;
-      }
-      if(myAttribute === 3 && enemyAttribute === 1){
-        power = this.status.power * 100;
-      }
-    }
+    // if(myAttribute !== enemyAttribute){
+    //   if(myAttribute === 1 && enemyAttribute === 2){
+    //     power = this.status.power * 100;
+    //   }
+    //   if(myAttribute === 2 && enemyAttribute === 3){
+    //     power = this.status.power * 100;
+    //   }
+    //   if(myAttribute === 3 && enemyAttribute === 1){
+    //     power = this.status.power * 100;
+    //   }
+    // }
     attackingTarget.status.hp -= Number(power);
 
 

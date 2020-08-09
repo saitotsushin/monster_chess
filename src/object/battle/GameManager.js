@@ -158,6 +158,7 @@ export default class GameManager {
     chess.HP_text.destroy();
     chess.damageText.destroy();
     chess.destroy();
+    chess.icon_levelup.destroy();
     // chess.setVisible(false);
     
     this.scene.STATUS.PLAYER1.CHESS_COUNT = 0;
