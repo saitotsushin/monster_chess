@@ -222,7 +222,6 @@ export function checkAttackMap(chess,areaMap,pos){
           _pos1.Y = i;
           let _playerChess1 = _scene.GameManager.getChessFromPos(_pos1);
           if(_playerChess1){
-            console.warn("攻撃相手発見")
 
             //攻撃した時の相手のHPの残りをパーセントで返す。
             simulateDestroyPer = simulatBattle({

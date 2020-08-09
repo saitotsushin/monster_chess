@@ -158,7 +158,6 @@ export function setRoom(){
     global_roomID = roomId;
     // scene.registry.list.room = room;
     room.on('child_changed', function(data) {
-      console.info("guestが見つかりました。");
       room.off();//リスナーのデタッチ、コールバックを削除
       scene.goGameScene();
     });

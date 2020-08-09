@@ -146,6 +146,7 @@ export default class GameManager {
   チェスの削除
   ------------------------------*/    
   removeChess(chess){
+    console.log("removeChess")
     let playerType = chess.playerType;
     let posInt = {
       X: chess.tilePos.X,
@@ -185,14 +186,12 @@ export default class GameManager {
     }
     if(this.scene.STATUS.PLAYER1.CHESS_COUNT === 0){
       this.scene.STATUS.STAGE = "GAMEOVER";
-      console.info("player1 LOSE");
       this.scene.STATUS.WIN_PLAYER = "player2";
       this.scene.clearGame();
     }
 
     if(this.scene.STATUS.PLAYER2.CHESS_COUNT === 0){
       this.STATUS.STAGE = "GAMEOVER";
-      console.info("player2 LOSE");
       this.scene.STATUS.WIN_PLAYER = "player1";
       this.scene.clearGame();
     }
@@ -218,7 +217,6 @@ export default class GameManager {
       itemIndex = this.scene.itemMap2[posInt.Y][posInt.X];
       item = this.playerItemGroup2.children.entries[itemIndex-1];
       if(item){
-        console.log("item",item)
         if(item.fireType === mode){
           item.firing(chess);
           this.playerItemGroup2.children.entries[itemIndex-1] = 0;
@@ -397,8 +395,6 @@ export default class GameManager {
   攻撃完了
   ------------------------------*/
   actionChessAction(status){
-
-    console.log("actionChessAction")
 
     if(status === "YES"){
       let attackPos = this.attackedChess.tilePos;

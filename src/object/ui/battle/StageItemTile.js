@@ -35,12 +35,10 @@ export default class StageitemTile {
               let itemIndex = _this.scene.GameManager.UIManager.selectedItem.itemIndex;
               _this.scene.GameManager.UIManager.selectedItem.isStage = true;
               _this.scene.touchCanPutTile(this.pos,itemIndex);
-              console.info("配置可能");
+
             }  
           }else{
-            console.info("配置不可");
           }
-          // return this.pos;
         }); 
       }
     }

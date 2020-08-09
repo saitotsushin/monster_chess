@@ -12,6 +12,7 @@ class BattleScene extends Phaser.Scene {
   
     this.stageMap = "map1";//ステージマップの指定
     this.STATUS = {
+      STAGE: "",
       GAME_MODE: "",
       STAGE_MODE: "",
       WIN_PLAYER: "",
@@ -62,12 +63,11 @@ class BattleScene extends Phaser.Scene {
   }
   create(){
 
-    console.log("scen create")
-
     /*背景色*/
     this.cameras.main.setBackgroundColor('#FFFFFF');    
 
     this.STATUS.GAME_MODE = "";
+    this.STATUS.STAGE = "";
     this.STATUS.STAGE_MODE = "";
     this.STATUS.WIN_PLAYER = "";
     this.STATUS.PLAYER1.CHESS_COUNT = 0;
@@ -141,7 +141,6 @@ class BattleScene extends Phaser.Scene {
   初期化
   ------------------------------*/
   initScene(){
-    console.log("initScene")
     this.GameManager.initScene({
       map: this.stageMap,
       chessData: this.registry.list.chessData,

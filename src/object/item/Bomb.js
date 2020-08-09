@@ -33,18 +33,30 @@ export default class Bomb extends Base {
     // }
     let damagePoint = this.status.power;
 
-    attackingTarget.damage(damagePoint,'ATTACK');
+    // attackingTarget.damage(damagePoint,'ATTACK');
     this.setVisible(false);
     attackingTarget.status.hp -= damagePoint;
 
     let _scene = attackingTarget.scene;
 
     if(attackingTarget.status.hp <= 0){
+      attackingTarget.damage(damagePoint,'ATTACK','explode');
+      if(attackingTarget.isKing){
+        this.scene.STATUS.STAGE = "GAMEOVER";
+        if(attackingTarget.playerType === "player1"){
+          this.scene.STATUS.WIN_PLAYER = "player2";
+        }
+        if(attackingTarget.playerType === "player2"){
+          this.scene.STATUS.WIN_PLAYER = "player1";      
+        }
+      } 
       let queRemove = setTimeout(function(){
         _scene.GameManager.removeChess(attackingTarget);
         clearTimeout(queRemove);
       }, 2500);
       attackingTarget.status.hp = 0;
-    } 
+    }else{
+      attackingTarget.damage(damagePoint,'ATTACK','');
+    }
   }  
 }

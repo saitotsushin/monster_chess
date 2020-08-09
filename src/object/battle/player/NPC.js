@@ -61,7 +61,6 @@ export default class NPC{
         let worldPos = this.scene.GameManager.getWorldPos(tilePos);
         let queMove = setTimeout(function(){
           /*アイテムのチェック*/
-          console.log("移動ごtilePos",tilePos)
           chess.move(worldPos,tilePos);
           _this.scene.GameManager.checkStageItem(tilePos,chess,'STEP_ON');
           cursor.x = chess.x;
@@ -128,7 +127,6 @@ export default class NPC{
     let randomChessIndex =  Math.floor( Math.random() * (playerChessGroup2.length - 1 + 1) ) + 0;
     let selectedChess = playerChessGroup2[randomChessIndex];
     let chessPos = selectedChess.tilePos;
-    console.log("selectedChess",selectedChess)
 
     /*==============
     デバッグ START
@@ -146,10 +144,8 @@ export default class NPC{
     //       let groupIndex = this.scene.itemMap2[i][k] - 1;
     //       this.scene.GameManager.playerItemGroup2.children.entries.forEach(
     //         (sprite,index) => {
-    //           console.log("sprite.groupIndex",sprite.groupIndex)
     //           if(sprite.groupIndex === groupIndex){
     //             //デバッグ用に表示
-    //             console.log("i="+i+"/k="+k)
     //             sprite.x = k * 32 + 16;
     //             sprite.y = i * 32 + 40;
     //             sprite.setVisible(true);
@@ -173,16 +169,8 @@ export default class NPC{
       }
       let selectedItem = itemGroup2[this.itemCount];
       this.itemCount++;
-      // if(selectedItem.setted === true){
-      //   return;
-      // }
-      console.log("selectedItem",selectedItem)
       /*アイテムマップの更新*/
       this.scene.itemMap2[chessPos.Y][chessPos.X] = selectedItem.groupIndex;
-      // console.log("chessPos",chessPos)
-      // console.log("this.scene.itemMap2__",this.scene.itemMap2)
-      // console.log("randomIndex",randomIndex)
-      console.log("this.scene.itemMap2",this.scene.itemMap2)
 
       //設定済みにする。
       selectedItem.setted = true;

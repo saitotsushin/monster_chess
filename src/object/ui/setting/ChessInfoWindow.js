@@ -276,12 +276,12 @@ export default class ChessInfoWindow{
             // }
             // let itemIndex = this.scene.GameManager.UIManager.selectedItem.itemIndex; 
             _this.scene.touchInfoTile(this.pos);  
-          console.log("配置可能");
+
           }); 
         }else{
           tile.setTexture('spritesheet','chess_shadow');
           tile.on('pointerdown', function (pointer) {
-            console.log("配置不可");
+
           }); 
         }
       }

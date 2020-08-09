@@ -192,13 +192,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
         power = this.status.power * 100;
       }
     }
-
-    // let damagePoint = power - attackingTarget.status.difence;
-    
     attackingTarget.status.hp -= Number(power);
-    // if(this.scene.registry.list.gameMode === "NET"){
-    //   this.scene.StageManager.Network.attackPoint = damagePoint;
-    // }
 
 
     if(attackingTarget.status.hp <= 0){
@@ -206,20 +200,14 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       this.attackingTarget = attackingTarget;
       this.attackingTarget.status.condition = "explode";
       if(this.attackingTarget.isKing){
-        console.info("王を撃破しました")
         this.scene.STATUS.STAGE = "GAMEOVER";
         if(this.attackingTarget.playerType === "player1"){
-          console.info("player1 LOSE");
           this.scene.STATUS.WIN_PLAYER = "player2";
         }
         if(this.attackingTarget.playerType === "player2"){
-          console.info("player2 LOSE");
           this.scene.STATUS.WIN_PLAYER = "player1";      
         }
       }
-      // if(this.scene.registry.list.gameMode === "NET"){
-      //   this.scene.StageManager.Network.condition = 'explode';
-      // }
       attackingTarget.damage(Number(power),'ATTACK','explode');
     }else{
       // if(this.scene.registry.list.gameMode === "NET"){
@@ -237,6 +225,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.HP_text.setText(_hp);
   }  
   damage(damagePoint,mode,status){
+    console.log("damage")
     if(mode === "ATTACK"){
       this.damageText.setTexture('bitmapFontRed');
     }else{
@@ -281,6 +270,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     
   }
   explodeComplete(_this){
+    console.log("explodeComplete")
     this.scene.clearGame();
     this.scene.removeChess(_this);
   }
