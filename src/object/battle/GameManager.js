@@ -121,8 +121,8 @@ export default class GameManager {
     this.NPC.setItemByRandom();
 
     /*チェスグループの表示*/
-    this.StageManager.showChessGroup(this.playerChessGroup);
-    this.StageManager.showChessGroup(this.playerChessGroup2);
+    this.StageManager.showChessGroup(this.playerChessGroup,'player1');
+    this.StageManager.showChessGroup(this.playerChessGroup2,'player2');
 
     this.scene.startGame();
   }

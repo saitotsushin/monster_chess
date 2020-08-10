@@ -164,8 +164,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.icon_king.x = position.x - 9;
     this.icon_king.y = position.y - 10;        
     
-    this.icon_levelup.x = position.x + 9;
-    this.icon_levelup.y = position.y - 10;   
+    this.icon_levelup.x = position.x - 9;
+    this.icon_levelup.y = position.y;   
 
     if(this.playerType === 'player2'){
       this.icon_enemy.x = position.x;
@@ -181,6 +181,9 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     }
   }
   attack(attackingTarget){
+    if(this.status.hp <= 0){
+      return false;
+    }
     let groundType = this.scene.registry.list.mapData[attackingTarget.tilePos.Y][attackingTarget.tilePos.X];
     let power = 0;
     let myAttribute = Number(this.attribute);

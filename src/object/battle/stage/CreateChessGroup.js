@@ -36,6 +36,9 @@ export default class CreateChessGroup {
           sprite.depth = 20;
           sprite.status = item.status;
           sprite.playerType = playerType;
+          // if(playerType === 'player2'){
+          //   sprite.icon_enemy.setVisible(true);
+          // }
           sprite.moveAreaMapBase = item.moveAreaMapBase;
           sprite.attackAreaMapBase = item.attackAreaMapBase;
           sprite.areaMapBase = sprite.mergeArea(

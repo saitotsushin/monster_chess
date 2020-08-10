@@ -101,8 +101,10 @@ export default class StageManager {
   /*==============================
   チェスの表示
   ------------------------------*/
-  showChessGroup(group){
+  showChessGroup(group,playerType){
     let _this = this;
+    console.log("group.playerType",playerType)
+
     group.children.entries.forEach(
       (sprite,index) => {
         sprite.setVisible(true);
@@ -117,7 +119,10 @@ export default class StageManager {
           sprite.icon_levelup.setVisible(true);
         }else{
           sprite.icon_levelup.setVisible(false);
-        }        
+        }     
+        if(playerType === "player2"){
+          sprite.icon_enemy.setVisible(true);
+        }   
       }
     );
   }  

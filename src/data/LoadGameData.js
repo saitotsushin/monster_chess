@@ -25,8 +25,8 @@ export default class LoadGameData {
     ];
     this.itemData = [
       "item_bomb",
-      "item_reflect",
-      "item_portion"
+      "item_bomb",
+      "item_bomb"
     ];
     this.stockData = [
       "chess_1",
