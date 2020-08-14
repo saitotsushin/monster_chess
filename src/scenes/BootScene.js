@@ -53,6 +53,7 @@ class BootScene extends Phaser.Scene {
 
     this.load.spritesheet('anime_explode', 'assets/images/anime_explode.png', { frameWidth: 20, frameHeight: 20 }); 
     this.load.spritesheet('anime_attack', 'assets/images/anime_attack.png', { frameWidth: 20, frameHeight: 20 }); 
+    this.load.spritesheet('anime_portion', 'assets/images/anime_portion.png', { frameWidth: 20, frameHeight: 20 }); 
 
     this.load.image('tiles', 'assets/tilemaps/tile.png');
     this.load.atlas('spritesheet', 'assets/images/spritesheet.png', 'assets/sprites.json');

@@ -284,8 +284,47 @@ export default class UIManager {
   updateStageTrap(mode){
     if(this.selectedItem){
       if(mode === "ADD"){
-        this.selectedItem.x = this.selectedItemPos.worldPos.x;
-        this.selectedItem.y = this.selectedItemPos.worldPos.y;
+        /*======
+        マスクの追加
+        ========*/  
+        // this.mask = this.scene.make.image({
+        //   x: this.x,
+        //   y: this.y,
+        //   frame: "mask_15x10",
+        //   key: 'spritesheet',
+        //   add: false
+        // });
+        // var mask = maskImage.createBitmapMask();
+
+        // // this.mask.scaleX = 1;
+        // // this.mask.scaleY = 1;
+        // // this.maskImage = new Phaser.Display.Masks.BitmapMask(this.scene, this.mask);
+        
+        // this.scene.setMask(this.selectedItem); 
+        // var shape2 = this.scene.add.graphics().fillRect(
+        //   this.selectedItemPos.worldPos.x,
+        //   this.selectedItemPos.worldPos.y - 13,
+        //   15,
+        //   11
+        // );
+        // shape2.depth = 100;
+        // shape2.fillStyle(0xFFFFFF, 1.0);
+        var shape1 = this.scene.make.graphics().fillRect(
+          this.selectedItemPos.worldPos.x,
+          this.selectedItemPos.worldPos.y - 14,
+          15,
+          11
+        );
+        var geomask1 = shape1.createGeometryMask();
+        this.selectedItem.setMask(geomask1);
+        // this.selectedItem.alpha = 0.2;
+        this.selectedItem.x = this.selectedItemPos.worldPos.x + 8;
+        this.selectedItem.y = this.selectedItemPos.worldPos.y - 6;
+        this.selectedItem.depth = 10;
+        this.selectedItem.item_frame.setVisible(true);
+        this.selectedItem.item_frame.depth = 9;
+        this.selectedItem.item_frame.x = this.selectedItemPos.worldPos.x + 1;
+        this.selectedItem.item_frame.y = this.selectedItemPos.worldPos.y + 1;
         this.selectedItem.removeInteractive();
         this.selectedItem.setted = true;
       }

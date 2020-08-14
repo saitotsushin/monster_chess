@@ -14,6 +14,9 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     this.groupIndex = config.groupIndex;
     this.setInteractive();
+    /*アイテムのフレーム*/
+    this.item_frame = this.scene.add.sprite(this.x,this.y,'spritesheet','item_frame');
+    this.item_frame.setVisible(false);
 
     this.setted = false;
     // this.setInteractive();

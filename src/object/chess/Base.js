@@ -242,17 +242,18 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.HP_text.setText(_hp);
   }  
   damage(damagePoint,mode,status){
-    console.log("damage")
+    console.log("mode",mode)
     if(mode === "ATTACK"){
       this.damageText.setTexture('bitmapFontRed');
+      this.scene.GameManager.UIManager.AnimeAttack.anims.play('anime_attack');
     }else{
       this.damageText.setTexture('bitmapFontBlue');
+      this.scene.GameManager.UIManager.AnimeAttack.anims.play('anime_portion');
     }
     this.damageText.x = this.x + 5;
     this.damageText.y = this.y - 5;
 
     /*攻撃アニメーションの追加*/
-    this.scene.GameManager.UIManager.AnimeAttack.anims.play('anime_attack');
     this.scene.GameManager.UIManager.AnimeAttack.x = this.x;
     this.scene.GameManager.UIManager.AnimeAttack.y = this.y;
     this.scene.GameManager.UIManager.AnimeAttack.setVisible(true)

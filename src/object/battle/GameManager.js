@@ -445,6 +445,10 @@ export default class GameManager {
     this.playerItemGroup.children.entries[index].x = setPos.worldPos.x;
     this.playerItemGroup.children.entries[index].y = setPos.worldPos.y;
     this.playerItemGroup.children.entries[index].depth = 400;
+    // this.playerItemGroup.children.entries[index].item_frame.setVisible(true);
+    // this.playerItemGroup.children.entries[index].item_frame.depth = 9;
+    // this.playerItemGroup.children.entries[index].item_frame.x = setPos.worldPos.x;
+    // this.playerItemGroup.children.entries[index].item_frame.y = setPos.worldPos.y;
     this.UIManager.touchCanPutTile(setPos,index);
   }
   /*==============================

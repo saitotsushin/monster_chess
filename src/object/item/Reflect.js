@@ -27,6 +27,7 @@ export default class Reflect extends Base {
 
     
     this.setVisible(false);
+    this.item_frame.setVisible(false);
     attackingTarget.status.hp -= damagePoint;
 
     let _scene = attackingTarget.scene;

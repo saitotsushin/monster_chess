@@ -26,6 +26,16 @@ export default class GameAnimations{
       frameRate: 16,
       repeat: 0,
       hideOnComplete: true
+    });
+    /*------------------
+    攻撃：通常
+    ------------------*/
+    this.scene.anims.create({
+      key: 'anime_portion',
+      frames: this.scene.anims.generateFrameNumbers('anime_portion', { start: 0, end: 5 }),
+      frameRate: 16,
+      repeat: 0,
+      hideOnComplete: true
     }); 
   }
 }

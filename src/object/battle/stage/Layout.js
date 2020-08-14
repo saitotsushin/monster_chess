@@ -248,7 +248,7 @@ export default class Layout{
         'panel_add_layout'
       );
       sprite.setInteractive();
-      sprite.depth = 10;
+      sprite.depth = 5;
       sprite.tileIndex = i;
       sprite.tilePos = {
         X: tileX,

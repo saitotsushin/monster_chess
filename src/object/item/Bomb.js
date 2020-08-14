@@ -36,6 +36,8 @@ export default class Bomb extends Base {
 
     // attackingTarget.damage(damagePoint,'ATTACK');
     this.setVisible(false);
+
+    this.item_frame.setVisible(false);
     attackingTarget.status.hp -= damagePoint;
 
     let _scene = attackingTarget.scene;

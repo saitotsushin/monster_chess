@@ -40,5 +40,6 @@ export default class Portion extends Base {
     // }
     cureTarget.damage(curePoint,'CURE');
     this.setVisible(false);
+    this.item_frame.setVisible(false);
   }  
 }
