@@ -242,7 +242,6 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     this.HP_text.setText(_hp);
   }  
   damage(damagePoint,mode,status){
-    console.log("mode",mode)
     if(mode === "ATTACK"){
       this.damageText.setTexture('bitmapFontRed');
       this.scene.GameManager.UIManager.AnimeAttack.anims.play('anime_attack');
@@ -288,7 +287,6 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     
   }
   explodeComplete(_this){
-    console.log("explodeComplete")
     this.scene.clearGame();
     this.scene.removeChess(_this);
   }

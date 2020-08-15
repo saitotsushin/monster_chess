@@ -57,7 +57,7 @@ export default class GameManager {
     this.UIManager.initScene();
     this.StageManager.initScene({
       map: setting.map,
-      chessData: setting.chessData,
+      chessDataMaster: setting.chessDataMaster,
       chessMapData: setting.chessMapData
     });
 
@@ -69,7 +69,6 @@ export default class GameManager {
       chessMapData: this.scene.chessMapData2,//レイアウトデータ
       playerType: 'player2'
     };
-
     this.StageManager.createEnemyGroup(setting2);
     this.StageManager.setKingToChessCPU(this.playerChessGroup2,this.scene.chessMapData2);
 
@@ -146,7 +145,6 @@ export default class GameManager {
   チェスの削除
   ------------------------------*/    
   removeChess(chess){
-    console.log("removeChess")
     let playerType = chess.playerType;
     let posInt = {
       X: chess.tilePos.X,

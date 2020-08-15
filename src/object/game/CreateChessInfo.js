@@ -39,7 +39,7 @@ export default class CreateChessInfo {
 
     for(var i = 0; i < playerChessList.length;i++){
       chessDataList.filter(function(item, index){
-        if(item.key === playerChessList[i]){
+        if(item.key === playerChessList[i][0]){
           let sprite = new Chess({
             scene: this.scene,
             x: i * 32 + 16,
@@ -55,6 +55,7 @@ export default class CreateChessInfo {
           sprite.status = item.status;
           sprite.moveAreaMapBase = item.moveAreaMapBase;
           sprite.attackAreaMapBase = item.attackAreaMapBase;
+          sprite.hasCount = playerChessList[i][1];
           sprite.areaMapBase = sprite.mergeArea(
             sprite.moveAreaMapBase,
             sprite.attackAreaMapBase,
@@ -69,7 +70,8 @@ export default class CreateChessInfo {
 
           let settingStatus = {
             power: item.status.power,
-            hp: item.status.maxHp
+            hp: item.status.maxHp,
+            count: playerChessList[i][1]
           };
           sprite.setStatus(settingStatus);
 

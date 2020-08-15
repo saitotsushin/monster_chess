@@ -21,7 +21,6 @@ export default class Reflect extends Base {
  
   }
   firing(attackingTarget){
-    console.log("firing")
     alert('トラップ：リフレクト発動')
     let damagePoint = this.status.power;
 
@@ -32,7 +31,6 @@ export default class Reflect extends Base {
 
     let _scene = attackingTarget.scene;
 
-    console.log("attackingTarget",attackingTarget)
 
     if(attackingTarget.status.hp <= 0){
       if(attackingTarget.isKing){

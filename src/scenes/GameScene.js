@@ -52,7 +52,7 @@ class GameScene extends Phaser.Scene {
     this.CreateChessInfo = new CreateChessInfo({
       scene: this,
       addGroup: this.chessInfoGroup,
-      chessData: this.LoadGameData.chessData//チェスデータ
+      chessData: this.LoadGameData.chessDataMaster//チェスデータ
     });       
   }    
 

@@ -29,6 +29,15 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0]      
     ];
+    this.badge = this.scene.add.sprite(
+      0,
+      0,
+      'spritesheet',
+      'badge'
+    );
+    this.badge.depth = 13;
+    
+
     this.chessStatus = this.scene.add.sprite(
       0,
       0,
@@ -56,6 +65,16 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
     ); 
     this.HP_text.setLetterSpacing(-6);
     this.HP_text.depth = 13;
+
+    this.has_count_text = this.scene.add.bitmapText(
+      0,
+      0,
+      'bitmapFontWhite',
+      0,
+      10
+    ); 
+    this.has_count_text.setLetterSpacing(0);
+    this.has_count_text.depth = 13;
 
     this.tilePos = {
       X: 0,
@@ -85,7 +104,7 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
     }
     return merge_area;
   }
-  move(setting){
+  move(setting,mode){
     let _x = setting.x;
     let _y = setting.y;
     this.x = _x;
@@ -97,13 +116,20 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
     this.AT_text.y = _y + 6;
     this.HP_text.x = _x + 2;
     this.HP_text.y = _y + 6;
-
+    // if(mode !== "tile"){
+      this.badge.x = _x + 12;
+      this.badge.y = _y - 12;
+      this.has_count_text.x = _x + 7;
+      this.has_count_text.y = _y - 18;  
+    // }
 
   }
   setStatus(setting){
     let _power = setting.power;
     let _hp = setting.hp;
+    let _count = setting.count;
     this.AT_text.setText(_power);
     this.HP_text.setText(_hp);
+    this.has_count_text.setText(_count);
   }
 }

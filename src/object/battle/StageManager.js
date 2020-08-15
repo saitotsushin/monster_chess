@@ -103,7 +103,6 @@ export default class StageManager {
   ------------------------------*/
   showChessGroup(group,playerType){
     let _this = this;
-    console.log("group.playerType",playerType)
 
     group.children.entries.forEach(
       (sprite,index) => {

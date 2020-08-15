@@ -13,6 +13,15 @@ export default class Layout{
 
     this.chessKingGroupIndex;
 
+    this.isTouchChess = false;
+
+    this.chessCount = 0;
+
+    this.beforeTilePos = {
+      X: 0,
+      Y: 0
+    }
+
   }
   initScene(){
 
@@ -25,12 +34,13 @@ export default class Layout{
       [0,0,0,0,0],
       [0,0,0,0,0]
     ];
-
     this.chessData = this.scene.registry.list.chessData;
+    this.chessDataMaster = this.scene.registry.list.chessDataMaster;
 
     this.ChessData = new ChessData();
 
     this.StageLayoutChessGroup = this.scene.add.group();
+    this.StageLayoutTileChessGroup = this.scene.add.group();
     this.StageLayoutTileGroup = this.scene.add.group();
     this.StageKingTileGroup = this.scene.add.group();
     
@@ -53,7 +63,7 @@ export default class Layout{
     -------------------*/ 
     this.container = this.scene.add.container();
     this.container.x = 0;
-    this.container.y = 40;
+    this.container.y = 36;
     this.container.depth = 100; 
 
     /*=================
@@ -106,14 +116,14 @@ export default class Layout{
     this.btnOutLayout.on('pointerdown', function (pointer) {
       let setting = {
         chessLayoutData: this.scene.chessAutoLayoutMapData,
-        group: this.StageLayoutChessGroup.children.entries
+        group: this.StageLayoutTileChessGroup.children.entries
       }
       this.btnOutLayout.alpha = 0.2;
       if(this.btnOutLayout.isToucked){
         return false;
       }
-
       this.autoLayout(setting);
+      this.setKing();
 
       /*=====================
       データを代入
@@ -124,7 +134,7 @@ export default class Layout{
         }
       }
       /*チェスを全て置いたかのチェック*/
-      this.checkLayoutIsAll();
+      // this.checkLayoutIsAll();
       this.btnOutLayout.isToucked = true;
 
     },this);
@@ -218,11 +228,18 @@ export default class Layout{
 
   }
   touchLayoutChess(layoutChess){
+    if(layoutChess.hasCount === 0){
+      return false;
+    }
+    this.isTouchChess = true;
+    this.chessCount++;
     /*カーソルの更新 */
     this.Cursor.setVisible(true);
     this.Cursor.x = layoutChess.x;
     this.Cursor.y = layoutChess.y;
+    // let chessToTile = this.StageLayoutTileChessGroup.children.entries[this.chessCount-1];
 
+    // this.selectedLayoutChess = chessToTile;
     this.selectedLayoutChess = layoutChess;
 
     this.setChessInfo(this.selectedLayoutChess);
@@ -263,17 +280,23 @@ export default class Layout{
     }
   }
   touchLayoutTile(panel){
+    if(this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] !== 0){
+      return false;
+    }
     if(this.selectedLayoutChess){
       /*レイアウトの配列の更新 */
-      if(this.selectedLayoutChess.tilePos.X === 0 && this.selectedLayoutChess.tilePos.Y === 0){
+      if(this.isTouchChess){
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }else{
         /*削除*/
-        this.scene.chessMapData[this.selectedLayoutChess.tilePos.Y][this.selectedLayoutChess.tilePos.X] = 0;
+        this.scene.chessMapData[this.beforeTilePos.Y][this.beforeTilePos.X] = 0;
         /*更新*/
         this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] = this.selectedLayoutChess.groupIndex;
       }
+      this.beforeTilePos.X = panel.tilePos.X;
+      this.beforeTilePos.Y = panel.tilePos.Y;
+
       /*チェスを全て置いたかのチェック*/
       this.checkLayoutIsAll();
 
@@ -281,11 +304,24 @@ export default class Layout{
         x: panel.x,
         y: panel.y
       }
-      this.selectedLayoutChess.move(worldPos);
-      this.selectedLayoutChess.tilePos.X = panel.tilePos.X;
-      this.selectedLayoutChess.tilePos.Y = panel.tilePos.Y;
       this.Cursor.x = panel.x;
       this.Cursor.y = panel.y;
+
+      let chessToTile = this.StageLayoutTileChessGroup.children.entries[this.chessCount-1];
+      if(this.isTouchChess){
+        this.selectedLayoutChess.hasCount--;
+        this.selectedLayoutChess.has_count_text.setText(this.selectedLayoutChess.hasCount);  
+        this.isTouchChess = false;
+      }
+      chessToTile.move(worldPos,"tile");
+      chessToTile.depth = 20;
+      chessToTile.HP_text.depth = 22;
+      chessToTile.AT_text.depth = 22;
+      chessToTile.chessStatus.depth = 21;
+      chessToTile.tilePos.X = panel.tilePos.X;
+      chessToTile.tilePos.Y = panel.tilePos.Y;
+      chessToTile.setTexture('spritesheet',this.selectedLayoutChess.frame.name);
+
       this.setChessInfo(this.selectedLayoutChess);
     }  
   }
@@ -317,7 +353,7 @@ export default class Layout{
 
   setLayoutChessToStage(){
 
-    let playerChessList = this.chessData;
+    let playerChessList = this.chessDataMaster;
     let chessDataList = this.ChessData.chessList;
 
     let baseHeight = this.chessBaseHeight;
@@ -325,7 +361,7 @@ export default class Layout{
 
     for(var i = 0; i < playerChessList.length;i++){
       chessDataList.filter(function(item, index){
-        if(item.key === playerChessList[i]){
+        if(item.key === playerChessList[i][0]){
           let sprite = new Chess({
             scene: this.scene,
             x: i * addHeight + addHeight/2,
@@ -333,6 +369,7 @@ export default class Layout{
             frame: item.key,
             key: 'spritesheet'
           });
+
           sprite.setInteractive();
 
           sprite.status = item.status;
@@ -347,7 +384,8 @@ export default class Layout{
           sprite.groupIndex = i + 1;
           let settingStatus = {
             power: item.status.power,
-            hp: item.status.maxHp
+            hp: item.status.maxHp,
+            count: playerChessList[i][1]
           }
           sprite.setStatus(settingStatus);
 
@@ -357,10 +395,32 @@ export default class Layout{
           }
           sprite.move(settingPos);
 
+          sprite.hasCount = playerChessList[i][1];
+
           sprite.on('pointerdown', () => {
             this.touchLayoutChess(sprite);
           });
           this.StageLayoutChessGroup.add(sprite);
+
+          /*移動表示用*/
+          let spriteTile = new Chess({
+            scene: this.scene,
+            x: i * addHeight + addHeight/2,
+            y: baseHeight,
+            frame: item.key,
+            key: 'spritesheet'
+          });
+          spriteTile.move(settingPos);
+          spriteTile.depth = 5;
+          spriteTile.HP_text.depth = 5;
+          spriteTile.AT_text.depth = 5;
+          spriteTile.chessStatus.depth = 4;
+          spriteTile.groupIndex = i + 1;
+          spriteTile.hasCount = playerChessList[i][1];
+          spriteTile.setStatus(settingStatus);
+          spriteTile.badge.setVisible(false);
+          spriteTile.has_count_text.setVisible(false);          
+          this.StageLayoutTileChessGroup.add(spriteTile);
 
         }
       },this);
@@ -520,13 +580,14 @@ export default class Layout{
     this.kingContainer.setVisible(true);
     this.scene.GameManager.UIManager.ItemGroup.removeGroupInteractive();
     this.hideLayoutUI();
+    this.hideChess();
     this.setLayoutKingGroup();
   }
   setLayoutKingGroup(){
 
     let _this = this;
     
-    this.StageLayoutChessGroup.children.entries.forEach(
+    this.StageLayoutTileChessGroup.children.entries.forEach(
       (sprite,index) => {
         let panel = this.scene.add.sprite(
           sprite.x,
@@ -558,9 +619,24 @@ export default class Layout{
   }  
   setYes(){
     this.hideAll();
+    this.makePlayerChessList();
     this.scene.GameManager.UIManager.ItemGroup.addGroupInteractive();
     this.scene.layoutFin();
     this.setKingToChess();
+  }
+  makePlayerChessList(){
+    let count = 0;
+
+    for(var i = 0; i < this.scene.chessMapData.length;i++){
+      for(var k = 0; k < this.scene.chessMapData[i].length;k++){
+        if(this.scene.chessMapData[i][k] !== 0){
+          this.chessData[count] = "chess_"+this.scene.chessMapData[i][k];
+          count++;
+        }
+      }      
+    }
+    this.scene.registry.list.chessData = this.chessData;
+
   }
   hideLayoutUI(){
     this.Cursor.setVisible(false);
@@ -580,6 +656,18 @@ export default class Layout{
     );   
 
   }
+  hideChess(){
+    this.StageLayoutChessGroup.children.entries.forEach(
+      (sprite,index) => {
+        sprite.setVisible(false);
+        sprite.AT_text.setVisible(false);
+        sprite.HP_text.setVisible(false);
+        sprite.chessStatus.setVisible(false);
+        sprite.has_count_text.setVisible(false);
+        sprite.badge.setVisible(false);
+      }
+    );
+  }
   hideAll(){
     /*王*/
     this.iconKing.setVisible(false);
@@ -597,17 +685,20 @@ export default class Layout{
     this.chessDisp.setVisible(false);
     this.move_icons.setVisible(false);
     this.overlapArea.setVisible(false);
-    this.StageLayoutChessGroup.children.entries.forEach(
+
+    this.StageLayoutTileChessGroup.children.entries.forEach(
       (sprite,index) => {
         sprite.setVisible(false);
         sprite.AT_text.setVisible(false);
         sprite.HP_text.setVisible(false);
         sprite.chessStatus.setVisible(false);
+        sprite.has_count_text.setVisible(false);
+        sprite.badge.setVisible(false);
       }
-    );   
+    );    
     this.StageLayoutTileGroup.children.entries.forEach(
       (sprite,index) => {
-        sprite.setVisible(false);
+        sprite.setVisible(false);    
       }
     );  
     this.StageKingTileGroup.children.entries.forEach(

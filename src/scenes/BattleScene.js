@@ -143,7 +143,7 @@ class BattleScene extends Phaser.Scene {
   initScene(){
     this.GameManager.initScene({
       map: this.stageMap,
-      chessData: this.registry.list.chessData,
+      chessDataMaster: this.registry.list.chessDataMaster,
       chessMapData: this.chessMapData
     });
   }

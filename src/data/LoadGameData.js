@@ -15,14 +15,21 @@ export default class LoadGameData {
       // [0,0,1,0,0],
       // [0,0,0,0,0]      
     ];    
-    this.chessData = [
+    this.chessDataMaster = [
       // 'chess_3',
+      ['chess_1',3],
+      ['chess_2',3],
+      ['chess_3',3],
+      ['chess_4',4],
+      ['chess_5',5]
+    ];
+    this.chessData = [
       'chess_1',
       'chess_2',
       'chess_3',
       'chess_4',
       'chess_5'
-    ];
+    ];    
     this.itemData = [
       "item_bomb",
       "item_portion",

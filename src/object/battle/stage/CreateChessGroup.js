@@ -21,6 +21,7 @@ export default class CreateChessGroup {
     
     let chessDataList = this.ChessData.chessList;
 
+
     let playerType = this.playerType;
     
     for(var i = 0; i < playerChessList.length;i++){
@@ -62,12 +63,14 @@ export default class CreateChessGroup {
     let baseHeight = 20; 
     let chessWidth = 32;   
     let addGroup = this.addGroup.children.entries;
+    let count = 0;
+
 
     for(var i = 0; i < this.chessMapData.length; i++){
       for(var k = 0; k < this.chessMapData[i].length; k++){
         if(this.chessMapData[i][k] !== 0){
-          let count = Number(this.chessMapData[i][k]);
-          let chess = addGroup[count-1];
+          // let count = Number(this.chessMapData[i][k]);
+          let chess = addGroup[count];
           let position = {
             x: k * chessWidth + chessWidth/2 + baseLeft,
             y: i * chessWidth + chessWidth/2 + baseHeight
@@ -90,7 +93,8 @@ export default class CreateChessGroup {
           //   X: k,
           //   Y: i
           // };
-          chess.groupIndex = count;
+          chess.groupIndex = count + 1;
+          count++;
         }
       }
     }    
