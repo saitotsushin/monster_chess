@@ -277,6 +277,7 @@ export default class GameManager {
   ステージタッチ時
   ------------------------------*/
   touchStage(pos){
+    console.log("pos",pos)
     if(this.scene.STATUS.STAGE_MODE === "FIN"){
       return false;
     }
@@ -354,20 +355,22 @@ export default class GameManager {
   移動・攻撃完了
   ------------------------------*/
   actionChessMove(status){
-    let beforeMovePos;
+    let beforeMovePos = this.beforePos;
     let NextMovePos = this.selectedChess.tilePos;
     let chessIndex;
     let map  = this.scene.chessMapData;
+    console.log("beforeMovePos",beforeMovePos)
     if(status === "YES"){
       /*チェスデータの更新*/
       chessIndex = this.selectedChess.groupIndex;
-      for(var i = 0; i < map.length; i++){
-        for(var k = 0; k < map[i].length; k++){
-          if(map[i][k] === chessIndex){
-            map[i][k] = 0;
-          }
-        }
-      }
+      // for(var i = 0; i < map.length; i++){
+      //   for(var k = 0; k < map[i].length; k++){
+      //     if(map[i][k] === chessIndex){
+      //       map[i][k] = 0;
+      //     }
+      //   }
+      // }
+      map[beforeMovePos.Y][beforeMovePos.X] = 0;
       map[NextMovePos.Y][NextMovePos.X] = chessIndex;
       this.scene.chessMapData = map;
       /*アイテムのチェック*/
@@ -384,7 +387,7 @@ export default class GameManager {
       this.UIManager.fin('MOVE');   
     }
     if(status === "NO"){
-      beforeMovePos = this.getWorldPos(this.beforePos);
+      
       this.selectedChess.x = beforeMovePos.x;
       this.selectedChess.y = beforeMovePos.y;
       this.STATUS.MOVE = "";
@@ -517,25 +520,25 @@ export default class GameManager {
 
     let map  = this.scene.chessMapData;
     let map2 = this.scene.chessMapData2;
-    let chessGroupIndex;
+    // let chessGroupIndex;
     let chess;
 
     /*検索*/
     if(map[pos.Y][pos.X] !== 0){
-      chessGroupIndex = Number(map[pos.Y][pos.X]);
+      // chessGroupIndex = Number(map[pos.Y][pos.X]);
       this.playerChessGroup.children.entries.forEach(
         (sprite,index) => {
-          if(sprite.groupIndex === chessGroupIndex){
+          if(sprite.tilePos.X === pos.X && sprite.tilePos.Y === pos.Y){
             chess = sprite;
           }
         }
       );      
     }
     if(map2[pos.Y][pos.X] !== 0){
-      chessGroupIndex = Number(map2[pos.Y][pos.X]);
+      // chessGroupIndex = Number(map2[pos.Y][pos.X]);
       this.playerChessGroup2.children.entries.forEach(
         (sprite,index) => {
-          if(sprite.groupIndex === chessGroupIndex){
+          if(sprite.tilePos.X === pos.X && sprite.tilePos.Y === pos.Y){
             chess = sprite;
           }
         }

@@ -34,6 +34,8 @@ export default class MoveArea{
     let map  = setting.map;//自分のチェスマップ
     let map2 = setting.map2;//相手のチェスマップ
     let base1 = target.areaMapBase;
+    console.log("map",map)
+    console.log("map2",map2)
     let base = [];
     if(target.playerType === "player2"){
       base = base1.slice().reverse();

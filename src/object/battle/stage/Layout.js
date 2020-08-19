@@ -20,6 +20,9 @@ export default class Layout{
     this.beforeTilePos = {
       X: 0,
       Y: 0
+    };
+    this.kingPos = {
+      X: 0,
     }
 
   }
@@ -564,9 +567,11 @@ export default class Layout{
   ================================*/
   setKingToChess(){
     let chessKingGroupIndex = this.chessKingGroupIndex;
+    let _this = this;
     this.scene.GameManager.playerChessGroup.children.entries.forEach(
       (sprite,index) => {
-        if(sprite.groupIndex === chessKingGroupIndex){
+        console.log("sprite",sprite)
+        if(sprite.tilePos.X === _this.kingPos.X && sprite.tilePos.Y === _this.kingPos.Y){
           sprite.icon_king.setVisible(true);
           sprite.isKing = true;
         }
@@ -597,7 +602,8 @@ export default class Layout{
         );
         panel.setInteractive();
         panel.depth = 100;
-        panel.groupIndex = sprite.groupIndex;
+        // panel.groupIndex = sprite.groupIndex;
+        panel.groupIndex = index;
         panel.tilePos = {
           X: sprite.tilePos.X,
           Y: sprite.tilePos.Y
@@ -605,11 +611,15 @@ export default class Layout{
         panel.on('pointerdown', () => {
           _this.iconKing.x = panel.x;
           _this.iconKing.y = panel.y;
-          _this.iconKing.groupIndex = panel.groupIndex;
+          // _this.iconKing.groupIndex = panel.groupIndex;
           _this.btnGameStartYes.setVisible(true);
           _this.ModalGameStart.setVisible(true);
           _this.iconKing.setVisible(true);
-          _this.chessKingGroupIndex = _this.iconKing.groupIndex;
+          // console.log("_this.iconKing.groupIndex",_this.iconKing.groupIndex)
+          // _this.chessKingGroupIndex = _this.iconKing.groupIndex;
+          _this.kingPos.X = panel.tilePos.X;
+          _this.kingPos.Y = panel.tilePos.Y;
+          console.log("_this.kinPos",_this.kingPos)
           // this.touchLayoutTile(sprite);
         });
         this.StageKingTileGroup.add(panel);
