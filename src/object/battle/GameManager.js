@@ -277,7 +277,6 @@ export default class GameManager {
   ステージタッチ時
   ------------------------------*/
   touchStage(pos){
-    console.log("pos",pos)
     if(this.scene.STATUS.STAGE_MODE === "FIN"){
       return false;
     }
@@ -359,7 +358,7 @@ export default class GameManager {
     let NextMovePos = this.selectedChess.tilePos;
     let chessIndex;
     let map  = this.scene.chessMapData;
-    console.log("beforeMovePos",beforeMovePos)
+
     if(status === "YES"){
       /*チェスデータの更新*/
       chessIndex = this.selectedChess.groupIndex;

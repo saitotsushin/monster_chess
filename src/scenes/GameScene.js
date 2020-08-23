@@ -8,8 +8,11 @@ class GameScene extends Phaser.Scene {
     });
     this.LoadGameData = new LoadGameData();
     this.CreateChessInfo;
+    console.log("GameScene")
   }
   create(){
+
+    console.log("GameScene create")
 
     /*背景色*/
     this.cameras.main.setBackgroundColor('#CCCCCC');
@@ -52,7 +55,7 @@ class GameScene extends Phaser.Scene {
     this.CreateChessInfo = new CreateChessInfo({
       scene: this,
       addGroup: this.chessInfoGroup,
-      chessData: this.LoadGameData.chessDataMaster//チェスデータ
+      chessData: this.registry.list.chessDataMaster//チェスデータ
     });       
   }    
 

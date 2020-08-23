@@ -570,7 +570,6 @@ export default class Layout{
     let _this = this;
     this.scene.GameManager.playerChessGroup.children.entries.forEach(
       (sprite,index) => {
-        console.log("sprite",sprite)
         if(sprite.tilePos.X === _this.kingPos.X && sprite.tilePos.Y === _this.kingPos.Y){
           sprite.icon_king.setVisible(true);
           sprite.isKing = true;
@@ -615,12 +614,8 @@ export default class Layout{
           _this.btnGameStartYes.setVisible(true);
           _this.ModalGameStart.setVisible(true);
           _this.iconKing.setVisible(true);
-          // console.log("_this.iconKing.groupIndex",_this.iconKing.groupIndex)
-          // _this.chessKingGroupIndex = _this.iconKing.groupIndex;
           _this.kingPos.X = panel.tilePos.X;
           _this.kingPos.Y = panel.tilePos.Y;
-          console.log("_this.kinPos",_this.kingPos)
-          // this.touchLayoutTile(sprite);
         });
         this.StageKingTileGroup.add(panel);
       },this

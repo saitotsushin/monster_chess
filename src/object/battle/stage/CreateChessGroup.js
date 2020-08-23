@@ -87,12 +87,6 @@ export default class CreateChessGroup {
             hp: chess.status.maxHp
           };
           chess.setStatus(settingStatus)
-          // chess.x = k * chessWidth + chessWidth/2 + baseLeft;
-          // chess.y = i * chessWidth + chessWidth/2 + baseHeight;
-          // chess.tilePos = {
-          //   X: k,
-          //   Y: i
-          // };
           chess.groupIndex = count + 1;
           count++;
         }

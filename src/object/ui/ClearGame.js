@@ -20,6 +20,12 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     this.overlapArea.alpha = 0.75;
     this.overlapArea.setScrollFactor(0);
 
+    this.gettedChess = this.scene.add.sprite(0,0,'spritesheet','chess_shadow');
+    this.gettedChess.setVisible(false);
+    this.gettedChess.x = this.scene.game.config.width/2;
+    this.gettedChess.y = 105;
+
+
     /*=================
     タイトル：結果
     -------------------*/
@@ -61,7 +67,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     -------------------*/
     this.btnMenuBack = this.scene.add.sprite(
       this.scene.game.config.width/2,
-      120,
+      140,
       'spritesheet',
       'btn_menu_back'
     );
@@ -78,7 +84,8 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       this.btnMenuBack,
       this.titleResultWin,
       this.titleResultLose,
-      this.titleGetChess
+      this.titleGetChess,
+      this.gettedChess
     ]);
     this.container.depth = 500;
 
@@ -91,6 +98,8 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
 
     /*test */
     // this.open();
+    // this.getRandomChess();
+    
     this.hide();
 
 
@@ -105,7 +114,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       /*=================
       ランダムで相手のチェスが手に入る
       -------------------*/    
-      // this.getRandomChess();
+      this.getRandomChess();
     }
     if(this.scene.STATUS.WIN_PLAYER === "player2"){
       this.titleResultWin.setVisible(false)
@@ -113,6 +122,20 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       this.titleGetChess.setVisible(false)
     }
   }
+  getRandomChess(){
+    let chessData2 = this.scene.GameManager.StageManager.LoadGameData.chessData2;
+    let randomChess =  chessData2[Math.floor(Math.random() * chessData2.length)];
+    this.gettedChess.setVisible(true);
+    this.gettedChess.setTexture('spritesheet',randomChess);
+    for(var i = 0; i < this.scene.registry.list.chessDataMaster.length; i++){
+      if(this.scene.registry.list.chessDataMaster[i][0] === randomChess){
+        if(this.scene.registry.list.chessDataMaster[i][1] < 5){
+          this.scene.registry.list.chessDataMaster[i][1]++;
+        }
+      }
+    }
+
+  }  
   /*==============================
   表示・非表示
   ------------------------------*/   
