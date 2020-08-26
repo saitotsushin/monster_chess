@@ -53,7 +53,13 @@ class TitleScene extends Phaser.Scene {
       this.scene.start('MenuScene');
     },this);
     this.btnHowTo.setOrigin(0.5,0);
-    
+    let text = this.add.text(10, 10, '配置してくださいYOU', {
+      fontFamily: 'font1',
+      color: '#000000',
+      fontSize: 10
+    });
+    text.depth = 100;
+
   }
   /*==============================
   プレイヤーデータロード
