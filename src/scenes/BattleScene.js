@@ -64,7 +64,7 @@ class BattleScene extends Phaser.Scene {
   create(){
 
     /*背景色*/
-    this.cameras.main.setBackgroundColor('#FFFFFF');    
+    // this.cameras.main.setBackgroundColor('#FFFFFF');    
 
     this.STATUS.GAME_MODE = "";
     this.STATUS.STAGE = "";

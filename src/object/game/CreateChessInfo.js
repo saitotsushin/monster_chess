@@ -13,19 +13,28 @@ export default class CreateChessInfo {
 
     this.ChessInfoMoveGroup = this.scene.add.group();
 
-    this.titleYourChess = this.scene.add.sprite(
-      this.scene.sys.game.config.width/2,
-      110,
-      'spritesheet',
-      'tile_your_chess'
-    );
+    // this.titleYourChess = this.scene.add.sprite(
+    //   this.scene.sys.game.config.width/2,
+    //   110,
+    //   'spritesheet',
+    //   'tile_your_chess'
+    // );
     this.overlapArea = this.scene.add.graphics(
       {
-        fillStyle: { color: 0x000000 }
+        fillStyle: { color: 0x222222 }
       }
     );    
-    this.rect = new Phaser.Geom.Rectangle(0, 140, this.scene.game.config.width, 100);
-    this.overlapArea.fillRectShape(this.rect);
+    this.rect = new Phaser.Geom.Rectangle(0, 90, this.scene.game.config.width, 100);
+    this.overlapArea.fillRectShape(this.rect);    
+    this.titleYourChess = this.scene.add.text(
+      10, 
+      100, 
+      'あなたの駒', {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10
+    });    
+
     // this.overlapArea.alpha = 0.75;
     // this.overlapArea.setScrollFactor(0);    
     /*==============================

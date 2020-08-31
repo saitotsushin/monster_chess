@@ -76,8 +76,20 @@ export default class Layout{
       this.scene.game.config.width/2,
       0,
       'spritesheet',
-      'window_layout'
+      'window_base'
     );
+    this.ModalWindowSelectChessText = this.scene.add.text(
+      10, 
+      -12, 
+      ['駒を選んでください。', 'あああ'],
+      {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    ); 
+
     /*=================
     レイアウトのウィンドウ：完了
     -------------------*/
@@ -85,9 +97,21 @@ export default class Layout{
       this.scene.game.config.width/2,
       30,
       'spritesheet',
-      'window_layout_fin'
+      'window_base'
     );
+    this.ModalWindowFinText = this.scene.add.text(
+      10, 
+      20, 
+      ['配置完了？'],
+      {
+      fontFamily: 'font1',
+      color: '#000000',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    );     
     this.ModalWindowFin.setVisible(false);
+    this.ModalWindowFinText.setVisible(false);
     this.setCompleteFlg = false;
     /*=================
     ボタン：レイアウトYES
@@ -145,7 +169,9 @@ export default class Layout{
     this.container.add(
       [
         this.ModalWindow,
+        this.ModalWindowSelectChessText,
         this.ModalWindowFin,
+        this.ModalWindowFinText,
         this.btnLayoutYes,
         this.btnOutLayout
       ]
@@ -157,9 +183,19 @@ export default class Layout{
       this.scene.game.config.width/2,
       0,
       'spritesheet',
-      'window_king'
+      'window_base'
     );
-    
+    this.ModalWindowKingText = this.scene.add.text(
+      10, 
+      -8, 
+      ['王を決めてください。'],
+      {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    );      
     /*=================
     王（キング）のアイコン
     -------------------*/
@@ -184,26 +220,43 @@ export default class Layout{
     this.kingContainer.add(
       [
         this.ModalWindowKing,
+        this.ModalWindowKingText
       ]
     );
     this.kingContainer.setVisible(false);
     /*=================
     ゲームスタートのウィンドウ：完了
     -------------------*/
+    this.GameStartContainer = this.scene.add.container();
+    this.GameStartContainer.x = 0;
+    this.GameStartContainer.y = 198;
+    this.GameStartContainer.depth = 400;
     this.ModalGameStart = this.scene.add.sprite(
       this.scene.game.config.width/2,
-      198,
+      0,
       'spritesheet',
-      'window_gamestart'
+      'window_base'
     );
-    this.ModalGameStart.setVisible(false);
-    this.ModalGameStart.depth = 400;
+    this.ModalGameStartText = this.scene.add.text(
+      10, 
+      -8, 
+      ['ゲームスタート'],
+      {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    ); 
+    // this.ModalGameStart.setVisible(false);
+    // this.ModalGameStartText.setVisible(false);
+    // this.ModalGameStart.depth = 400;
     /*=================
     ボタン：ゲームスタートYES
     -------------------*/
     this.btnGameStartYes = this.scene.add.sprite(
       136,
-      198,
+      0,
       'spritesheet',
       'btn_yes'
     );
@@ -211,9 +264,16 @@ export default class Layout{
     this.btnGameStartYes.on('pointerdown', function (pointer) {
       this.setYes();
     },this);
-    this.btnGameStartYes.setVisible(false);
-    this.btnGameStartYes.depth = 401;
-
+    // this.btnGameStartYes.setVisible(false);
+    // this.btnGameStartYes.depth = 401;
+    this.GameStartContainer.add(
+      [
+        this.ModalGameStart,
+        this.ModalGameStartText,
+        this.btnGameStartYes
+      ]
+    );
+    this.GameStartContainer.setVisible(false);
     /*=================
     UIまわりの基準
     -------------------*/
@@ -443,6 +503,7 @@ export default class Layout{
     }
     if(count >= this.chessData.length){
       this.ModalWindowFin.setVisible(true);
+      this.ModalWindowFinText.setVisible(true);
       this.btnLayoutYes.setVisible(true);
     }
   }
@@ -611,8 +672,9 @@ export default class Layout{
           _this.iconKing.x = panel.x;
           _this.iconKing.y = panel.y;
           // _this.iconKing.groupIndex = panel.groupIndex;
-          _this.btnGameStartYes.setVisible(true);
-          _this.ModalGameStart.setVisible(true);
+          _this.GameStartContainer.setVisible(true);
+          // _this.ModalGameStart.setVisible(true);
+          // _this.ModalGameStartText.setVisible(true);
           _this.iconKing.setVisible(true);
           _this.kingPos.X = panel.tilePos.X;
           _this.kingPos.Y = panel.tilePos.Y;
@@ -678,6 +740,7 @@ export default class Layout{
     this.iconKing.setVisible(false);
     this.btnGameStartYes.setVisible(false);
     this.ModalGameStart.setVisible(false);
+    this.ModalGameStartText.setVisible(false);
     this.kingContainer.setVisible(false);
     /*デフォルト*/
     this.Cursor.setVisible(false);

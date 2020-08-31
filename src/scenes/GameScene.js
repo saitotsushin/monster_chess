@@ -15,32 +15,47 @@ class GameScene extends Phaser.Scene {
     console.log("GameScene create")
 
     /*背景色*/
-    this.cameras.main.setBackgroundColor('#CCCCCC');
+    this.cameras.main.setBackgroundColor('#000000');
 
     /*メニューボタン：ステージ１*/
-    this.btnPlayCPU = this.add.sprite(
-      this.sys.game.config.width/2,
-      0,
-      'spritesheet',
-      'btn_play_cpu'
-    );
-    
+    // this.btnPlayCPU = this.add.sprite(
+    //   this.sys.game.config.width/2,
+    //   0,
+    //   'spritesheet',
+    //   'btn_play_cpu'
+    // );
+    // this.btnPlayCPU = new Phaser.Geom.Rectangle(0, 0, this.sys.game.config.this.sys.game.config.game.config.width, this.sys.game.config.scene.game.config.height);
+    // this.overlapArea.fillRectShape(this.rect);
+
+    this.btnPlayCPU = this.add.text(10, 10, 'CPU対戦', {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10
+    });
+    // text.depth = 100;
 
     this.btnPlayCPU.setInteractive();
     this.btnPlayCPU.on('pointerdown', () => {
       this.registry.list.gameMode = "NPC";
       this.scene.start('BattleScene');
     },this);
-    this.btnPlayCPU.setOrigin(0.5,0);
+    // this.btnPlayCPU.setOrigin(0.5,0);
 
-
+    this.btnPlayOnline = this.add.text(
+      10, 
+      40, 
+      'オンライン対戦', {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10
+    });
     /*メニューボタン：オンライン*/
-    this.btnPlayOnline = this.add.sprite(
-      this.sys.game.config.width/2,
-      50,
-      'spritesheet',
-      'btn_play_online'
-    );
+    // this.btnPlayOnline = this.add.sprite(
+    //   this.sys.game.config.width/2,
+    //   50,
+    //   'spritesheet',
+    //   'btn_play_online'
+    // );
     
 
     this.btnPlayOnline.setInteractive();
@@ -48,7 +63,6 @@ class GameScene extends Phaser.Scene {
       this.scene.start('RoomScene');
       this.registry.list.gameMode = "NET";
     },this);
-    this.btnPlayOnline.setOrigin(0.5,0);
 
     this.chessInfoGroup = this.add.group();
 

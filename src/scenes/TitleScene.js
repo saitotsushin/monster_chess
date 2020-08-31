@@ -19,13 +19,14 @@ class TitleScene extends Phaser.Scene {
       scene: this
     });
     /*タイトル*/
-    let title = this.add.sprite(
-      0,
-      0,
+    this.title = this.add.sprite(
+      this.sys.game.config.width/2,
+      30,
       'spritesheet',
       'title'
     );
-    title.setOrigin(0,0);
+    // title.setOrigin(0,0);
+    this.title.setOrigin(0.5,0);
 
     /*メニューボタン：スタート*/
     this.btnMenu = this.add.sprite(
@@ -53,12 +54,7 @@ class TitleScene extends Phaser.Scene {
       this.scene.start('MenuScene');
     },this);
     this.btnHowTo.setOrigin(0.5,0);
-    let text = this.add.text(10, 10, '配置してくださいYOU', {
-      fontFamily: 'font1',
-      color: '#000000',
-      fontSize: 10
-    });
-    text.depth = 100;
+
 
   }
   /*==============================
