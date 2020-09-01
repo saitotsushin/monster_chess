@@ -24,7 +24,8 @@ export default class ItemGroup {
       194,
       'spritesheet',
       'text_item'
-    );    
+    );   
+    this.title.depth = 2; 
     this.ItemData = new ItemData();
 
     // let playeritemList;

@@ -105,7 +105,7 @@ export default class Layout{
       ['配置完了？'],
       {
       fontFamily: 'font1',
-      color: '#000000',
+      color: '#FFFFFF',
       fontSize: 10,
       lineSpacing: 0
      }
@@ -166,14 +166,27 @@ export default class Layout{
 
     },this);
 
+    this.overlayArea = this.scene.add.graphics(
+      {
+        fillStyle: { color: 0x000000 }
+      }
+    );    
+    this.rect = new Phaser.Geom.Rectangle(0, -16, this.scene.game.config.width, this.scene.game.config.height);
+    this.overlayArea.fillRectShape(this.rect);
+    this.overlayArea.alpha = 0.75;
+    this.overlayArea.setScrollFactor(0);
+    this.overlayArea.depth = 1;
+
     this.container.add(
       [
+        // this.overlapArea,
         this.ModalWindow,
         this.ModalWindowSelectChessText,
         this.ModalWindowFin,
         this.ModalWindowFinText,
         this.btnLayoutYes,
         this.btnOutLayout
+        
       ]
     );
     /*=================
@@ -753,6 +766,7 @@ export default class Layout{
     this.chessDisp.setVisible(false);
     this.move_icons.setVisible(false);
     this.overlapArea.setVisible(false);
+    this.overlayArea.setVisible(false);
 
     this.StageLayoutTileChessGroup.children.entries.forEach(
       (sprite,index) => {
