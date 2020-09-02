@@ -308,7 +308,7 @@ export default class Layout{
       return false;
     }
     this.isTouchChess = true;
-    this.chessCount++;
+
     /*カーソルの更新 */
     this.Cursor.setVisible(true);
     this.Cursor.x = layoutChess.x;
@@ -359,6 +359,7 @@ export default class Layout{
     if(this.scene.chessMapData[panel.tilePos.Y][panel.tilePos.X] !== 0){
       return false;
     }
+    // this.scene.GameManager.UIManager.menuItemActive();    
     if(this.selectedLayoutChess){
       /*レイアウトの配列の更新 */
       if(this.isTouchChess){
@@ -383,12 +384,16 @@ export default class Layout{
       this.Cursor.x = panel.x;
       this.Cursor.y = panel.y;
 
-      let chessToTile = this.StageLayoutTileChessGroup.children.entries[this.chessCount-1];
+
       if(this.isTouchChess){
         this.selectedLayoutChess.hasCount--;
         this.selectedLayoutChess.has_count_text.setText(this.selectedLayoutChess.hasCount);  
         this.isTouchChess = false;
+        this.chessCount++;
+
       }
+      let chessToTile = this.StageLayoutTileChessGroup.children.entries[this.chessCount-1];
+
       chessToTile.move(worldPos,"tile");
       chessToTile.depth = 20;
       chessToTile.HP_text.depth = 22;

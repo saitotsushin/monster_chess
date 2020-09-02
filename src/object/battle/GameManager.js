@@ -82,7 +82,6 @@ export default class GameManager {
     }
 
     this.UIManager.createItemGroup(setting_item);
-    this.UIManager.menuItemOpen();
 
     this.playerItemGroup2 = this.scene.add.group();
 
@@ -103,6 +102,8 @@ export default class GameManager {
   レイアウト完了
   ------------------------------*/      
   layoutFin(){
+    this.UIManager.menuItemShow();
+
     /*自分のチェスを生成*/
     this.playerChessGroup = this.scene.add.group();
     let setting = {
@@ -112,7 +113,7 @@ export default class GameManager {
       playerType: 'player1'
     }
     this.StageManager.createChessGroup(setting);
-    this.UIManager.menuItemOpen();
+    this.UIManager.menuItemShow();
 
     this.Layout.hideAll();
 
@@ -198,17 +199,17 @@ export default class GameManager {
   /*==============================
   移動後のステージ上のアイテムチェック
   ------------------------------*/    
-  checkStageItem(posInt,chess,mode){
+  getStageItem(posInt,chess,mode){
     let itemIndex;
     let item;
+    let getItem = "";
     if(this.scene.itemMap[posInt.Y][posInt.X] !== 0){
       itemIndex = this.scene.itemMap[posInt.Y][posInt.X];
       item = this.playerItemGroup.children.entries[itemIndex-1];
       if(item){
         if(item.fireType === mode){
-          item.firing(chess);
           this.playerItemGroup.children.entries[itemIndex-1] = 0;
-          return true;  
+          getItem =  item;  
         }
       }  
     }
@@ -217,12 +218,12 @@ export default class GameManager {
       item = this.playerItemGroup2.children.entries[itemIndex-1];
       if(item){
         if(item.fireType === mode){
-          item.firing(chess);
           this.playerItemGroup2.children.entries[itemIndex-1] = 0;
-          return true;  
+          getItem =  item;  
         }
       }  
     }
+    return getItem;
   }
   /*==============================
   ステージの更新
@@ -253,16 +254,21 @@ export default class GameManager {
   アイテムの更新
   ------------------------------*/      
   updateStageTrap(mode){
+    console.log("updateStageTrap mode",mode);
     let selectedItem = this.UIManager.selectedItem;
     let itemIndex    = selectedItem.itemIndex;
     let pos          = this.UIManager.selectedItemPos.intPos;
+    console.log("updateStageTrap pos",pos);
+    console.log("updateStageTrap itemIndex",itemIndex);
 
     if(mode === "ADD"){
+      console.log("追加した")
       this.scene.itemMap[pos.Y][pos.X] = itemIndex + 1;
     }
     if(mode === "DEL"){
       this.scene.itemMap[pos.Y][pos.X] = 0;
     }
+    console.log("this.scene.itemMap",this.scene.itemMap)
 
     /*表示の更新*/
     this.UIManager.updateStageTrap(mode);
@@ -373,7 +379,14 @@ export default class GameManager {
       map[NextMovePos.Y][NextMovePos.X] = chessIndex;
       this.scene.chessMapData = map;
       /*アイテムのチェック*/
-      this.checkStageItem(NextMovePos,this.selectedChess,'STEP_ON');
+      let getItem = this.getStageItem(NextMovePos,this.selectedChess,'STEP_ON');
+
+      if(getItem){
+        this.scene.itemMap[this.selectedChess.tilePos.Y][this.selectedChess.tilePos.X] = 0;
+        this.scene.itemMap2[this.selectedChess.tilePos.Y][this.selectedChess.tilePos.X] = 0;    
+        this.scene.itemFiring(getItem,this.selectedChess);
+      }
+
       /*ステージのアップデート*/
       this.updateStage();
       this.StageManager.showMoveArea({
@@ -402,10 +415,12 @@ export default class GameManager {
       this.UIManager.fin('ATTACK'); 
       this.StageManager.hideMoveArea();
       /*アイテムのチェック*/
-      let isItemFired = this.checkStageItem(attackPos,this.selectedChess,'ATTACKED');
-      if(isItemFired){
+      let getItem = this.getStageItem(attackPos,this.selectedChess,'ATTACKED');
+      if(getItem){
         this.scene.itemMap[attackPos.Y][attackPos.X] = 0;
         this.scene.itemMap2[attackPos.Y][attackPos.X] = 0;        
+        this.scene.itemFiring(getItem,this.selectedChess);
+
       }else{
         this.selectedChess.attack(this.attackedChess);
       }
@@ -432,12 +447,18 @@ export default class GameManager {
   ------------------------------*/   
   touchItem(pos,index){
     // let worldPos = this.getWorldPos(pos);
+    // if(this.Layout.chessCount === 0){
+    //   return false;
+    // }
     this.UIManager.touchItem(pos,index);
   }
   /*==============================
   アイテム設置
   ------------------------------*/   
   touchCanPutTile(pos,index){
+    console.log("touchCanPutTile")
+    console.log("pos",pos)
+    console.log("index",index)
     let setPos = {
       intPos: pos,
       worldPos: this.getWorldPos(pos)
@@ -456,6 +477,12 @@ export default class GameManager {
   ------------------------------*/    
   setItemCancel(){
     this.UIManager.setItemCancel();
+  }
+  /*==============================
+  アイテムの発火
+  ------------------------------*/   
+  itemFiring(item,chess){
+    this.UIManager.itemFiring(item,chess);
   }
   /*==============================
   インフォタイルのタッチ

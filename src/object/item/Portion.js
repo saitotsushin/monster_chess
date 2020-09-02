@@ -16,11 +16,13 @@ export default class Portion extends Base {
     this.itemTYPE = 'CURE';
     this.fireType = 'STEP_ON';
 
+    this.name = "ポーション";
+
     this.isSet = false;
 
   }
   firing(cureTarget){
-    alert('アイテム：ポーション発動')
+    // alert('アイテム：ポーション発動')
 
     // if(this.scene.registry.list.gameMode === "NET"){
     //   this.scene.StageManager.Network.fireditem(

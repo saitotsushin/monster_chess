@@ -15,8 +15,19 @@ export default class ModalItemSet{
       2,
       0,
       'spritesheet',
-      'window_item_set'
+      'window_base'
     );
+    this.ModalWindowItemSetText = this.scene.add.text(
+      this.scene.game.config.width/2 * -1 + 10, 
+      -12, 
+      ['配置しますか？'],
+      {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    );      
     /*=====================
     ボタン：YES
     =====================*/
@@ -48,6 +59,7 @@ export default class ModalItemSet{
     this.container.add(
     [
       this.Window,
+      this.ModalWindowItemSetText,
       this.btnYes,
       this.btnNo
     ]);

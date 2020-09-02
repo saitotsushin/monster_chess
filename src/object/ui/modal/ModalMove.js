@@ -15,8 +15,19 @@ export default class ModalMove{
       0,
       0,
       'spritesheet',
-      'window_move'
+      'window_base'
     );
+    this.ModalWindowText = this.scene.add.text(
+      this.scene.game.config.width/2 * -1 + 10, 
+      -12,
+      ['移動しますか？'],
+      {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10,
+      lineSpacing: 0
+     }
+    );     
     /*=====================
     ボタン：YES
     =====================*/
@@ -48,6 +59,7 @@ export default class ModalMove{
     this.container.add(
     [
       this.Window,
+      this.ModalWindowText,
       this.btnYes,
       this.btnNo
     ]);

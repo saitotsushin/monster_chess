@@ -62,6 +62,7 @@ export default class ItemGroup {
             X: 0,
             Y: 0
           }
+          // sprite.alpha = 0.3;
           sprite.depth = 120;
           sprite.setted = false;
           sprite.isStage = false;
@@ -93,6 +94,7 @@ export default class ItemGroup {
           'panel_item'
         );
         sprite.depth = 110;
+        sprite.alpha = 0.1;
 
         this.itemBaseGroup.add(sprite)
     
@@ -116,6 +118,13 @@ export default class ItemGroup {
       }
     );  
   }
+  // showActive(){
+  //   this.addGroup.children.entries.forEach(
+  //     (sprite) => {
+  //       sprite.alpha = 1;
+  //     }
+  //   ); 
+  // }  
   setItemCancel(){
     let item = this.addGroup.children.entries[this.itemIndex];
     item.x = this.beforePos.x;

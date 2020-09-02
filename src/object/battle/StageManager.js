@@ -73,11 +73,14 @@ export default class StageManager {
         }
       }
     }
+    console.log("chessMapData",chessMapData)
+    console.log("get_index",get_index)
     group.children.entries.forEach(
       (sprite,index) => {
         if(sprite.groupIndex === get_index){
           // sprite.icon_king.setVisible(true);
           sprite.isKing = true;
+          // sprite.icon_king.setVisible(true);
         }
       }
     );

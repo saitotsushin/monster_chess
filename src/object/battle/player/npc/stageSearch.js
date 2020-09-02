@@ -13,6 +13,7 @@ let player1 = {
   itemGroup: ""
 }
 let itemMap;
+let itemMap2;
 let player2 = {
   chessGroup: "",
   chessMap: "",
@@ -26,6 +27,7 @@ AIの本体
 export function thinkAI(scene){
   _scene = scene;
   itemMap = scene.itemMap;
+  itemMap2 = scene.itemMap2;
   //使用するデータをスコープ内に保存
   player1.chessGroup = scene.GameManager.playerChessGroup.children.entries;
   player2.chessGroup = scene.GameManager.playerChessGroup2.children.entries;
@@ -108,11 +110,11 @@ export function getNodeList(){
       for(var k = 0; k < areaMap[i].length; k++){
 
         if(areaMap[i][k] === 1 || areaMap[i][k] === 3 || areaMap[i][k] === 9){
-          if(itemMap[i][k] !== 0){
+          if(itemMap2[i][k] !== 0){
             /*移動先に、
             トラップがあって　かつ　攻撃タイプだったらcontinueで次へ進む。
             */
-            let itemIndex = itemMap[i][k];
+            let itemIndex = itemMap2[i][k];
             let item = itemGroup[itemIndex - 1];
             if(item.itemTYPE === 'ATTACK'){
               continue;
@@ -370,11 +372,11 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
   let map = moveChess.areaMap;
   for(var i = 0; i < map.length; i++){
     for(var k = 0; k < map[i].length; k++){
-      if(itemMap[i][k] !== 0){
+      if(itemMap2[i][k] !== 0){
         /*移動先に、
         トラップがあって　かつ　攻撃タイプだったらcontinueでスキップする。
         */
-        let itemIndex = itemMap[i][k];
+        let itemIndex = itemMap2[i][k];
         let item = player2.itemGroup[itemIndex - 1];
         if(item.itemTYPE === 'ATTACK'){
           continue;

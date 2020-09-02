@@ -34,6 +34,14 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     ); 
     this.damageText.depth = 12;
     this.damageText.setVisible(false);
+
+    // this.Window = this.scene.add.sprite(
+    //   0,
+    //   0,
+    //   'spritesheet',
+    //   'window_base'
+    // );
+
   }
 
   removeitem(){

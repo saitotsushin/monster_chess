@@ -235,7 +235,12 @@ class BattleScene extends Phaser.Scene {
   setItemCancel(){
     this.GameManager.setItemCancel();
   }
-
+  /*==============================
+  アイテムの発火
+  ------------------------------*/   
+  itemFiring(item,chess){
+    this.GameManager.itemFiring(item,chess);
+  }
   /*==============================
   自分のターン完了
   ------------------------------*/   

@@ -19,11 +19,13 @@ export default class Bomb extends Base {
 
     this.fireType = 'STEP_ON';
 
+    this.name = "爆弾";
+
     this.isSet = false;
 
   }
   firing(attackingTarget){
-    alert('トラップ：ボム発動')
+    // alert('トラップ：ボム発動');
 
     // if(this.scene.registry.list.gameMode === "NET"){
     //   this.scene.StageManager.Network.fireditem(
@@ -39,6 +41,8 @@ export default class Bomb extends Base {
 
     this.item_frame.setVisible(false);
     attackingTarget.status.hp -= damagePoint;
+
+    console.log("attackingTarget.status.hp",attackingTarget.status.hp)
 
     let _scene = attackingTarget.scene;
 

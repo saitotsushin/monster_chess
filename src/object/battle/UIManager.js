@@ -152,8 +152,13 @@ export default class UIManager {
   ------------------------------*/   
   menuItemOpen(){
     this.ModalItem.open();
+  }
+  menuItemShow(){
     this.ItemGroup.show();
   }
+  // menuItemActive(){
+  //   this.ItemGroup.showActive();
+  // }
   menuItemClose(){
     // this.ModalItem.close();
     // this.Menu.itemClose();
@@ -257,7 +262,7 @@ export default class UIManager {
       map: this.scene.chessMapData,
       itemMap: this.scene.itemMap
     });
-    this.Menu.touchItem();
+    // this.Menu.touchItem();
 
   }
   /*==============================
@@ -269,6 +274,7 @@ export default class UIManager {
     this.StageItemTile.hide();
     this.ItemGroup.setItemCancel();
   }  
+
   /*==============================
   アイテムの設置
   ------------------------------*/   
@@ -332,5 +338,11 @@ export default class UIManager {
     }else{
       alert("選択中のアイテムがありません。")
     }
+  }  
+  /*==============================
+  アイテムの発火
+  ------------------------------*/   
+  itemFiring(item,chess){
+    this.ModalItem.open(item,chess);
   }  
 }

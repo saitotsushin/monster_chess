@@ -8,11 +8,8 @@ class GameScene extends Phaser.Scene {
     });
     this.LoadGameData = new LoadGameData();
     this.CreateChessInfo;
-    console.log("GameScene")
   }
   create(){
-
-    console.log("GameScene create")
 
     /*背景色*/
     this.cameras.main.setBackgroundColor('#000000');
@@ -27,7 +24,7 @@ class GameScene extends Phaser.Scene {
     // this.btnPlayCPU = new Phaser.Geom.Rectangle(0, 0, this.sys.game.config.this.sys.game.config.game.config.width, this.sys.game.config.scene.game.config.height);
     // this.overlapArea.fillRectShape(this.rect);
 
-    this.btnPlayCPU = this.add.text(10, 10, 'CPU対戦', {
+    this.btnPlayCPU = this.add.text(12, 20, 'CPU対戦', {
       fontFamily: 'font1',
       color: '#FFFFFF',
       fontSize: 10
@@ -42,11 +39,11 @@ class GameScene extends Phaser.Scene {
     // this.btnPlayCPU.setOrigin(0.5,0);
 
     this.btnPlayOnline = this.add.text(
-      10, 
-      40, 
+      12, 
+      54, 
       'オンライン対戦', {
       fontFamily: 'font1',
-      color: '#FFFFFF',
+      color: '#333',
       fontSize: 10
     });
     /*メニューボタン：オンライン*/
@@ -60,8 +57,8 @@ class GameScene extends Phaser.Scene {
 
     this.btnPlayOnline.setInteractive();
     this.btnPlayOnline.on('pointerdown', () => {
-      this.scene.start('RoomScene');
-      this.registry.list.gameMode = "NET";
+      // this.scene.start('RoomScene');
+      // this.registry.list.gameMode = "NET";
     },this);
 
     this.chessInfoGroup = this.add.group();
