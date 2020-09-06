@@ -54,6 +54,20 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       [0,0,0,0,0],      
       [0,0,0,0,0,]      
     ];
+    this.moveMap = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0,]      
+    ];
+    this.attackMap = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0],      
+      [0,0,0,0,0,]      
+    ];
 
     this.name = config.frame;
     this.status = {
@@ -264,6 +278,8 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
 
     this.damageText.alpha = 0;
 
+    this.scene.STATUS.ANIME = true;
+
     let damageTween = this.scene.tweens.add({
       targets: this.damageText,
       alpha: 1,
@@ -280,6 +296,11 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
           this.anims.play('anime_explode');
           this.icon_enemy.setVisible(false); 
           this.icon_king.setVisible(false);  
+        }else{
+          // if(this.scene.STATUS.TURN === "PLAYER2"){
+            this.scene.STATUS.ANIME = false;
+            this.scene.turnFin();
+          // }
         }
       },
       callbackScope: this
@@ -287,6 +308,11 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     
   }
   explodeComplete(_this){
+    this.scene.STATUS.ANIME = false;
+    if(this.scene.STATUS.TURN === "PLAYER2"){
+      this.scene.turnFin();
+    }
+
     this.scene.clearGame();
     this.scene.removeChess(_this);
   }

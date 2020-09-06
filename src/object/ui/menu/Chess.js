@@ -29,6 +29,20 @@ export default class Chess extends Phaser.Physics.Arcade.Sprite {
       [0,0,0,0,0,0],
       [0,0,0,0,0,0]      
     ];
+    this.areaMoveMap = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],      
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]      
+    ];    
+    this.areaAttackMap = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],      
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0]      
+    ];    
     this.badge = this.scene.add.sprite(
       0,
       0,

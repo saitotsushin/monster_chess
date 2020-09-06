@@ -48,10 +48,12 @@ export function thinkAI(scene){
       pos   : player2.chessGroup[i].tilePos,
       chess : player2.chessGroup[i],
       mapAll: scene.GameManager.stageMapAll,
-      map   : scene.chessMapData,
-      map2  : scene.chessMapData2
+      map   : scene.chessMapData2,
+      map2  : scene.chessMapData
     };
-    player2.chessGroup[i].areaMap = MoveArea.getAreaMap(setting_movearea)
+    player2.chessGroup[i].areaMap = MoveArea.getAreaMap(setting_movearea).all;
+    player2.chessGroup[i].moveMap = MoveArea.getAreaMap(setting_movearea).move;
+    player2.chessGroup[i].attackMap = MoveArea.getAreaMap(setting_movearea).attack;
   }
 
 
@@ -93,6 +95,8 @@ export function thinkAI(scene){
 export function getNodeList(){
 
   let areaMap;
+  let attackMap;
+  let moveMap;
 
   let node_list = [];
 
@@ -106,10 +110,14 @@ export function getNodeList(){
   
   for(var n = 0; n < chessGroup.length; n++){
     areaMap = chessGroup[n].areaMap;
+    moveMap = chessGroup[n].moveMap;
+    attackMap = chessGroup[n].attackMap;
+    console.log("moveMap",moveMap)
+    console.log("areaMap",areaMap)
     for(var i = 0; i < areaMap.length; i++){
       for(var k = 0; k < areaMap[i].length; k++){
 
-        if(areaMap[i][k] === 1 || areaMap[i][k] === 3 || areaMap[i][k] === 9){
+        if(moveMap[i][k] === 1 || areaMap[i][k] === 9){
           if(itemMap2[i][k] !== 0){
             /*移動先に、
             トラップがあって　かつ　攻撃タイプだったらcontinueで次へ進む。
@@ -119,10 +127,19 @@ export function getNodeList(){
             if(item.itemTYPE === 'ATTACK'){
               continue;
             }
+            // if(player1.chessMap[i][k] !== 0){
+            //   continue;
+            // }
+            // if(player2.chessMap[i][k] !== 0){
+            //   continue;
+            // }
           }
           if(areaMap[i][k] === 9){
             setStatus = "STAY";
           }else{
+            if(_scene.GameManager.stageMapAll[i][k] !== 0){
+              continue;
+            }
             setStatus = "MOVE";
           }
           node = {
@@ -178,7 +195,8 @@ export function deepThink(node){
     map   : _scene.chessMapData2,
     map2  : _scene.chessMapData
   };  
-  let areaMap = MoveArea.getAreaMap(setting_movearea);
+  let getAreaMap = MoveArea.getAreaMap(setting_movearea);
+  let areaMap = getAreaMap.all;
   //攻撃できるか判定  
   let movedList = [];
   movedList = checkAttackMap(_chess,areaMap,_pos);

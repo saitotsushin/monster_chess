@@ -424,7 +424,7 @@ export default class GameManager {
       }else{
         this.selectedChess.attack(this.attackedChess);
       }
-      this.scene.chengeStageMode('FIN');
+      // this.scene.chengeStageMode('FIN');
     }    
     if(status === "NO"){
     }
@@ -438,9 +438,16 @@ export default class GameManager {
       X: 0,
       Y: 0
     }
+    console.log("this.scene.STATUS.TURN",this.scene.STATUS.TURN)
+    if(this.scene.STATUS.TURN === "PLAYER1"){
+      this.NPC.myTurn();
+      this.scene.STATUS.TURN = "PLAYER2";
+    }else{
+      this.NPC.turnFin();
+      this.scene.STATUS.TURN = "PLAYER1";
+    }
     this.UIManager.turnFin();
     this.StageManager.turnFin();
-    this.NPC.myTurn();
   }
   /*==============================
   アイテム選択中

@@ -143,9 +143,9 @@ export default class UIManager {
   自分のターン完了
   ------------------------------*/   
   turnFin(){
-    this.Cursor.setVisible(false);
+    // this.Cursor.setVisible(false);
     this.Menu.btnChangeStatus('TURN_FIN');
-    this.Turn.changeHead('player2');
+    this.Turn.changeHead(this.scene.STATUS.TURN);
   }
   /*==============================
   アイテムのウインドウ表示

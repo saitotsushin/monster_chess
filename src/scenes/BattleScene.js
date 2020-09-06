@@ -13,9 +13,11 @@ class BattleScene extends Phaser.Scene {
     this.stageMap = "map1";//ステージマップの指定
     this.STATUS = {
       STAGE: "",
+      TURN: "",
       GAME_MODE: "",
       STAGE_MODE: "",
       WIN_PLAYER: "",
+      ANIME: false,
       PLAYER1: {
         CHESS_COUNT: 0,
       },
@@ -67,8 +69,10 @@ class BattleScene extends Phaser.Scene {
     // this.cameras.main.setBackgroundColor('#FFFFFF');    
 
     this.STATUS.GAME_MODE = "";
+    this.STATUS.TURN = "PLAYER1";
     this.STATUS.STAGE = "";
     this.STATUS.STAGE_MODE = "";
+    this.STATUS.ANIME = false;
     this.STATUS.WIN_PLAYER = "";
     this.STATUS.PLAYER1.CHESS_COUNT = 0;
     this.STATUS.PLAYER2.CHESS_COUNT = 0;
@@ -245,6 +249,7 @@ class BattleScene extends Phaser.Scene {
   自分のターン完了
   ------------------------------*/   
   turnFin(){
+    console.log("turnFin")
     this.GameManager.turnFin();
   }
   /*==============================

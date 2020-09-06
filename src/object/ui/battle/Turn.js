@@ -56,12 +56,12 @@ export default class Turn{
     // this.player2Turn.setOrigin(1,0).setRightAlign();    
   }
   changeHead(mode){
-    if(mode === 'player1'){
+    if(mode === 'PLAYER1'){
       this.player1Turn.setColor('#000000');
       this.player2Turn.setColor('#FFFFFF');
       this.StageHead.setTexture('spritesheet','stage_head_player1');
     }
-    if(mode === 'player2'){
+    if(mode === 'PLAYER2'){
       this.player2Turn.setColor('#000000');
       this.player1Turn.setColor('#FFFFFF');      
       this.StageHead.setTexture('spritesheet','stage_head_player2');

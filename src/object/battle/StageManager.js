@@ -98,7 +98,9 @@ export default class StageManager {
   showMoveArea(setting){
     this.MoveArea.hide();
     let chess = setting.chess;
-    chess.areaMap = this.MoveArea.getAreaMap(setting);
+    let areaMaps = this.MoveArea.getAreaMap(setting);
+    console.log("areaMaps",areaMaps)
+    chess.areaMap = areaMaps.all;
     this.MoveArea.show(chess)
   }
   /*==============================

@@ -69,6 +69,9 @@ export default class ItemGroup {
           sprite.itemIndex = i;
           sprite.setVisible(false);
           sprite.on('pointerdown', function (pointer) {
+            if(_this.scene.STATUS.TURN !== "PLAYER1"){
+              return false;
+            }            
             _this.beforePos.x = this.x;
             _this.beforePos.y = this.y;
             _this.itemIndex = this.itemIndex;

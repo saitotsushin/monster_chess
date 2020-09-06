@@ -28,6 +28,9 @@ export default class StageitemTile {
         area.canSet = false;
         this.itemTouchTileGroup.add(area);
         area.on('pointerdown', function (pointer) {
+          if(this.scene.STATUS.TURN !== "PLAYER1"){
+            return false;
+          }          
           if(this.canSet){
             if(!_this.scene.GameManager.UIManager.selectedItem){
               alert("トラップが選択されていません。")

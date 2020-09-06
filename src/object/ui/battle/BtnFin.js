@@ -10,6 +10,12 @@ export default class BtnFin extends Phaser.Physics.Arcade.Sprite {
     
     this.setInteractive();
     this.on('pointerdown', () => {
+      if(this.scene.STATUS.TURN !== "PLAYER1"){
+        return false;
+      }
+      if(this.scene.STATUS.ANIME === true){
+        return false;
+      }
       if(this.STATUS === "FIN"){
         this.scene.turnFin();
       }

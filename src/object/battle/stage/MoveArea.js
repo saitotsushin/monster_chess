@@ -29,16 +29,25 @@ export default class MoveArea{
   getAreaMap(setting){
     let _X = setting.pos.X;
     let _Y = setting.pos.Y;
+    
     let target = setting.chess;
     let mapAll = setting.mapAll;
     let map  = setting.map;//自分のチェスマップ
     let map2 = setting.map2;//相手のチェスマップ
     let base1 = target.areaMapBase;
+    let baseAttack1 = target.attackAreaMapBase;
+    let baseMove1 = target.moveAreaMapBase;
     let base = [];
+    let baseAttack = [];
+    let baseMove = [];
     if(target.playerType === "player2"){
       base = base1.slice().reverse();
+      baseAttack = baseAttack1.slice().reverse();
+      baseMove = baseMove1.slice().reverse();
     }else{
       base = base1;
+      baseAttack = baseAttack1;
+      baseMove = baseMove1;
     }
     let moveArea = [
       [0,0,0,0,0],
@@ -47,6 +56,20 @@ export default class MoveArea{
       [0,0,0,0,0],
       [0,0,0,0,0]
     ];
+    let attackArea = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
+    let allArea = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];      
     let harfHeight = (base.length - 1) / 2;
     let harfWidth = (base[0].length - 1) / 2;
     let baseY = harfHeight - _Y;
@@ -63,7 +86,9 @@ export default class MoveArea{
     for(var i = baseY; i < harfHeight + baseY + 1; i++){//縦（y）
       for(var k = baseX; k < harfWidth + baseX + 1; k++){//横（x）
         if(base[i][k] !== 0){
-          moveArea[i2][k2] = base[i][k];
+          allArea[i2][k2] = base[i][k];
+          moveArea[i2][k2] = baseMove[i][k];
+          attackArea[i2][k2] = baseAttack[i][k];
         }
         if(base[i][k] === 9){
           centePos.X = k2;
@@ -82,12 +107,16 @@ export default class MoveArea{
           if(moveArea[Y][X] !== 0 && moveArea[Y][X] !== 9){
             if(centePos.Y > Y && centePos.X === X){//真上にある時
               for(var Y_TT = 0; Y_TT < Y; Y_TT++){
+                allArea[Y_TT][X] = 0;
+                attackArea[Y_TT][X] = 0;
                 moveArea[Y_TT][X] = 0;
               }
             }
             if(centePos.Y > Y && centePos.X > X){//上&左にあるとき
               for(var Y_T = 0; Y_T < Y; Y_T++){
                 for(var X_l = 0; X_l <= X; X_l++){
+                  allArea[Y_T][X_l] = 0;
+                  attackArea[Y_T][X_l] = 0;
                   moveArea[Y_T][X_l] = 0;
                 }
               }
@@ -95,18 +124,24 @@ export default class MoveArea{
             if(centePos.Y > Y && centePos.X < X){//上&右にあるとき
               for(var Y_T = 0; Y_T < Y; Y_T++){
                 for(var X_R = X; X_R < mapAll[Y].length; X_R++){
+                  allArea[Y_T][X_R] = 0;
+                  attackArea[Y_T][X_R] = 0;
                   moveArea[Y_T][X_R] = 0;
                 }
               }
             }
             if(centePos.Y === Y && centePos.X > X){//真左にある時
               for(var X_LL = 0; X_LL < X; X_LL++){
+                allArea[Y][X_LL] = 0;
+                attackArea[Y][X_LL] = 0;
                 moveArea[Y][X_LL] = 0;
               }
             }
             if(centePos.Y < Y && centePos.X > X){//下&左にあるとき
               for(var Y_B = Y; Y_B < mapAll.length; Y_B++){
                 for(var X_L = 0; X_L < X; X_L++){
+                  allArea[Y_B][X_L] = 0;
+                  attackArea[Y_B][X_L] = 0;
                   moveArea[Y_B][X_L] = 0;
                 }
               }
@@ -114,22 +149,30 @@ export default class MoveArea{
             if(centePos.Y < Y && centePos.X < X){//下&右にあるとき
               for(var Y_B = Y; Y_B < mapAll.length; Y_B++){
                 for(var X_R = X + 1; X_R < mapAll[Y].length; X_R++){
+                  allArea[Y_B][X_R] = 0;
+                  attackArea[Y_B][X_R] = 0;
                   moveArea[Y_B][X_R] = 0;
                 }
               }
             }
             if(centePos.Y < Y && centePos.X === X){//真下にある時
               for(var Y_BB = Y + 1; Y_BB < mapAll.length; Y_BB++){
+                allArea[Y_BB][X] = 0;
+                attackArea[Y_BB][X] = 0;
                 moveArea[Y_BB][X] = 0;
               }
             }       
             if(centePos.Y === Y && centePos.X < X){//真右にある時
               for(var X_RR = X + 1; X_RR < mapAll[Y].length; X_RR++){
+                allArea[Y][X_RR] = 0;
+                attackArea[Y][X_RR] = 0;
                 moveArea[Y][X_RR] = 0;
               }
             }
           }
+  
         }
+
       }
     }
 
@@ -137,21 +180,32 @@ export default class MoveArea{
     for(var Y = 0; Y < map.length; Y++){
       for(var X = 0; X < map[Y].length; X++){
         if(map[Y][X] !== 0){
+          allArea[Y][X] = 0;
+          attackArea[Y][X] = 0;
           moveArea[Y][X] = 0;
         }
       }
     }
+    console.log("map2",map2)
     for(var Y = 0; Y < map2.length; Y++){
       for(var X = 0; X < map2[Y].length; X++){
         if(map2[Y][X] !== 0){
           if(moveArea[Y][X] === 1){
             moveArea[Y][X] = 0;
           }
+          if(allArea[Y][X] === 1){
+            allArea[Y][X] = 0;
+          }
         }
       }
     }
+    let setArea = {
+      move: moveArea,
+      attack: attackArea,
+      all: allArea
+    };
 
-    return moveArea;
+    return setArea;
     
   }
   createAreaPanel(){
@@ -178,6 +232,7 @@ export default class MoveArea{
     }
   }
   show(target){
+    console.log("target",target)
     //添え字（y*幅+x)
     for(var i = 0; i < target.areaMap.length; i++){//y
       for(var k = 0; k < target.areaMap[i].length; k++){//x

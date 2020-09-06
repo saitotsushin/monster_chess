@@ -23,6 +23,9 @@ export default class CreateTouchTile {
         area.setInteractive();
         let _this = this;
         area.on('pointerdown', function (pointer) {
+          if(this.scene.STATUS.TURN !== "PLAYER1"){
+            return false;
+          }
           _this.scene.touchStage(this.pos);
           // return this.pos;
         }); 

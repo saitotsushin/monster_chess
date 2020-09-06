@@ -17,14 +17,17 @@ export default class NPC{
     this.setItemByRandom();//トラップを置くか（移動後）
   }
   turnFin(){
-    this.scene.GameManager.UIManager.Turn.changeHead('player1');
+    this.scene.GameManager.UIManager.Turn.changeHead('PLAYER1');
     this.scene.turnChange();
   }
   /*==================
   敵のチェスの行動
   ==================*/
   actChess(selectedChess){
+    console.log("actChess")
     let chess = selectedChess.chess;
+    console.log("chess",chess)
+    console.log("selectedChess",selectedChess)
     let attackTarget = selectedChess.attackTarget;
     let addTimer = 0;
     
@@ -38,6 +41,8 @@ export default class NPC{
     let _this = this;
 
     let getItem = "";
+
+    console.log("mode",mode)
 
     if(mode === "ATTACK"){
 
@@ -63,8 +68,6 @@ export default class NPC{
           }, 1000);          
           
         }
-
-        _this.turnFin();
       }
       /*移動あり*/
       if(selectedChess.useTurn === 1){
@@ -116,7 +119,6 @@ export default class NPC{
             }else{
               chess.attack(attackTarget);    
             }
-            _this.turnFin();
             clearTimeout(queAttack);
           }, 1000 + addTimer);    
 
