@@ -48,8 +48,8 @@ export default class ChessData {
         no: '01',
         className: Chess1,
         status: {
-          hp: 5,
-          maxHp: 5,
+          hp: 10,
+          maxHp: 10,
           power: 5
         },
         cost: 1,
@@ -84,8 +84,8 @@ export default class ChessData {
         no: '02',
         className: Chess2,
         status: {
-          hp: 5,
-          maxHp: 5,
+          hp: 10,
+          maxHp: 10,
           power: 5
         },
         cost: 2,
@@ -156,8 +156,8 @@ export default class ChessData {
         no: '04',
         className: Chess4,
         status: {
-          hp: 5,
-          maxHp: 5,
+          hp: 10,
+          maxHp: 10,
           power: 4
         },
         cost: 4,
@@ -192,8 +192,8 @@ export default class ChessData {
         no: '05',
         className: Chess5,
         status: {
-          hp: 5,
-          maxHp: 5,
+          hp: 10,
+          maxHp: 10,
           power: 4
         },
         cost: 5,

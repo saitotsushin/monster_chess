@@ -25,7 +25,7 @@ class StageClearScene extends Phaser.Scene {
     this.btnOK.on('pointerdown', () => {
 
       if(this.selectedChess){
-        this.PlayerData.stockChesses.push(this.selectedChess.name);
+        this.PlayerData.stockChesses.push(this.selectedChess.charaName);
         // this.scene.start('MainScene');
       }
       
@@ -75,7 +75,7 @@ class StageClearScene extends Phaser.Scene {
             item.key
           );
 
-          sprite.name = item.key;
+          sprite.charaName = item.key;
 
           sprite.setInteractive();
           sprite.on('pointerdown', () => {

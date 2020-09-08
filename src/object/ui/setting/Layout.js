@@ -131,7 +131,7 @@ export default class Layout{
           );
           sprite.cost = item.cost;
           sprite.no = item.no;
-          sprite.name = item.key;
+          sprite.charaName = item.key;
 
           sprite.on('pointerdown', () => {
             this.scene.touchLayoutChess(sprite);

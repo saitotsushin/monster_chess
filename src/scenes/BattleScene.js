@@ -119,6 +119,8 @@ class BattleScene extends Phaser.Scene {
     }
     this.chessMapData2.reverse();
 
+    console.log("this.chessMapData2___",this.chessMapData2)
+
     this.GameManager = new GameManager({
       scene: this
     });
@@ -249,7 +251,6 @@ class BattleScene extends Phaser.Scene {
   自分のターン完了
   ------------------------------*/   
   turnFin(){
-    console.log("turnFin")
     this.GameManager.turnFin();
   }
   /*==============================

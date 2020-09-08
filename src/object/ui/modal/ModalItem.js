@@ -78,7 +78,7 @@ export default class ModalItem{
   open(item,chess){
     this.container.setVisible(true);
     this.itemSprite.setTexture('spritesheet',item.frame.name);
-    this.ModalWindowItemText.setText([item.name,'発火！！'])
+    this.ModalWindowItemText.setText([item.charaName,'発火！！'])
     let openTween = this.scene.tweens.add({
       targets: this.container,
       alpha: 1,

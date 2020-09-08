@@ -73,8 +73,6 @@ export default class StageManager {
         }
       }
     }
-    console.log("chessMapData",chessMapData)
-    console.log("get_index",get_index)
     group.children.entries.forEach(
       (sprite,index) => {
         if(sprite.groupIndex === get_index){
@@ -99,7 +97,6 @@ export default class StageManager {
     this.MoveArea.hide();
     let chess = setting.chess;
     let areaMaps = this.MoveArea.getAreaMap(setting);
-    console.log("areaMaps",areaMaps)
     chess.areaMap = areaMaps.all;
     this.MoveArea.show(chess)
   }

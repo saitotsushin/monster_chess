@@ -18,7 +18,7 @@ export default class LoadGameData {
     this.chessDataMaster = [
       // 'chess_3',
       ['chess_1',3],
-      ['chess_2',3],
+      ['chess_2',5],
       ['chess_3',3],
       ['chess_4',4],
       ['chess_5',5]

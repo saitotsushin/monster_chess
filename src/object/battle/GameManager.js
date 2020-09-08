@@ -254,21 +254,16 @@ export default class GameManager {
   アイテムの更新
   ------------------------------*/      
   updateStageTrap(mode){
-    console.log("updateStageTrap mode",mode);
     let selectedItem = this.UIManager.selectedItem;
     let itemIndex    = selectedItem.itemIndex;
     let pos          = this.UIManager.selectedItemPos.intPos;
-    console.log("updateStageTrap pos",pos);
-    console.log("updateStageTrap itemIndex",itemIndex);
 
     if(mode === "ADD"){
-      console.log("追加した")
       this.scene.itemMap[pos.Y][pos.X] = itemIndex + 1;
     }
     if(mode === "DEL"){
       this.scene.itemMap[pos.Y][pos.X] = 0;
     }
-    console.log("this.scene.itemMap",this.scene.itemMap)
 
     /*表示の更新*/
     this.UIManager.updateStageTrap(mode);
@@ -422,6 +417,8 @@ export default class GameManager {
         this.scene.itemFiring(getItem,this.selectedChess);
 
       }else{
+        // let targetChess = _this.scene.GameManager.StageManager.CreateChessGroup2.addGroup.children.entries[this.attackedChess.groupIndex - 1];
+
         this.selectedChess.attack(this.attackedChess);
       }
       // this.scene.chengeStageMode('FIN');
@@ -433,17 +430,18 @@ export default class GameManager {
   自分のターン完了
   ------------------------------*/   
   turnFin(){
+    this.STATUS.MOVE = "";
+    this.STATUS.ATTACK = "";    
     this.selectedChess = "";
     this.beforePos = {
       X: 0,
       Y: 0
     }
-    console.log("this.scene.STATUS.TURN",this.scene.STATUS.TURN)
     if(this.scene.STATUS.TURN === "PLAYER1"){
-      this.NPC.myTurn();
       this.scene.STATUS.TURN = "PLAYER2";
+      this.NPC.myTurn();
     }else{
-      this.NPC.turnFin();
+      // this.NPC.turnFin();
       this.scene.STATUS.TURN = "PLAYER1";
     }
     this.UIManager.turnFin();
@@ -463,9 +461,6 @@ export default class GameManager {
   アイテム設置
   ------------------------------*/   
   touchCanPutTile(pos,index){
-    console.log("touchCanPutTile")
-    console.log("pos",pos)
-    console.log("index",index)
     let setPos = {
       intPos: pos,
       worldPos: this.getWorldPos(pos)

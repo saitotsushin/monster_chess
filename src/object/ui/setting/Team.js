@@ -133,7 +133,7 @@ export default class Team{
 
           sprite.depth = 12;
 
-          sprite.name = item.key;
+          sprite.charaName = item.key;
 
           this.scene.setCost += sprite.cost;
 

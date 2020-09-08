@@ -399,6 +399,8 @@ export default class Layout{
       chessToTile.HP_text.depth = 22;
       chessToTile.AT_text.depth = 22;
       chessToTile.chessStatus.depth = 21;
+      chessToTile.HP_text.setText(this.selectedLayoutChess.status.hp);
+      chessToTile.AT_text.setText(this.selectedLayoutChess.status.power);
       chessToTile.tilePos.X = panel.tilePos.X;
       chessToTile.tilePos.Y = panel.tilePos.Y;
       chessToTile.setTexture('spritesheet',this.selectedLayoutChess.frame.name);

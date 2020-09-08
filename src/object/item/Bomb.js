@@ -19,7 +19,7 @@ export default class Bomb extends Base {
 
     this.fireType = 'STEP_ON';
 
-    this.name = "爆弾";
+    this.charaName = "爆弾";
 
     this.isSet = false;
 
@@ -41,8 +41,6 @@ export default class Bomb extends Base {
 
     this.item_frame.setVisible(false);
     attackingTarget.status.hp -= damagePoint;
-
-    console.log("attackingTarget.status.hp",attackingTarget.status.hp)
 
     let _scene = attackingTarget.scene;
 

@@ -17,13 +17,12 @@ export default class Reflect extends Base {
 
     this.fireType = 'ATTACKED';
 
-    this.name = "リフレクト";
+    this.charaName = "リフレクト";
 
     this.isSet = false;
  
   }
   firing(attackingTarget){
-    console.log("attackingTarget",attackingTarget)
     // alert('トラップ：リフレクト発動')
     let damagePoint = this.status.power;
 

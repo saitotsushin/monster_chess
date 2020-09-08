@@ -54,13 +54,20 @@ export function thinkAI(scene){
     player2.chessGroup[i].areaMap = MoveArea.getAreaMap(setting_movearea).all;
     player2.chessGroup[i].moveMap = MoveArea.getAreaMap(setting_movearea).move;
     player2.chessGroup[i].attackMap = MoveArea.getAreaMap(setting_movearea).attack;
+    if(player2.chessGroup[i].charaName === "chess_2"){
+      console.log("player2.chessGroup[i].tilePos",player2.chessGroup[i].tilePos)
+      console.log("player2.chessGroup[i].areaMap",player2.chessGroup[i].areaMap)
+    }
   }
 
 
   //移動できる一覧をリストアップする。
   let node_list = getNodeList();
+  console.log("node_list",node_list)
 
   let afterDeepThink = deepThinkNodes(node_list);
+
+  console.log("afterDeepThink",afterDeepThink)
 
   let evaledList = [];
   let evaled;
@@ -77,9 +84,11 @@ export function thinkAI(scene){
 
   if(evaledList.length > 0){
     //移動する
+    console.log("NPC移動する")
     selectedChess = getMostEvalChess(evaledList);
     
   }else{
+    console.log("NPC移高い")
     //一番攻撃力の高い駒を一番防御力の低い駒の近くに移動させる
     selectedChess = getChaseEnemy(player2.chessGroup,player1.chessGroup);
 
@@ -94,9 +103,9 @@ export function thinkAI(scene){
 
 export function getNodeList(){
 
-  let areaMap;
-  let attackMap;
-  let moveMap;
+  let areaMap = [];
+  let attackMap = [];
+  let moveMap = [];
 
   let node_list = [];
 
@@ -112,8 +121,9 @@ export function getNodeList(){
     areaMap = chessGroup[n].areaMap;
     moveMap = chessGroup[n].moveMap;
     attackMap = chessGroup[n].attackMap;
-    console.log("moveMap",moveMap)
-    console.log("areaMap",areaMap)
+    if(chessGroup[n].charaName === 'chess_2'){
+      console.log("areaMap",areaMap)
+    }
     for(var i = 0; i < areaMap.length; i++){
       for(var k = 0; k < areaMap[i].length; k++){
 
@@ -151,7 +161,7 @@ export function getNodeList(){
               },
               status: setStatus
             },
-            name: chessGroup[n].frame,
+            charaName: chessGroup[n].frame,
             list: []
           }
           node_list.push(node);
@@ -251,10 +261,10 @@ export function checkAttackMap(chess,areaMap,pos){
   
             let nodeObject = {
               chess: _chess,//駒
-              name: chess.name,
+              charaName: chess.charaName,
               mode: "ATTACK",
               attackTarget: _playerChess1,
-              attackTargetName: _playerChess1.name,
+              attackTargetName: _playerChess1.charaName,
               eval: 0,
               useTurn: thinkTurnCount,
               attackedPerHp: simulateDestroyPer,
@@ -340,11 +350,30 @@ export function getMostEvalChess(eval_list){
 export function getHighestPowerChess(chesses){
   let moveChess;
   let attackPoint = 0;
-
+  let canMoveChessGroup = [];
+  let canMoveFlg = false;
   for(var i= 0; i < chesses.length; i++){
-    if(attackPoint <= chesses[i].status.power){
-      attackPoint = chesses[i].status.power;
-      moveChess = chesses[i];
+    if(chesses[i].charaName === "chess_2"){
+      console.log("chesses",chesses[i].moveMap)
+    }
+    for(var k = 0; k < chesses[i].moveMap.length; k++){
+      for(var l = 0; l < chesses[i].moveMap[k].length; l++){
+        if(chesses[i].moveMap[k][l] !== 0){
+          canMoveFlg = true;
+        }
+      }
+    }
+    if(canMoveFlg){
+      canMoveChessGroup.push(chesses[i]);
+    }
+    canMoveFlg = false;
+  }
+
+
+  for(var i= 0; i < canMoveChessGroup.length; i++){
+    if(attackPoint <= canMoveChessGroup[i].status.power){
+      attackPoint = canMoveChessGroup[i].status.power;
+      moveChess = canMoveChessGroup[i];
     }
   }
   return moveChess;
@@ -381,7 +410,10 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
   let sum_diff = 0;
   let pl_pos_X = attackChess.tilePos.X;
   let pl_pos_Y = attackChess.tilePos.Y;
-  let list = {};
+  let list = {
+    X: 0,
+    Y: 0
+  };
   let savePos = {
     X: 0,
     Y: 0
@@ -420,7 +452,8 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
           sum_diff = sum;
           savePos.X = k;
           savePos.Y = i;
-          list = savePos;
+          list.X = k;
+          list.Y = i;
         }
 
       }
@@ -429,10 +462,10 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
 
   let setObject = {
     chess: moveChess,
-    name: moveChess.name,
+    name: moveChess.charaName,
     mode: 'MOVE',
     attackTarget: attackChess,
-    attackTargetName: attackChess.name,
+    attackTargetName: attackChess.charaName,
     tilePos: {
       X: list.X,
       Y: list.Y

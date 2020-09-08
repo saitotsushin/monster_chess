@@ -15,34 +15,38 @@ export default class NPC{
     this.setItemByRandom();//トラップを置くか（移動前）
     this.actChess(selectedChess);
     this.setItemByRandom();//トラップを置くか（移動後）
+
   }
   turnFin(){
+    console.log("turnFin")
     this.scene.GameManager.UIManager.Turn.changeHead('PLAYER1');
     this.scene.turnChange();
+    // this.scene.STATUS.TURN = "PLAYER2";
+    this.scene.turnFin();
+    
   }
   /*==================
   敵のチェスの行動
   ==================*/
   actChess(selectedChess){
-    console.log("actChess")
     let chess = selectedChess.chess;
-    console.log("chess",chess)
-    console.log("selectedChess",selectedChess)
     let attackTarget = selectedChess.attackTarget;
     let addTimer = 0;
     
     let tilePos = selectedChess.tilePos;
+
     let mode = selectedChess.mode;
     let cursor = this.scene.GameManager.UIManager.Cursor;
     cursor.x = chess.x;
     cursor.y = chess.y;
     cursor.setVisible(true);
-
     let _this = this;
 
     let getItem = "";
 
-    console.log("mode",mode)
+    // console.log("tilePos",tilePos)
+    // console.log("mode",mode)
+    // console.log("selectedChess",selectedChess)
 
     if(mode === "ATTACK"){
 
@@ -63,6 +67,7 @@ export default class NPC{
             clearTimeout(queSelect1);
           }, 500);
           let queSelect2 = setTimeout(function(){
+            // let targetChess = _this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[attackTarget.groupIndex - 1];
             chess.attack(attackTarget);
             clearTimeout(queSelect2);
           }, 1000);          
@@ -117,6 +122,7 @@ export default class NPC{
               _this.scene.itemFiring(getItem,chess);    
               // addTimer += 2000;        
             }else{
+              // let targetChess = _this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[attackTarget.groupIndex - 1];
               chess.attack(attackTarget);    
             }
             clearTimeout(queAttack);
@@ -147,7 +153,10 @@ export default class NPC{
       this.scene.chessMapData2[beforeIntPos.Y][beforeIntPos.X] = 0;
       this.scene.chessMapData2[tilePos.Y][tilePos.X] = chessIndex;
       this.scene.GameManager.updateStage();
-      _this.turnFin();
+      this.turnFin();
+
+      // _this.turnFin();
+
     }
   }
   setItemByRandom(){

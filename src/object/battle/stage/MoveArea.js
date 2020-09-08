@@ -186,7 +186,6 @@ export default class MoveArea{
         }
       }
     }
-    console.log("map2",map2)
     for(var Y = 0; Y < map2.length; Y++){
       for(var X = 0; X < map2[Y].length; X++){
         if(map2[Y][X] !== 0){
@@ -232,7 +231,6 @@ export default class MoveArea{
     }
   }
   show(target){
-    console.log("target",target)
     //添え字（y*幅+x)
     for(var i = 0; i < target.areaMap.length; i++){//y
       for(var k = 0; k < target.areaMap[i].length; k++){//x

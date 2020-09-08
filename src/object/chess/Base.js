@@ -69,14 +69,15 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
       [0,0,0,0,0,]      
     ];
 
-    this.name = config.frame;
+    this.charaName = config.frame;
     this.status = {
       hp: 5,
       maxHp: 5,
       power: 4,
       difence: 1,
       condition: ""
-    }
+    };
+    this.hp = 5;
     this.attribute = "";
     this.tilePos = {
       X: 0,
@@ -195,13 +196,14 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     }
   }
   attack(attackingTarget){
-    if(this.status.hp <= 0){
+    let _attackingTarget = attackingTarget;
+    if(_attackingTarget.status.hp <= 0){
       return false;
     }
-    let groundType = this.scene.registry.list.mapData[attackingTarget.tilePos.Y][attackingTarget.tilePos.X];
+    let groundType = this.scene.registry.list.mapData[_attackingTarget.tilePos.Y][_attackingTarget.tilePos.X];
     let power = 0;
     let myAttribute = Number(this.attribute);
-    let enemyAttribute = Number(attackingTarget.attribute);
+    let enemyAttribute = Number(_attackingTarget.attribute);
     /*ターゲットの保存。爆発の後のremoveで使用する*/
     //地形の力
     if(myAttribute === groundType){
@@ -223,29 +225,40 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     //     power = this.status.power * 100;
     //   }
     // }
-    attackingTarget.status.hp -= Number(power);
+    _attackingTarget.status.hp -= Number(power);
+    _attackingTarget.hp -= Number(power);
+    // this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[0].status.hp -= Number(power);
+    // alert(this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[0].status.hp);
+    // alert(this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[1].status.hp);
+    // alert(this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[2].status.hp);
+    // alert(this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[3].status.hp);
+    // alert(this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries[4].status.hp);
 
-
-    if(attackingTarget.status.hp <= 0){
-      attackingTarget.status.hp = 0;
-      this.attackingTarget = attackingTarget;
-      this.attackingTarget.status.condition = "explode";
-      if(this.attackingTarget.isKing){
+    this.scene.GameManager.StageManager.CreateChessGroup.addGroup.children.entries.forEach(
+      (sprite,index) => {
+        // alert("sprite groupIndex="+sprite.groupIndex)
+      }
+    );  
+    if(_attackingTarget.status.hp <= 0){
+      _attackingTarget.status.hp = 0;
+      // this.attackingTarget = attackingTarget;
+      _attackingTarget.status.condition = "explode";
+      if(_attackingTarget.isKing){
         this.scene.STATUS.STAGE = "GAMEOVER";
-        if(this.attackingTarget.playerType === "player1"){
+        if(_attackingTarget.playerType === "player1"){
           this.scene.STATUS.WIN_PLAYER = "player2";
         }
-        if(this.attackingTarget.playerType === "player2"){
+        if(_attackingTarget.playerType === "player2"){
           this.scene.STATUS.WIN_PLAYER = "player1";      
         }
       }
-      attackingTarget.damage(Number(power),'ATTACK','explode');
+      _attackingTarget.damage(Number(power),'ATTACK','explode');
     }else{
       // if(this.scene.registry.list.gameMode === "NET"){
       //   this.scene.StageManager.Network.condition = '';
       // }      
-      attackingTarget.damage(Number(power),'ATTACK','');
-      this.attackingTarget = "";//撃破しなかったらリセット。
+      _attackingTarget.damage(Number(power),'ATTACK','');
+      // this.attackingTarget = "";//撃破しなかったらリセット。
     }
 
   }

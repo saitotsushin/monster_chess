@@ -16,7 +16,7 @@ export default class Portion extends Base {
     this.itemTYPE = 'CURE';
     this.fireType = 'STEP_ON';
 
-    this.name = "ポーション";
+    this.charaName = "ポーション";
 
     this.isSet = false;
 

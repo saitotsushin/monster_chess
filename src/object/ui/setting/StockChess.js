@@ -101,7 +101,7 @@ export default class StockChess{
           );
           sprite.status = item.status;
           sprite.type = "stock";
-          sprite.name = item.key;
+          sprite.charaName = item.key;
           sprite.setted = false;
           sprite.depth = 12;
 
@@ -136,7 +136,7 @@ export default class StockChess{
     );
     this.playerStockChessGroup.children.entries.forEach(
       (sprite) => {
-        if (teamChessList.indexOf(sprite.name) >= 0){
+        if (teamChessList.indexOf(sprite.charaName) >= 0){
           sprite.alpha = 0.4;
           // sprite.isTeam = true;
         }

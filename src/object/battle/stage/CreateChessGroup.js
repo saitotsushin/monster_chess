@@ -20,14 +20,14 @@ export default class CreateChessGroup {
     let playerChessList = this.chessData;
     
     let chessDataList = this.ChessData.chessList;
-
+    // let countup = 1;
 
     let playerType = this.playerType;
-    
+    let sprite;
     for(var i = 0; i < playerChessList.length;i++){
       chessDataList.filter(function(item, index){
         if(item.key === playerChessList[i]){
-          let sprite = new Chess({
+          sprite = new Chess({
             scene: this.scene,
             x: i * 20 + 20,
             y: 80,
@@ -35,13 +35,23 @@ export default class CreateChessGroup {
             key: 'spritesheet'
           });
           sprite.depth = 20;
-          sprite.status = item.status;
+          // sprite.status = item.status;
+          let status_hp = item.status.hp;
+          let status_maxHp = item.status.maxHp;
+          let status_power = item.status.power;
+          let status_difence = item.status.difence;
+          // let status = item.status;
+          // sprite.status = status;
+          sprite.status.hp = status_hp;
+          sprite.status.maxHp = status_maxHp;
+          sprite.status.power = status_power;
+          sprite.status.difence = item.status.difence;
+          // sprite.hp = item.status.hp;
+          let moveAreaMapBase = [...item.moveAreaMapBase];;
+          let attackAreaMapBase = [...item.attackAreaMapBase];
           sprite.playerType = playerType;
-          // if(playerType === 'player2'){
-          //   sprite.icon_enemy.setVisible(true);
-          // }
-          sprite.moveAreaMapBase = item.moveAreaMapBase;
-          sprite.attackAreaMapBase = item.attackAreaMapBase;
+          sprite.moveAreaMapBase = moveAreaMapBase;
+          sprite.attackAreaMapBase = attackAreaMapBase;
           sprite.areaMapBase = sprite.mergeArea(
             sprite.moveAreaMapBase,
             sprite.attackAreaMapBase,
@@ -82,6 +92,13 @@ export default class CreateChessGroup {
           chess.move(position,int);
           chess.icon_levelup.setVisible(false);
 
+          // console.log(
+          //   `
+          //   playerType ${chess.playerType}
+          //   hp ${chess.status.hp}
+          //   maxHp ${chess.status.maxHp}
+          //   `
+          // );
           let settingStatus = {
             power: chess.status.power,
             hp: chess.status.maxHp
