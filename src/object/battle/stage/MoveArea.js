@@ -92,7 +92,7 @@ export default class MoveArea{
         }
         if(base[i][k] === 9){
           centePos.X = k2;
-          centePos.Y = i2;
+          centePos.Y = i2;;
         }
         k2++;
       }
@@ -203,6 +203,12 @@ export default class MoveArea{
       attack: attackArea,
       all: allArea
     };
+    setArea.move[centePos.Y][centePos.X] = 9;
+    setArea.attack[centePos.Y][centePos.X] = 9;
+    setArea.all[centePos.Y][centePos.X] = 9;
+
+    console.log("setArea",setArea)
+
 
     return setArea;
     

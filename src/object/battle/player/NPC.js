@@ -18,7 +18,6 @@ export default class NPC{
 
   }
   turnFin(){
-    console.log("turnFin")
     this.scene.GameManager.UIManager.Turn.changeHead('PLAYER1');
     this.scene.turnChange();
     // this.scene.STATUS.TURN = "PLAYER2";
@@ -43,10 +42,6 @@ export default class NPC{
     let _this = this;
 
     let getItem = "";
-
-    // console.log("tilePos",tilePos)
-    // console.log("mode",mode)
-    // console.log("selectedChess",selectedChess)
 
     if(mode === "ATTACK"){
 

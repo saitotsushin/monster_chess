@@ -119,8 +119,6 @@ class BattleScene extends Phaser.Scene {
     }
     this.chessMapData2.reverse();
 
-    console.log("this.chessMapData2___",this.chessMapData2)
-
     this.GameManager = new GameManager({
       scene: this
     });

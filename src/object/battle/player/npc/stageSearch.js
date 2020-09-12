@@ -54,20 +54,12 @@ export function thinkAI(scene){
     player2.chessGroup[i].areaMap = MoveArea.getAreaMap(setting_movearea).all;
     player2.chessGroup[i].moveMap = MoveArea.getAreaMap(setting_movearea).move;
     player2.chessGroup[i].attackMap = MoveArea.getAreaMap(setting_movearea).attack;
-    if(player2.chessGroup[i].charaName === "chess_2"){
-      console.log("player2.chessGroup[i].tilePos",player2.chessGroup[i].tilePos)
-      console.log("player2.chessGroup[i].areaMap",player2.chessGroup[i].areaMap)
-    }
   }
 
 
   //移動できる一覧をリストアップする。
   let node_list = getNodeList();
-  console.log("node_list",node_list)
-
   let afterDeepThink = deepThinkNodes(node_list);
-
-  console.log("afterDeepThink",afterDeepThink)
 
   let evaledList = [];
   let evaled;
@@ -119,11 +111,9 @@ export function getNodeList(){
   
   for(var n = 0; n < chessGroup.length; n++){
     areaMap = chessGroup[n].areaMap;
+    console.log("areaMap",areaMap)
     moveMap = chessGroup[n].moveMap;
     attackMap = chessGroup[n].attackMap;
-    if(chessGroup[n].charaName === 'chess_2'){
-      console.log("areaMap",areaMap)
-    }
     for(var i = 0; i < areaMap.length; i++){
       for(var k = 0; k < areaMap[i].length; k++){
 
@@ -146,6 +136,7 @@ export function getNodeList(){
           }
           if(areaMap[i][k] === 9){
             setStatus = "STAY";
+            console.log("areaMap",areaMap)
           }else{
             if(_scene.GameManager.stageMapAll[i][k] !== 0){
               continue;
@@ -353,9 +344,6 @@ export function getHighestPowerChess(chesses){
   let canMoveChessGroup = [];
   let canMoveFlg = false;
   for(var i= 0; i < chesses.length; i++){
-    if(chesses[i].charaName === "chess_2"){
-      console.log("chesses",chesses[i].moveMap)
-    }
     for(var k = 0; k < chesses[i].moveMap.length; k++){
       for(var l = 0; l < chesses[i].moveMap[k].length; l++){
         if(chesses[i].moveMap[k][l] !== 0){

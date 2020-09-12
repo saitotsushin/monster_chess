@@ -151,6 +151,7 @@ export default class MoveArea{
       }
     }
 
+
     return moveArea;
     
   }

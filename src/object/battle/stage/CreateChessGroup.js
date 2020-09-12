@@ -92,13 +92,6 @@ export default class CreateChessGroup {
           chess.move(position,int);
           chess.icon_levelup.setVisible(false);
 
-          // console.log(
-          //   `
-          //   playerType ${chess.playerType}
-          //   hp ${chess.status.hp}
-          //   maxHp ${chess.status.maxHp}
-          //   `
-          // );
           let settingStatus = {
             power: chess.status.power,
             hp: chess.status.maxHp
