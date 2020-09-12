@@ -47,6 +47,7 @@ export default class Reflect extends Base {
       attackingTarget.damage(damagePoint,'ATTACK','explode');
       let queRemove = setTimeout(function(){
         _scene.GameManager.removeChess(attackingTarget);
+        _scene.STATUS.ANIME = false;
         clearTimeout(queRemove);
       }, 2500);
       attackingTarget.status.hp = 0;

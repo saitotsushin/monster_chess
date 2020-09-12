@@ -57,6 +57,7 @@ export default class Bomb extends Base {
       } 
       let queRemove = setTimeout(function(){
         _scene.GameManager.removeChess(attackingTarget);
+        _scene.STATUS.ANIME = false;
         clearTimeout(queRemove);
       }, 2500);
       attackingTarget.status.hp = 0;

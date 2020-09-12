@@ -343,6 +343,7 @@ export default class UIManager {
   アイテムの発火
   ------------------------------*/   
   itemFiring(item,chess){
+    this.scene.STATUS.ANIME = true;
     this.ModalItem.open(item,chess);
   }  
 }
