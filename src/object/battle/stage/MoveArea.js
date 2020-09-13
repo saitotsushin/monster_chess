@@ -176,7 +176,6 @@ export default class MoveArea{
       }
     }
 
-
     for(var Y = 0; Y < map.length; Y++){
       for(var X = 0; X < map[Y].length; X++){
         if(map[Y][X] !== 0){
@@ -189,12 +188,13 @@ export default class MoveArea{
     for(var Y = 0; Y < map2.length; Y++){
       for(var X = 0; X < map2[Y].length; X++){
         if(map2[Y][X] !== 0){
-          if(moveArea[Y][X] === 1){
-            moveArea[Y][X] = 0;
-          }
+          moveArea[Y][X] = 0;
           if(allArea[Y][X] === 1){
             allArea[Y][X] = 0;
           }
+          // allArea[Y][X] = 0;
+          // attackArea[Y][X] = 0;
+          // moveArea[Y][X] = 0;          
         }
       }
     }
@@ -203,12 +203,9 @@ export default class MoveArea{
       attack: attackArea,
       all: allArea
     };
-    setArea.move[centePos.Y][centePos.X] = 9;
-    setArea.attack[centePos.Y][centePos.X] = 9;
+    // setArea.move[centePos.Y][centePos.X] = 9;
+    // setArea.attack[centePos.Y][centePos.X] = 9;
     setArea.all[centePos.Y][centePos.X] = 9;
-
-    console.log("setArea",setArea)
-
 
     return setArea;
     

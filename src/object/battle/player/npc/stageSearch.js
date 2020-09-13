@@ -111,7 +111,6 @@ export function getNodeList(){
   
   for(var n = 0; n < chessGroup.length; n++){
     areaMap = chessGroup[n].areaMap;
-    console.log("areaMap",areaMap)
     moveMap = chessGroup[n].moveMap;
     attackMap = chessGroup[n].attackMap;
     for(var i = 0; i < areaMap.length; i++){
@@ -136,7 +135,6 @@ export function getNodeList(){
           }
           if(areaMap[i][k] === 9){
             setStatus = "STAY";
-            console.log("areaMap",areaMap)
           }else{
             if(_scene.GameManager.stageMapAll[i][k] !== 0){
               continue;
@@ -407,7 +405,7 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
     Y: 0
   }
   
-  let map = moveChess.areaMap;
+  let map = moveChess.moveMap;
   for(var i = 0; i < map.length; i++){
     for(var k = 0; k < map[i].length; k++){
       if(itemMap2[i][k] !== 0){
@@ -430,13 +428,13 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
       if(map[i][k] === 1 || map[i][k] === 3){
         sa_X = pl_pos_X - k;
         sa_Y = pl_pos_Y - i;
-        sum = sa_X + sa_Y;
+        sum = Math.abs(sa_X) + Math.abs(sa_Y);
 
         if(sum_diff === 0){
           sum_diff = sum;
         }
 
-        if(sum_diff >= sum){
+        if(sum_diff <= sum){
           sum_diff = sum;
           savePos.X = k;
           savePos.Y = i;
@@ -444,6 +442,17 @@ export function getChaseEnemy(enemyChessGroup,playerChessGroup){
           list.Y = i;
         }
 
+      }
+    }
+  }
+  /*見つからなかったら一番最後の配列の位置を渡す*/
+  if(list.X === 0 && list.Y === 0){
+    for(var i = 0; i < moveChess.MoveArea.length;i++){
+      for(var k = 0; k < moveChess.MoveArea[i].length;k++){
+        if(moveChess.MoveArea[i][k] !== 0){
+          list.X = k;
+          list.Y = i;
+        }
       }
     }
   }

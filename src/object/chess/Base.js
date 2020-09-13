@@ -200,7 +200,7 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
     if(_attackingTarget.status.hp <= 0){
       return false;
     }
-    let groundType = this.scene.registry.list.mapData[_attackingTarget.tilePos.Y][_attackingTarget.tilePos.X];
+    let groundType = this.scene.registry.list.mapData[this.tilePos.Y][this.tilePos.X];
     let power = 0;
     let myAttribute = Number(this.attribute);
     let enemyAttribute = Number(_attackingTarget.attribute);
@@ -312,8 +312,9 @@ export default class Base extends Phaser.Physics.Arcade.Sprite {
         }else{
           // if(this.scene.STATUS.TURN === "PLAYER2"){
             this.scene.STATUS.ANIME = false;
+          if(this.scene.STATUS.TURN === "PLAYER2"){
             this.scene.turnFin();
-          // }
+          }
         }
       },
       callbackScope: this

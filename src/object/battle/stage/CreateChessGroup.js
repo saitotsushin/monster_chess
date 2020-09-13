@@ -69,38 +69,53 @@ export default class CreateChessGroup {
   チェスグループのレイアウト
   ------------------------------*/  
   layoutChess(){
+    console.log("this.chessMapData",this.chessMapData)
+    let count = 0;
+
+    if(this.playerType === 'player1'){
+
+      for(var i = 0; i < this.chessMapData.length; i++){
+        for(var k = 0; k < this.chessMapData[i].length; k++){
+          if(this.chessMapData[i][k] !== 0){
+            this.setLayoutChess(i,k,count);
+            count++;
+          }
+        }
+      }    
+    }else{
+      for(var i = this.chessMapData.length-1; i >= 0; i--){
+        for(var k = 0; k < this.chessMapData[i].length; k++){
+          if(this.chessMapData[i][k] !== 0){
+            this.setLayoutChess(i,k,count);
+            count++;
+          }
+        }
+      }    
+    }
+  }
+  setLayoutChess(i,k,count){
     let baseLeft = 0;
     let baseHeight = 20; 
     let chessWidth = 32;   
     let addGroup = this.addGroup.children.entries;
-    let count = 0;
 
+    let chess = addGroup[count];
+    let position = {
+      x: k * chessWidth + chessWidth/2 + baseLeft,
+      y: i * chessWidth + chessWidth/2 + baseHeight
+    };
+    let int = {
+      X: k,
+      Y: i
+    }
+    chess.move(position,int);
+    chess.icon_levelup.setVisible(false);
 
-    for(var i = 0; i < this.chessMapData.length; i++){
-      for(var k = 0; k < this.chessMapData[i].length; k++){
-        if(this.chessMapData[i][k] !== 0){
-          // let count = Number(this.chessMapData[i][k]);
-          let chess = addGroup[count];
-          let position = {
-            x: k * chessWidth + chessWidth/2 + baseLeft,
-            y: i * chessWidth + chessWidth/2 + baseHeight
-          };
-          let int = {
-            X: k,
-            Y: i
-          }
-          chess.move(position,int);
-          chess.icon_levelup.setVisible(false);
-
-          let settingStatus = {
-            power: chess.status.power,
-            hp: chess.status.maxHp
-          };
-          chess.setStatus(settingStatus)
-          chess.groupIndex = count + 1;
-          count++;
-        }
-      }
-    }    
+    let settingStatus = {
+      power: chess.status.power,
+      hp: chess.status.maxHp
+    };
+    chess.setStatus(settingStatus)
+    chess.groupIndex = count + 1;
   }
 }

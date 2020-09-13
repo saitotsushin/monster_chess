@@ -394,9 +394,11 @@ export default class GameManager {
       this.UIManager.fin('MOVE');   
     }
     if(status === "NO"){
+      let beforeSetPos = this.getWorldPos(beforeMovePos);
       
-      this.selectedChess.x = beforeMovePos.x;
-      this.selectedChess.y = beforeMovePos.y;
+      this.selectedChess.move(this.getWorldPos(beforeMovePos),beforeMovePos);
+      //  = beforeSetPos.x;
+      // this.selectedChess.y = beforeSetPos.y;
       this.STATUS.MOVE = "";
     }
   }

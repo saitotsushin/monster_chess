@@ -63,22 +63,22 @@ export default class StageManager {
     let get_index = 0;
     let back_index = 0;
     /*一番奥の駒を取得する*/
-    for(var i = 0; i < chessMapData.length; i++){
+    for(var i = chessMapData.length - 1; i >= 0; i--){
       for(var k = 0; k < chessMapData[i].length; k++){
         /*逆順（右端から）で検索*/
         back_index = chessMapData[i].length - k - 1;
-        if(chessMapData[i][back_index] !== 0 && get_index === 0){
-          get_index = chessMapData[i][back_index];
+        if(chessMapData[i][k] !== 0){
+          get_index = chessMapData[i][k];
           // break;
         }
       }
     }
     group.children.entries.forEach(
       (sprite,index) => {
-        if(sprite.groupIndex === get_index){
+        if(index + 1 === get_index){
           // sprite.icon_king.setVisible(true);
           sprite.isKing = true;
-          // sprite.icon_king.setVisible(true);
+          sprite.icon_king.setVisible(true);
         }
       }
     );

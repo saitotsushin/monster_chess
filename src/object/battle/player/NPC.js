@@ -83,7 +83,7 @@ export default class NPC{
             _this.scene.itemMap2[attackTarget.tilePos.Y][chess.tilePos.X] = 0;    
             _this.scene.itemFiring(getItem,chess);
             addTimer = 2000;
-          }else{
+          }
             addTimer = 0;
             /*チェスデータの更新*/
             let chessIndex = chess.groupIndex;
@@ -95,8 +95,6 @@ export default class NPC{
               cursor.y = attackTarget.y;
               clearTimeout(queSelect);
             }, 500);
-          }    
-
 
           cursor.x = chess.x;
           cursor.y = chess.y;          
