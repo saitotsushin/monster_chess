@@ -115,6 +115,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
       ランダムで相手のチェスが手に入る
       -------------------*/    
       this.getRandomChess();
+      this.scene.registry.list.floorNumber++;
     }
     if(this.scene.STATUS.WIN_PLAYER === "player2"){
       this.titleResultWin.setVisible(false)
@@ -123,7 +124,13 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     }
   }
   getRandomChess(){
-    let chessData2 = this.scene.GameManager.StageManager.LoadGameData.chessData2;
+    let _this = this;
+    let getChessData2 = this.scene.LoadGameData.chessData2.filter(function(item, index){
+      if (item.name == _this.scene.registry.list.floorNumber) return true;
+    });
+    let chessData2 = getChessData2[0].chessGroup;
+
+    // let chessData2 = this.scene.GameManager.StageManager.LoadGameData.chessData2;
     let randomChess =  chessData2[Math.floor(Math.random() * chessData2.length)];
     this.gettedChess.setVisible(true);
     this.gettedChess.setTexture('spritesheet',randomChess);

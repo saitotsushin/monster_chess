@@ -23,8 +23,15 @@ class GameScene extends Phaser.Scene {
     // );
     // this.btnPlayCPU = new Phaser.Geom.Rectangle(0, 0, this.sys.game.config.this.sys.game.config.game.config.width, this.sys.game.config.scene.game.config.height);
     // this.overlapArea.fillRectShape(this.rect);
+    
 
-    this.btnPlayCPU = this.add.text(12, 20, 'CPU対戦', {
+    this.btnPlayCPU = this.add.text(12, 20, '現在:'+this.registry.list.floorNumber+'F', {
+      fontFamily: 'font1',
+      color: '#FFFFFF',
+      fontSize: 10
+    });
+
+    this.btnPlayCPU = this.add.text(12, 34, 'ダンジョンに進む', {
       fontFamily: 'font1',
       color: '#FFFFFF',
       fontSize: 10

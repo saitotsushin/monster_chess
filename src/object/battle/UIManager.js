@@ -6,6 +6,7 @@ import ModalMove       from '../ui/modal/ModalMove';
 import ModalItem       from '../ui/modal/ModalItem';
 import ModalItemSet    from '../ui/modal/ModalItemSet';
 import ChessInfoWindow from '../ui/setting/ChessInfoWindow';
+import StageOverlay    from './stage/StageOverlay';
 
 import ItemGroup from '../ui/battle/ItemGroup';
 import StageItemTile from '../ui/battle/StageItemTile';
@@ -33,6 +34,12 @@ export default class UIManager {
   初期化
   ------------------------------*/     
   initScene(){
+    this.StageOverlay = new StageOverlay({
+      scene: this.scene
+    });  
+    this.StageOverlay.initScene();  
+
+
     this.Menu = new Menu({
       scene: this.scene
     });  

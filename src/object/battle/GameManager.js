@@ -63,9 +63,20 @@ export default class GameManager {
 
     /*相手のチェスを生成*/
     this.playerChessGroup2 = this.scene.add.group();
+
+    let _this = this;
+    // console.log(" _this.registry.list.floorNumber", _this.registry.list.floorNumber)
+    var matchData = this.scene.LoadGameData.chessData2.filter(function(item, index){
+      if (item.name == _this.scene.registry.list.floorNumber) return true;
+    });
+    console.log("matchData",matchData)
+    let chessData2 = matchData[0].chessGroup;     
+
+
     let setting2 = {
       addGroup: this.playerChessGroup2,//追加するグループ
-      chessData: this.scene.registry.list.chessData2,//チェスデータ
+      chessData: chessData2,//チェスデータ
+      // chessData: this.scene.registry.list.chessData2,//チェスデータ
       chessMapData: this.scene.chessMapData2,//レイアウトデータ
       playerType: 'player2'
     };
@@ -187,13 +198,13 @@ export default class GameManager {
     if(this.scene.STATUS.PLAYER1.CHESS_COUNT === 0){
       this.scene.STATUS.STAGE = "GAMEOVER";
       this.scene.STATUS.WIN_PLAYER = "player2";
-      this.scene.clearGame();
+      // this.scene.clearGame();
     }
 
     if(this.scene.STATUS.PLAYER2.CHESS_COUNT === 0){
       this.STATUS.STAGE = "GAMEOVER";
       this.scene.STATUS.WIN_PLAYER = "player1";
-      this.scene.clearGame();
+      // this.scene.clearGame();
     }
   }
   /*==============================

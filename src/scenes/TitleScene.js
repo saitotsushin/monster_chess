@@ -68,6 +68,8 @@ class TitleScene extends Phaser.Scene {
     this.registry.list.itemData  = this.LoadGameData.itemData;
     /*自分のストックしている駒のデータ*/
     this.registry.list.stockData  = this.LoadGameData.stockData;
+    //
+    this.registry.list.floorNumber = 1;
 
     /*相手のデータ*/
     this.registry.list.chessLayoutData2 = this.LoadGameData.chessLayoutData2;

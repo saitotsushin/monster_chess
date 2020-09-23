@@ -68,6 +68,8 @@ class BootScene extends Phaser.Scene {
 
     this.registry.set('stockData', []);
 
+    this.registry.set('floorNumber', []);
+
     /*相手のデータ*/    
     this.registry.set('chessLayoutData2', []);
     this.registry.set('chessData2', []);    

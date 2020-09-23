@@ -47,6 +47,7 @@ export default class StageManager {
   相手のチェスグループの生成
   ------------------------------*/
   createEnemyGroup(setting){
+    console.log("createEnemyGroup",setting.chessMapData)
     let chessMapData2 = setting.chessMapData;
     let updateSetting = setting;
     updateSetting.chessMapData = chessMapData2;
@@ -60,15 +61,18 @@ export default class StageManager {
     });
   }
   setKingToChessCPU(group,chessMapData){
+    console.log("chessMapData",chessMapData)
     let get_index = 0;
     let back_index = 0;
+    let count = 1;
     /*一番奥の駒を取得する*/
     for(var i = chessMapData.length - 1; i >= 0; i--){
       for(var k = 0; k < chessMapData[i].length; k++){
         /*逆順（右端から）で検索*/
         back_index = chessMapData[i].length - k - 1;
         if(chessMapData[i][k] !== 0){
-          get_index = chessMapData[i][k];
+          get_index = count;
+          count++;
           // break;
         }
       }

@@ -1,6 +1,7 @@
 import GameManager    from '../object/battle/GameManager';
 import GameAnimations from '../utils/GameAnimations';
 import ClearGame      from '../object/ui/ClearGame';
+import LoadGameData     from '../data/LoadGameData';
 
 class BattleScene extends Phaser.Scene {
   constructor(test) {
@@ -9,7 +10,8 @@ class BattleScene extends Phaser.Scene {
     });
 
 
-  
+    this.LoadGameData = new LoadGameData();
+
     this.stageMap = "map1";//ステージマップの指定
     this.STATUS = {
       STAGE: "",
@@ -105,8 +107,16 @@ class BattleScene extends Phaser.Scene {
 
     /*=====================
     相手のレイアウトは逆順にして配置
-    =====================*/
-    let chessLayoutData2 = this.registry.list.chessLayoutData2;
+    =====================*/   
+    // let _this = this;
+    console.log("this.scene.LoadGameData.chessLayoutData2",this.LoadGameData.chessLayoutData2)
+    let getChessLayoutData2 = this.LoadGameData.chessLayoutData2.filter(function(item, index){
+      if (item.name == this.registry.list.floorNumber) return true;
+    },this);
+    console.log("getChessLayoutData2",getChessLayoutData2)
+    let chessLayoutData2 = getChessLayoutData2[0].chessGroup;
+
+    // let chessLayoutData2 = this.registry.list.chessLayoutData2;
     for(var i = 0; i < chessLayoutData2.length; i++){
       for(var k = 0; k < chessLayoutData2.length; k++){
         if(chessLayoutData2[i][k] !== 0){
@@ -118,6 +128,32 @@ class BattleScene extends Phaser.Scene {
       this.chessMapData2[i].reverse();
     }
     this.chessMapData2.reverse();
+
+    // this.registry.list.chessData2 = [
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1',
+    //   'chess_1'
+    // ];
+    // this.chessMapData2 = [
+    //   [1,1,1,1,1],
+    //   [1,1,1,1,1],
+    //   [1,1,1,1,1],
+    //   [0,0,0,0,0],
+    //   [0,0,0,0,0]
+    // ];
+    
 
     this.GameManager = new GameManager({
       scene: this
