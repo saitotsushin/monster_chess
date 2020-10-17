@@ -73,7 +73,7 @@ export default class ClearGame extends Phaser.Physics.Arcade.Sprite{
     );
     this.btnMenuBack.setInteractive();
     this.btnMenuBack.on('pointerdown', function (pointer) {
-      this.scene.scene.start('GameScene');
+      this.scene.scene.start('BattleScene');
     },this);
 
     /*=================
